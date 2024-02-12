@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "HTTP Request Extension",
+  "version": "1.0",
+  "description": "Chrome extension for making HTTP requests",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
