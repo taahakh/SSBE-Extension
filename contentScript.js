@@ -1,39 +1,96 @@
-// chrome.runtime.onMessage.addListener((obj, sender, response) => {
-//     // const { type, value, videoId } = obj;
-//     console.log("CS --> Message received:", obj, sender, response);
-//     // if (type === "NEW") {
-//     //     currentVideo = videoId;
-//     //     newVideoLoaded();
-//     // }
-// });
-
 (() => {
     console.log("content script loaded");
     console.log(document.body);
 
-    // ... (other commented-out code)
-
-    // Uncommented code related to message handling
-    // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    //     console.log("CS --> Message received:", request);
-    //     // chrome.runtime.sendMessage({ action: 'makeGetRequest' });
-    //     if (request.action === "gatherData") {
-    //         console.log("Gathering Data");
-    //     }
-    // });
-
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
-        // const { type, value, videoId } = obj;
         console.log("CS --> Message received:", obj, sender, response);
-        // if (type === "NEW") {
-        //     currentVideo = videoId;
-        //     newVideoLoaded();
-        // }
-     });
+        console.log(obj);
+        switch (obj.action) {  
+            case 'gatherData':
+                // let texts = getTextWithXpath();
+                let texts = JSON.stringify({text: document.body.outerHTML});
+                chrome.runtime.sendMessage({ action: 'summarise', data : texts }, function(response) {
+                    console.log(response);
+                });
+            case 'summariseResponse':
+                console.log("CS --> Summarised Data: ", obj.data.data);
+                var newParagraph = document.createElement('p');
 
-    // chrome.runtime.sendMessage({ action: 'gatherData' });
+                // Create a text node
+                var textNode = document.createTextNode('Summarised Text: ' + obj.data.data);
+
+                // Append the text node to the paragraph element
+                newParagraph.appendChild(textNode);
+
+                // Append the paragraph element to the body of the document
+                document.body.appendChild(newParagraph);
+                break;
+        }
+     });
 })();
 
+function gatherData() {
+    console.log("Gathering Data");
+    // Example XPath expression: you can modify this based on your needs
+    // var xpathExpression = '//*[@id="mw-content-text"]/div[1]/p';
+    var xpathExpression = '/html/body/div/div'
+    // Use document.evaluate to select elements based on the XPath expression
+    var result = document.evaluate(xpathExpression, document, null, XPathResult.ANY_TYPE, null);
+    while (node = result.iterateNext()) {
+        console.log(node);
+        console.log(getAllTextFromNode(node));
+    }
+}
+
+function getTextWithXpath(xpath) {
+
+    var xpath = '/html/body/div/div'
+    var texts = [];
+    // Use document.evaluate to select elements based on the XPath expression
+    var result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+    while (node = result.iterateNext()) {
+        // console.log(node);
+        nodeText = getAllTextFromNode(node);
+        texts.push(nodeText);
+        // console.log(texts);
+    }
+    textJson = JSON.stringify(texts);
+    console.log(textJson);
+    JSON.stringify(console.log({text : textJson}));
+    return JSON.stringify({text : textJson});
+}
+
+function deepText(node) {   
+    var A= [];
+    if(node){
+        node= node.firstChild;
+        while(node!= null){
+            if(node.nodeType== 3) A[A.length]=node;
+            else A= A.concat(deepText(node));
+            node= node.nextSibling;
+        }
+    }
+    return A;
+} 
+
+function getAllTextFromNode(node) {
+    var text = '';
+  
+    // Check if the node has text content
+    if (node.nodeType === 3) {
+      // Text node
+    //   text += node.nodeValue.trim();
+        text += node.nodeValue.trim() + " ";
+    } else if (node.nodeType === 1) {
+      // Element node (e.g., div, span, etc.)
+      for (var i = 0; i < node.childNodes.length; i++) {
+        // Recursively get text content from child nodes
+        text += getAllTextFromNode(node.childNodes[i]);
+      }
+    }
+  
+    return text;
+}
 
 
 // (() => {

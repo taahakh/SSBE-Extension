@@ -1,15 +1,3 @@
-// chrome.tabs.onUpdated.addListener((tabId, tab) => {
-//     // if (tab.url && tab.url.includes("youtube.com/watch")) {
-//     //   const queryParameters = tab.url.split("?")[1];
-//     //   const urlParameters = new URLSearchParams(queryParameters);
-  
-//     //   chrome.tabs.sendMessage(tabId, {
-//     //     type: "NEW",
-//     //     videoId: urlParameters.get("v"),
-//     //   });
-//     // }
-//   });
-
 // background.js
 
 chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
@@ -18,8 +6,6 @@ chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
   my_tabid=tabs[0].id;
 }); 
 
-// console.log(my_tabid);
-
 chrome.runtime.onInstalled.addListener(function() {
   console.log('Extension Installed');
 });
@@ -27,19 +13,49 @@ chrome.runtime.onInstalled.addListener(function() {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   console.log('B: Message received:', request);
   console.log('B: Sender:', sender.tab);
-  // if (request.action === 'makeGetRequest' && sender.tab) {
-  //   chrome.scripting.executeScript({
-  //     target: { tabId: sender.tab.id }, 
-  //     function: makeGetRequest,
-  //   });
-  // }
-  if (request.action === 'makeGetRequest') {
-    makeGetRequest();
-    chrome.runtime.sendMessage({ action: 'gatherData' });
+
+  switch (request.action) { 
+
+    case 'makeGetRequest':
+      console.log('Background.js - Making GET Request');
+      makeGetRequest();
+      chrome.runtime.sendMessage({ action: 'gatherData' });
+      break;
+    case 'summarise':
+      console.log("Background.js - Data to summarise: ", request.data);
+      summariseRequest(request.data);
+      break;
   }
 
   sendResponse();
 });
+
+async function summariseRequest(data) {
+
+  // const url = 'http://127.0.0.1:5000/servicemanager/summarise';
+  const url = 'http://127.0.0.1:5000/servicemanager/scrape';
+  
+  try {
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: data
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('POST request successful:', result);
+      sendMessageToCS({ action: 'summariseResponse', data: result });
+    } else {
+      console.error('POST request failed:', response.status, response.statusText);
+      sendMessageToCS({ action: 'summariseResponse', data: "failed" });
+    }
+  } catch (error) {
+    console.error('An error occurred during the POST request:', error);
+    sendMessageToCS({ action: 'summariseResponse', data: "error" });
+  }
+}
 
 function makeGetRequest() {
   console.log('GET Request');
@@ -51,4 +67,8 @@ function makeGetRequest() {
     .catch(error => console.error('GET Error:', error));
 }
 
-
+function sendMessageToCS(message) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, message);
+  });
+}
