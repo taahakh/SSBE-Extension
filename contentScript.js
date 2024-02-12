@@ -13,7 +13,8 @@
                     console.log(response);
                 });
             case 'summariseResponse':
-                console.log("CS --> Summarised Data: ", obj.data.data);
+                // console.log("CS --> Summarised Data: ", obj.data.data);
+                console.log("CS --> Summarised Data: ", obj.data);
                 var newParagraph = document.createElement('p');
 
                 // Create a text node

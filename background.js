@@ -1,4 +1,9 @@
 // background.js
+const CHATGPT_API_KEY = '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'
+const Message = Object.freeze({
+  SUMMARISE: 0,
+  GATHERDATA: 1,
+})
 
 chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
   console.log(tabs[0].url);
@@ -24,6 +29,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
       summariseRequest(request.data);
+      // chatgptRequest("What are the tallest buildings in the world?");
       break;
   }
 
@@ -65,6 +71,22 @@ function makeGetRequest() {
       console.log('GET Response:', data);
     })
     .catch(error => console.error('GET Error:', error));
+}
+
+
+function chatgptRequest(data) {
+  fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + CHATGPT_API_KEY,
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: [{'role': 'user', 'content': data}],
+    })
+  }).then(response => {console.log(response.json());})
+  .then(response => sendMessageToCS({ action: 'summariseResponse', data: response.json() }))
 }
 
 function sendMessageToCS(message) {
