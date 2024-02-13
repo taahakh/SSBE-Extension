@@ -1,0 +1,116 @@
+<div id="summarisation-customisation" class="rows-inline">
+    <div id="textdomain">
+      <h3>Text Type</h3>
+      <!-- <label for="td-dropdown">Text Type:</label> -->
+      <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="orange">Orange</option>
+          <option value="grape">Grape</option>
+      </select>
+    </div>
+    <div id="summarytype">
+      <!-- Extractive and Abstractive Summarisation Buttons -->
+      <h3>Summary Type</h3>
+      <div id="summarisation-buttons">
+        <div id="sb-1" class="selectable-button">Extractive</div>
+        <div id="sb-2" class="selectable-button">Abstractive</div>
+      </div>
+    </div>
+    <div id="modelchoice">
+      <h3>Model select</h3>
+      <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+        <option value="orange">Orange</option>
+        <option value="grape">Grape</option>
+    </select>
+    </div>
+    <div id="summarylength">
+      <h3>Summary Length</h3>
+      <h5>Min length: 30 words </h5>
+      <h5>Max length: 300 words</h5>
+      <input type="text" id="summary-length" name="summary-length" placeholder="100">
+    </div>
+  </div>
+
+
+  .rows-inline {
+    width: 100%;
+    height: 10em;
+    border: 1px solid black;
+}
+
+.rows-inline > div {
+    display: inline-block;
+    /* width: 100%; */
+    border: 1px solid black;
+}
+
+
+<div id="summarisation" class="rows">
+    <!-- Non-customisation settings - Main / critical section -->
+    <div id="row-1" class="rows-inline">
+      <!-- Start summarisation and select provider -->
+      <div id="control" class="row-item-fullwidth">
+        <div id="provider">
+          <h3>Provider</h3>
+          <select id="td-dropdown-provider" name="td-dropdown-provider">
+            <option value="apple">Apple</option>
+            <option value="banana">Banana</option>
+            <option value="orange">Orange</option>
+            <option value="grape">Grape</option>
+          </select>
+        </div>
+        <div id="summarise-button">
+          <button type="button">Summarise</button>
+        </div>
+      </div>
+      <!-- Contextual information -->
+      <div id="contextual" class="row-item-fullwidth">
+        <p>Hello world!</p>
+      </div>
+    </div>
+    <!-- Customisation options  -->
+    <div id="summarisation-customisation">
+      <div id="textdomain">
+        <h3>Text Type</h3>
+        <!-- <label for="td-dropdown">Text Type:</label> -->
+        <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+            <option value="apple">Apple</option>
+            <option value="banana">Banana</option>
+            <option value="orange">Orange</option>
+            <option value="grape">Grape</option>
+        </select>
+      </div>
+      <div id="summarytype">
+        <!-- Extractive and Abstractive Summarisation Buttons -->
+        <h3>Summary Type</h3>
+        <div id="summarisation-buttons">
+          <div id="sb-1" class="selectable-button">Extractive</div>
+          <div id="sb-2" class="selectable-button">Abstractive</div>
+        </div>
+      </div>
+      <div id="modelchoice">
+        <h3>Model select</h3>
+        <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="orange">Orange</option>
+          <option value="grape">Grape</option>
+      </select>
+      </div>
+      <div id="summarylength">
+        <h3>Summary Length</h3>
+        <h5>Min length: 30 words </h5>
+        <h5>Max length: 300 words</h5>
+        <input type="text" id="summary-length" name="summary-length" placeholder="100">
+      </div>
+    </div>
+  </div>
+  <div id="summary-box" class="rows">
+    asddsadsdasdas
+  </div>
+  <div id="post-summarisation" class="rows">
+    adssadadadsasdas
+  </div>

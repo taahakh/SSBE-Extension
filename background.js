@@ -38,8 +38,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 async function summariseRequest(data) {
 
-  // const url = 'http://127.0.0.1:5000/servicemanager/summarise';
-  const url = 'http://127.0.0.1:5000/servicemanager/scrape';
+  const url = 'http://127.0.0.1:5000/servicemanager/summarise';
+  // const url = 'http://127.0.0.1:5000/servicemanager/scrape';
   
   try {
 

@@ -1,0 +1,108 @@
+html {
+    width: 700px;
+    height: 700px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+#container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 100% of the viewport height */
+}
+
+#summarisation,
+#summary-box,
+#post-summarisation {
+    width: 100%;
+}
+
+
+/* *** ---  summarisation --- *** */
+
+#summarisation{
+    flex: 0 0 25%;
+    background-color: grey;
+}
+
+/* --- summarisation [ row 1 ] --- */
+
+/* .row-item-fullwidth */
+#row-1 > div {              
+    width: 100%;
+    /* height: 2em; */
+    border: 1px solid black;
+}
+
+#control {
+    height: 4em;
+    border: 1px solid black;
+}
+
+#contextual {
+    height: 2em;
+    border: 1px solid black;
+}
+
+#provider {
+    float: left;
+}
+
+#summarise-settings-box {
+    float: right;
+    width: 20%;
+    border: 1px solid black;
+    /* display: inline; */
+}
+
+#summarise-settings-box > button{
+    float: right;
+    /* width: 30%; */
+    /* display: inline; */
+}
+
+
+/* --- summarisation [ summarisation-customisation ] --- */
+
+#summarisation-customisation > div {
+    display: inline-block;
+    border: 1px solid red;
+}
+
+.selectable-button {
+    display:inline-block;
+    color:#444;
+    border:1px solid #CCC;
+    background:#DDD;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+    cursor:pointer;
+    vertical-align:middle;
+    max-width: 100px;
+    padding: 5px;
+    text-align: center;
+}
+
+.selected-state {
+    background-color: red;
+}
+
+
+/* *** ---  summary-box --- *** */
+
+#summary-box {
+    flex: 0 0 55%;
+    background-color: blue;
+}
+
+
+/* *** ---  post-summarisation --- *** */
+
+#post-summarisation  {
+flex: 0 0 20%;
+background-color: red;
+}
