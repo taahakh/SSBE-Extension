@@ -52,14 +52,14 @@ async function summariseRequest(data) {
     if (response.ok) {
       const result = await response.json();
       console.log('POST request successful:', result);
-      sendMessageToCS({ action: 'summariseResponse', data: result });
+      sendMessageToPopup({ action: 'summaryResponse', data: result });
     } else {
       console.error('POST request failed:', response.status, response.statusText);
-      sendMessageToCS({ action: 'summariseResponse', data: "failed" });
+      sendMessageToPopup({ action: 'summaryResponse', data: "failed" });
     }
   } catch (error) {
     console.error('An error occurred during the POST request:', error);
-    sendMessageToCS({ action: 'summariseResponse', data: "error" });
+    sendMessageToPopup({ action: 'summaryResponse', data: "error" });
   }
 }
 
@@ -93,4 +93,8 @@ function sendMessageToCS(message) {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     chrome.tabs.sendMessage(tabs[0].id, message);
   });
+}
+
+function sendMessageToPopup(message) {
+  chrome.runtime.sendMessage(message);
 }

@@ -6,26 +6,28 @@
         console.log("CS --> Message received:", obj, sender, response);
         console.log(obj);
         switch (obj.action) {  
+            // Scrape text --> change name to scrapeText
             case 'gatherData':
                 // let texts = getTextWithXpath();
                 let texts = JSON.stringify({text: document.body.outerHTML});
                 chrome.runtime.sendMessage({ action: 'summarise', data : texts }, function(response) {
                     console.log(response);
                 });
-            case 'summariseResponse':
-                // console.log("CS --> Summarised Data: ", obj.data.data);
-                console.log("CS --> Summarised Data: ", obj.data);
-                var newParagraph = document.createElement('p');
-
-                // Create a text node
-                var textNode = document.createTextNode('Summarised Text: ' + obj.data.data);
-
-                // Append the text node to the paragraph element
-                newParagraph.appendChild(textNode);
-
-                // Append the paragraph element to the body of the document
-                document.body.appendChild(newParagraph);
                 break;
+            // case 'summariseResponse':
+            //     // console.log("CS --> Summarised Data: ", obj.data.data);
+            //     console.log("CS --> Summarised Data: ", obj.data);
+            //     var newParagraph = document.createElement('p');
+
+            //     // Create a text node
+            //     var textNode = document.createTextNode('Summarised Text: ' + obj.data.data);
+
+            //     // Append the text node to the paragraph element
+            //     newParagraph.appendChild(textNode);
+
+            //     // Append the paragraph element to the body of the document
+            //     document.body.appendChild(newParagraph);
+            //     break;
         }
      });
 })();

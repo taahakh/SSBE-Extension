@@ -14,11 +14,43 @@ postF.addEventListener('click', async () => {
     });
 });
 
-var selectedButton = null;
+// Message Passing
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('Popup.js: Message received:', request);
+
+  switch (request.action) { 
+
+    case 'summaryResponse':
+      // console.log("CS --> Summarised Data: ", obj.data.data);
+      console.log("CS --> Summarised Data: ", obj.data);
+      var newParagraph = document.createElement('p');
+
+      // Create a text node
+      var textNode = document.createTextNode('Summarised Text: ' + obj.data.data);
+
+      // Append the text node to the paragraph element
+      newParagraph.appendChild(textNode);
+
+      // Append the paragraph element to the body of the document
+      document.body.appendChild(newParagraph);
+
+      break;
+  }
+
+  sendResponse();
+});
+
+
+// Settings Button
 
 document.getElementById("open-settings").addEventListener("click", function() {
   chrome.tabs.create({ url: "chrome-extension://"+chrome.runtime.id+"/settings.html" });
 });
+
+// Summary Type Selection - Button
+
+var selectedButton = null;
 
 document.getElementById("sb-1").addEventListener("click", function() {
   buttonSelect("sb-1");
