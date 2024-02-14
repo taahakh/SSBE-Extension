@@ -29,6 +29,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
       summariseRequest(request.data);
+      // sendMessageToPopup({ action: 'summaryResponse', data: "SUMMARY" });
       // chatgptRequest("What are the tallest buildings in the world?");
       break;
   }

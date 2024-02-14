@@ -16,9 +16,6 @@
   "host_permissions": [
     "<all_urls>"
   ],
-  "web_accessible_resources":[
-    "settings.html"
-  ],
   "action": {
     "default_popup": "popup.html"
   }

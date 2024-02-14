@@ -32,9 +32,9 @@
      });
 })();
 
+// WRONG IMPLEMNTATION
 function gatherData() {
     console.log("Gathering Data");
-    // Example XPath expression: you can modify this based on your needs
     // var xpathExpression = '//*[@id="mw-content-text"]/div[1]/p';
     var xpathExpression = '/html/body/div/div'
     // Use document.evaluate to select elements based on the XPath expression
@@ -49,8 +49,10 @@ function getTextWithXpath(xpath) {
 
     var xpath = '/html/body/div/div'
     var texts = [];
-    // Use document.evaluate to select elements based on the XPath expression
+
+    // Grab all matching text nodes
     var result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+
     while (node = result.iterateNext()) {
         // console.log(node);
         nodeText = getAllTextFromNode(node);
@@ -94,77 +96,3 @@ function getAllTextFromNode(node) {
   
     return text;
 }
-
-
-// (() => {
-//     console.log("content script loaded");
-//     console.log(document.body);
-//     // let youtubeLeftControls, youtubePlayer;
-//     // let currentVideo = "";
-//     // let currentVideoBookmarks = [];
-
-//     // chrome.runtime.onMessage.addListener((obj, sender, response) => {
-//     //     const { type, value, videoId } = obj;
-
-//     //     if (type === "NEW") {
-//     //         currentVideo = videoId;
-//     //         newVideoLoaded();
-//     //     }
-//     // });
-
-//     // chrome.runtime.onMessage.addListener((request, sender, response) => {
-//     //     console.log("CS --> Message received:", request);
-//     //     if (request.action === "gatherData") {
-//     //         console.log("Gathering Data");
-//     //     }
-//     // });
-
-//     // const newVideoLoaded = () => {
-//     //     const bookmarkBtnExists = document.getElementsByClassName("bookmark-btn")[0];
-//     //     console.log(bookmarkBtnExists);
-
-//     //     if (!bookmarkBtnExists) {
-//     //         const bookmarkBtn = document.createElement("img");
-
-//     //         bookmarkBtn.src = chrome.runtime.getURL("assets/bookmark.png");
-//     //         bookmarkBtn.className = "ytp-button " + "bookmark-btn";
-//     //         bookmarkBtn.title = "Click to bookmark current timestamp";
-
-//     //         youtubeLeftControls = document.getElementsByClassName("ytp-left-controls")[0];
-//     //         youtubePlayer = document.getElementsByClassName("video-stream")[0];
-            
-//     //         youtubeLeftControls.append(bookmarkBtn);
-//     //         bookmarkBtn.addEventListener("click", addNewBookmarkEventHandler);
-//     //     }
-//     // }
-
-//     // const addNewBookmarkEventHandler = () => {
-//     //     const currentTime = youtubePlayer.currentTime;
-//     //     const newBookmark = {
-//     //         time: currentTime,
-//     //         desc: "Bookmark at " + getTime(currentTime),
-//     //     };
-//     //     console.log(newBookmark);
-
-//     //     chrome.storage.sync.set({
-//     //         [currentVideo]: JSON.stringify([...currentVideoBookmarks, newBookmark].sort((a, b) => a.time - b.time))
-//     //     });
-//     // }
-
-//     // newVideoLoaded();
-// })();
-
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//     console.log("CS --> Message received:", request);
-//     chrome.runtime.sendMessage({ action: 'makeGetRequest' });
-//     if (request.action === "gatherData") {
-//         console.log("Gathering Data");
-//     }
-//   });
-
-// const getTime = t => {
-//     var date = new Date(0);
-//     date.setSeconds(1);
-
-//     return date.toISOString().substr(11, 0);
-// }

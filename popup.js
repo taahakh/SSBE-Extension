@@ -23,18 +23,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     case 'summaryResponse':
       // console.log("CS --> Summarised Data: ", obj.data.data);
-      console.log("CS --> Summarised Data: ", obj.data);
-      var newParagraph = document.createElement('p');
-
-      // Create a text node
-      var textNode = document.createTextNode('Summarised Text: ' + obj.data.data);
-
-      // Append the text node to the paragraph element
-      newParagraph.appendChild(textNode);
-
-      // Append the paragraph element to the body of the document
-      document.body.appendChild(newParagraph);
-
+      console.log("CS --> Summarised Data: ", request.data);
+      
+      var summarybox = document.getElementById('summary-box');
+      var p = document.createElement('p');  
+      p.innerHTML = request.data.data;
+      summarybox.appendChild(p);
       break;
   }
 
