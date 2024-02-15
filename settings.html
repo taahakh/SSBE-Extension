@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="container">
+        <h1 style="font-size: 40px;">Settings</h1>
+        <div id="provider">
+            <h1>Service Connections</h1>
+            <p><i>....</i></p>
+            <div id="provider-select">
+                <select id="" name="">
+                    <option value="bs">Backend Service</option>
+                    <option value="co">ChatGPT / OpenAI </option>
+                </select>
+            </div>
+            <div id="provider-input">
+                <h3>Service URL</h3>
+                <input type="text">
+                <label for="">Username</label>
+                <input type="text">
+                <label for="">Password</label>
+                <input type="text">
+                <button>Connect</button>
+            </div>
+        </div>
+
+        <div id="shortcuts">
+            <h1>Shortcuts</h1>
+            <div id="sum-current-page">
+                <p>Summarise current page</p>
+                <div>Placeholder: Ctrl U</div>
+                <button>Edit</button>
+            </div>
+            <div id="sum-selected-text">
+                <p>Summarise selected text</p>
+                <div>Placeholder: Ctrl I</div>
+                <button>Edit</button>
+            </div>
+        </div>
+
+        <div id="co-customisation">
+            <h1>ChatGPT / OpenAI: Customisation</h1>
+            <div id="prompts">
+                <h2>Prompts</h2>
+                <div id="saved-prompts">
+                    <select name="" id="">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                    </select>
+                    <button>Edit</button>
+                    <!-- Need to add to design?????? -->
+                    <p><b>ADD TO DESIGN</b></p>
+                    <button>Delete</button>
+                    <button>Set default</button>
+                </div>
+                <div id="add-new-prompts">
+                    <input type="text">
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="bs-customisation">
+            <h1>Backend service: Customisation</h1>
+            <div id="per-site-config">
+                <h2>Per site customisation</h2>
+                
+                <div id="bs-psc-editsite">
+                    <h3>Edit site</h3>
+                    <select id="" name="">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                    </select>
+                    <button id="edit-site-button">Edit</button>                            
+                </div>
+                
+                <div id="bs-psc-addconfig">
+                    <h3>Add new configuration</h3>
+                    <h4>url</h4>
+                    <input type="text">
+                    <!-- Customisation options  -->
+                    <h4>summarisation options</h4>
+                    <div id="summarisation-customisation">
+                        <div id="textdomain">
+                        <h3>Text Type</h3>
+                        <!-- <label for="td-dropdown">Text Type:</label> -->
+                        <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+                            <option value="apple">Apple</option>
+                            <option value="banana">Banana</option>
+                            <option value="orange">Orange</option>
+                            <option value="grape">Grape</option>
+                        </select>
+                        </div>
+                        <div id="summarytype">
+                        <!-- Extractive and Abstractive Summarisation Buttons -->
+                        <h4>Summary Type</h4>
+                        <div id="summarisation-buttons">
+                            <div id="sb-1" class="selectable-button">Extractive</div>
+                            <div id="sb-2" class="selectable-button">Abstractive</div>
+                        </div>
+                        </div>
+                        <div id="modelchoice">
+                        <h4>Model select</h4>
+                        <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+                            <option value="apple">Apple</option>
+                            <option value="banana">Banana</option>
+                            <option value="orange">Orange</option>
+                            <option value="grape">Grape</option>
+                        </select>
+                        </div>
+                        <div id="summarylength">
+                        <h3>Summary Length</h3>
+                        <h5>Min length: 30 words </h5>
+                        <h5>Max length: 300 words</h5>
+                        <input type="text" id="summary-length" name="summary-length" placeholder="100">
+                        </div>
+                    </div>
+                    <h4>scraping options</h4>
+                    <div id="scraping-options">
+                        <input type="checkbox" name="AS" id="">Automatic scrape
+                        <input type="checkbox" name="CS" id="">Custom Scrape
+                    </div>
+                    <h4>add xpath</h4>    
+                    <div id="add-xpath">
+                        <input type="text" name="xpath" id="">
+                        <button id="add-xpath-button">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
