@@ -13,14 +13,14 @@ function savePopupStorageCtx() {
   // Summary Length
   summarLengthValue = document.getElementById("summary-length").value;
   popupStorageContext = {
-    selectedButton: selectedButton,
+    // selectedButton: selectedButton,
     providerSelect: providerSelect,
     modelSelect: modelSelect,
     summarLengthValue: summarLengthValue
   };
 
   console.log("Popup Storage Context: ", popupStorageContext);
-  saveToStorage({'popupStorageContext' : popupStorageContext});
+  // saveToStorage({'popupStorageContext' : popupStorageContext});
 }
 
 function setPopupCtx(ctx) { 
@@ -55,9 +55,18 @@ console.log("sadasndjasdajdbajdbasjkdbajdajbdasbdjkas");
 
 // SummaryOptionsController
 
+var view = null;
+
 function buildSummaryConfigs(data) {
   console.log(data);
-  let config = new SummaryOptionsController(data);
+  view = new SummaryCustomisationView(data);
+  let config = view.controller;
+  // config.viewConfigSummaryOptionView();
+  // config.updateFromSummaryTypeChange("ab");
+  // config.viewConfigSummaryOptionView();
+  // config.updateFromTextTypeChange("text2");
+  // config.viewConfigSummaryOptionView();
+  // savePopupStorageCtx();
   return config;
 }
 
@@ -113,6 +122,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
+// Summarise button
+var summarise_button = document.getElementById("summarise-button");
+summarise_button.addEventListener("click", async () => {
+  console.log("Summarise Button Clicked");
+  let packageCustomisation = view.packageSummaryCustomisations();
+  console.log("PACKAGE: ", packageCustomisation);
+  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: false, customisation: packageCustomisation });
+  });
+  // chrome.runtime.sendMessage({ action: 'summarise', data: "SUMMARY" });
+});
+
+
 // Settings Button
 
 document.getElementById("open-settings").addEventListener("click", function() {
@@ -121,27 +143,28 @@ document.getElementById("open-settings").addEventListener("click", function() {
 
 // Summary Type Selection - Button
 
-var selectedButton = null;
+// var selectedButton = "sb-1";
+// document.getElementById(selectedButton).classList.add("selected-state");
 
-document.getElementById("sb-1").addEventListener("click", function() {
-  buttonSelect("sb-1");
-});
+// document.getElementById("sb-1").addEventListener("click", function() {
+//   buttonSelect("sb-1");
+// });
 
-document.getElementById("sb-2").addEventListener("click", function() {
-  buttonSelect("sb-2");
-});
+// document.getElementById("sb-2").addEventListener("click", function() {
+//   buttonSelect("sb-2");
+// });
 
-function switchButtonIdentifier(id) {
-  if (id === "sb-1") { return 'sb-2'; }
-  else { return 'sb-1'; }
-}
+// function switchButtonIdentifier(id) {
+//   if (id === "sb-1") { return 'sb-2'; }
+//   else { return 'sb-1'; }
+// }
 
-function buttonSelect(id) {
-  let clickedButton = document.getElementById(id);
-  if (id !== selectedButton) {
-    let otherButton = document.getElementById(switchButtonIdentifier(id));
-    otherButton.classList.remove("selected-state");
-    clickedButton.classList.add("selected-state");
-    selectedButton = id;
-  }
-}
+// function buttonSelect(id) {
+//   let clickedButton = document.getElementById(id);
+//   if (id !== selectedButton) {
+//     let otherButton = document.getElementById(switchButtonIdentifier(id));
+//     otherButton.classList.remove("selected-state");
+//     clickedButton.classList.add("selected-state");
+//     selectedButton = id;
+//   }
+// }

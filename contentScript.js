@@ -10,7 +10,7 @@
             case 'gatherData':
                 // let texts = getTextWithXpath();
                 let texts = JSON.stringify({text: document.body.outerHTML});
-                chrome.runtime.sendMessage({ action: 'summarise', data : texts }, function(response) {
+                chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'] }, function(response) {
                     console.log(response);
                 });
                 break;

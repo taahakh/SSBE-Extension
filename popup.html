@@ -25,8 +25,10 @@
             </select>
           </div>
           <div id="summarise-settings-box">
-            <div id="summarise-button">
-              <button type="button">Summarise</button>
+            <!-- <div id="summarise-button"> -->
+            <div id="summarise-box">
+              <!-- <button type="button">Summarise</button> -->
+              <button id="summarise-button" type="button">Summarise</button>
             </div>
             <button id="open-settings">Settings</button>
           </div>
@@ -45,10 +47,10 @@
           <h3>Text Type</h3>
           <!-- <label for="td-dropdown">Text Type:</label> -->
           <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
-              <option value="apple">Apple</option>
+              <!-- <option value="apple">Apple</option>
               <option value="banana">Banana</option>
               <option value="orange">Orange</option>
-              <option value="grape">Grape</option>
+              <option value="grape">Grape</option> -->
           </select>
         </div>
         <div id="summarytype">
@@ -62,16 +64,16 @@
         <div id="modelchoice">
           <h3>Model select</h3>
           <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
-            <option value="apple">Apple</option>
+            <!-- <option value="apple">Apple</option>
             <option value="banana">Banana</option>
             <option value="orange">Orange</option>
-            <option value="grape">Grape</option>
+            <option value="grape">Grape</option> -->
         </select>
         </div>
         <div id="summarylength">
           <h3>Summary Length</h3>
-          <h5>Min length: 30 words </h5>
-          <h5>Max length: 300 words</h5>
+          <h5 id="minlength">Min length: 30 words </h5>
+          <h5 id="maxlength">Max length: 300 words</h5>
           <input type="text" id="summary-length" name="summary-length" placeholder="100">
         </div>
       </div>

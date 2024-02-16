@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
-      summariseRequest(request.data);
+      summariseRequest({'text': request.data, 'customisation': request.customisation});
       // sendMessageToPopup({ action: 'summaryResponse', data: "SUMMARY" });
       // chatgptRequest("What are the tallest buildings in the world?");
       break;
@@ -78,7 +78,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 async function summariseRequest(data) {
-
+  data = JSON.stringify(data);
+  
   const url = 'http://127.0.0.1:5000/servicemanager/summarise';
   // const url = 'http://127.0.0.1:5000/servicemanager/scrape';
   
