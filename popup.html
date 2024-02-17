@@ -43,38 +43,49 @@
 
       <!-- Customisation options  -->
       <div id="summarisation-customisation">
-        <div id="textdomain">
-          <h3>Text Type</h3>
-          <!-- <label for="td-dropdown">Text Type:</label> -->
-          <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+        <div id="bs-customisation">
+          <div id="textdomain">
+            <h3>Text Type</h3>
+            <!-- <label for="td-dropdown">Text Type:</label> -->
+            <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+                <!-- <option value="apple">Apple</option>
+                <option value="banana">Banana</option>
+                <option value="orange">Orange</option>
+                <option value="grape">Grape</option> -->
+            </select>
+          </div>
+          <div id="summarytype">
+            <!-- Extractive and Abstractive Summarisation Buttons -->
+            <h3>Summary Type</h3>
+            <div id="summarisation-buttons">
+              <div id="sb-1" class="selectable-button">Extractive</div>
+              <div id="sb-2" class="selectable-button">Abstractive</div>
+            </div>
+          </div>
+          <div id="modelchoice">
+            <h3>Model select</h3>
+            <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
               <!-- <option value="apple">Apple</option>
               <option value="banana">Banana</option>
               <option value="orange">Orange</option>
               <option value="grape">Grape</option> -->
           </select>
-        </div>
-        <div id="summarytype">
-          <!-- Extractive and Abstractive Summarisation Buttons -->
-          <h3>Summary Type</h3>
-          <div id="summarisation-buttons">
-            <div id="sb-1" class="selectable-button">Extractive</div>
-            <div id="sb-2" class="selectable-button">Abstractive</div>
+          </div>
+          <div id="summarylength">
+            <h3>Summary Length</h3>
+            <h5 id="minlength">Min length: 30 words </h5>
+            <h5 id="maxlength">Max length: 300 words</h5>
+            <input type="text" id="summary-length" name="summary-length" placeholder="100">
           </div>
         </div>
-        <div id="modelchoice">
-          <h3>Model select</h3>
-          <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
-            <!-- <option value="apple">Apple</option>
+        <div id="co-customisation">
+          <h3>Select prompt</h3>
+          <select id="td-dropdown-prompt" name="td-dropdown-prompt">
+            <option value="apple">Apple</option>
             <option value="banana">Banana</option>
             <option value="orange">Orange</option>
-            <option value="grape">Grape</option> -->
-        </select>
-        </div>
-        <div id="summarylength">
-          <h3>Summary Length</h3>
-          <h5 id="minlength">Min length: 30 words </h5>
-          <h5 id="maxlength">Max length: 300 words</h5>
-          <input type="text" id="summary-length" name="summary-length" placeholder="100">
+            <option value="grape">Grape</option>
+          </select>
         </div>
       </div>
 
@@ -88,7 +99,7 @@
     <!-- Post summarisation functionality -->
     <div id="post-summarisation" class="rows">
       <h3>Post Summarisation</h3>
-      <button>Save summarised text</button>
+      <button id="save-summary">Save summarised text</button>
     </div>
     <!-- <div id="summarisation" class="rows"></div>
     <div id="summary-box" class="rows"></div>

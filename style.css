@@ -67,9 +67,14 @@ html {
 }
 
 
-/* --- summarisation [ summarisation-customisation ] --- */
+/* --- summarisation [ bs-customisation ] --- */
 
-#summarisation-customisation > div {
+/* #summarisation-customisation > div {
+    display: inline-block;
+    border: 1px solid red;
+} */
+
+#bs-customisation > div {
     display: inline-block;
     border: 1px solid red;
 }
@@ -105,4 +110,10 @@ html {
 #post-summarisation  {
 flex: 0 0 20%;
 background-color: red;
+}
+
+/* --- summarisation [ co-customisation ] --- */
+
+#co-customisation {
+    display: none;;
 }

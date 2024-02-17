@@ -51,6 +51,29 @@ function loadPopupStorageCtx() {
 // });
 chrome.runtime.sendMessage({ action: 'configRequest' });
 console.log("sadasndjasdajdbajdbasjkdbajdajbdasbdjkas");
+
+// ---------------------------------------------------------------------
+// Provider Selection
+
+var providerSelect = document.getElementById("td-dropdown-provider");
+console.log("Provider value: ", providerSelect.value);
+
+providerSelect.addEventListener("change", function() {  
+  console.log("Provider Selection Changed: ", providerSelect.value);
+  var bs_customisation = document.getElementById("bs-customisation");
+  var co_customisation = document.getElementById("co-customisation");
+  if (providerSelect.value === "co") {
+    bs_customisation.style.display = "none";
+    co_customisation.style.display = "inline-block";
+  } else {
+    co_customisation.style.display = "none";
+    bs_customisation.style.display = "inline-block";
+  }
+});
+
+
+
+
 // ---------------------------------------------------------------------
 
 // SummaryOptionsController
@@ -96,14 +119,14 @@ postF.addEventListener('click', async () => {
 // Message Passing
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log('Popup.js: Message received:', request);
+  console.log('Popup.js: Message received:', request.action, request);
 
   switch (request.action) { 
 
     case 'summaryResponse':
       // console.log("CS --> Summarised Data: ", obj.data.data);
       console.log("CS --> Summarised Data: ", request.data);
-      
+      // console.log()
       var summarybox = document.getElementById('summary-box');
       var p = document.createElement('p');  
       p.innerHTML = request.data.data;
@@ -126,11 +149,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 var summarise_button = document.getElementById("summarise-button");
 summarise_button.addEventListener("click", async () => {
   console.log("Summarise Button Clicked");
-  let packageCustomisation = view.packageSummaryCustomisations();
-  console.log("PACKAGE: ", packageCustomisation);
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: false, customisation: packageCustomisation });
-  });
+  if (document.getElementById("td-dropdown-provider").value === "bs") {
+    let packageCustomisation = view.packageSummaryCustomisations();
+    console.log("PACKAGE: ", packageCustomisation);
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: false, customisation: packageCustomisation });
+    });
+  } else {
+    console.log("CO Summarise not implemented yet");
+  }
+
   // chrome.runtime.sendMessage({ action: 'summarise', data: "SUMMARY" });
 });
 
@@ -139,6 +167,28 @@ summarise_button.addEventListener("click", async () => {
 
 document.getElementById("open-settings").addEventListener("click", function() {
   chrome.tabs.create({ url: "chrome-extension://"+chrome.runtime.id+"/settings.html" });
+});
+
+// Post summarisation functionality
+
+// Save summarised text
+var save_button = document.getElementById("save-summary");
+save_button.addEventListener("click", function() {
+
+  var summaries = document.querySelectorAll("#summary-box p");
+  let summary_list = [];
+  summaries.forEach(function(summary) {
+    summary_list.push(summary.innerHTML + "\n");
+  });
+
+  const link = document.createElement("a");
+
+  const file = new Blob(summary_list, { type: 'text/plain' });
+  link.href = URL.createObjectURL(file);
+  link.download = "sample.txt";
+  link.click();
+  URL.revokeObjectURL(link.href);
+
 });
 
 // Summary Type Selection - Button

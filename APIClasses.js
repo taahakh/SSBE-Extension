@@ -112,8 +112,10 @@ class SummaryOptionsController {
       }
 
       updateFromModelChange(selectedModel) {
-        this.model_selected = selectedModel;
-        return this.model_list.find((model) => model['model-name'] === selectedModel)['summary-length'];
+        // console.log(" updateFromModelChange - SELECTED MODEL : ", selectedModel)
+        // console.log(this.model_list.find((model) => model['model-name'] === selectedModel))
+        this.model_selected = this.model_list.find((model) => model['model-name'] === selectedModel);
+        return this.model_selected['summary-length'];
       }
 
       // Used when populating the summary customisation options for the first time
@@ -129,6 +131,7 @@ class SummaryOptionsController {
       }
       
       getModelChoice() {
+        console.log("getModelChoice: ", this.model_selected)
         return this.model_selected['model-name'];
       }
 
@@ -208,6 +211,7 @@ class SummaryCustomisationView {
         });
 
         model_dropdown.addEventListener("change", () => {
+            console.log("Model dropdown - PICKED: ", document.getElementById("td-dropdown-modelchoice").value)
             this.updateFromModelSelectView(document.getElementById("td-dropdown-modelchoice").value);
         });
 
