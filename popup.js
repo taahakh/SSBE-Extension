@@ -49,8 +49,6 @@ function loadPopupStorageCtx() {
 //   console.log("Popup.js - Browser Action Clicked");
 //   chrome.runtime.sendMessage({ action: 'configRequest' });
 // });
-chrome.runtime.sendMessage({ action: 'configRequest' });
-console.log("sadasndjasdajdbajdbasjkdbajdajbdasbdjkas");
 
 // ---------------------------------------------------------------------
 // Provider Selection
@@ -77,6 +75,8 @@ providerSelect.addEventListener("change", function() {
 // ---------------------------------------------------------------------
 
 // SummaryOptionsController
+
+chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" });
 
 var view = null;
 
@@ -116,6 +116,8 @@ postF.addEventListener('click', async () => {
     });
 });
 
+// ----------------------------------------------------------------------
+
 // Message Passing
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -132,8 +134,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       p.innerHTML = request.data.data;
       summarybox.appendChild(p);
       break;
-    case 'configResponse':
-      buildSummaryConfigs(request.data);
+    case 'customisationConfigResponse':
+      if (request.to === "home") {
+        buildSummaryConfigs(request.data);
+      }
       break;
     case 'loadPopupCtx':
       console.log("Popup.js - Loading Popup Context");

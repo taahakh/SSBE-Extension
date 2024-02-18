@@ -151,3 +151,70 @@
 
   //     return textTypeList;
   // }
+
+
+  // Change these names
+  updateFromTextTypeView(selected){
+    console.log(selected);
+    var list = this.controller.updateFromTextTypeChange(selected);
+    console.log("LISSSTST: ", list);
+    
+    this.buttonSelect(list['summary-type'] === "ab" ? "sb-2" : "sb-1");
+
+    this.modelChoiceBuilder(list);
+
+    this.summaryLengthBuilder(list);
+
+
+  }
+
+  updateFromSummaryTypeView(selected){
+    console.log("Summary type change: ", selected);
+    var list = this.controller.updateFromSummaryTypeChange(selected);
+    console.log("Updating Summary Type View: ", list);
+
+    this.modelChoiceBuilder(list);
+
+    this.summaryLengthBuilder(list);
+  }
+
+  updateFromModelSelectView(selected){
+    console.log("Upadting SL: ", selected);
+    var list = this.controller.updateFromModelChange(selected);
+    console.log("UpdatingSL2: ", list);
+
+    this.summaryLengthBuilder(list);
+  }
+
+  // buttonSelect(id) {
+    //   //let clickedButton = document.getElementById(id);
+    //   if (id !== this.selectedSummaryType) {
+    //     let otherButton = document.getElementById(this.switchButtonIdentifier(id));
+    //     otherButton.classList.remove("selected-state");
+    //     this.setButtonSelect(id);
+    //   }
+    // }
+
+    buttonSelect(id) {
+      const clickedButton = document.getElementById(id);
+      // if (this.selectedSummaryType === "") {
+      //   clickedButton.classList.add("selected-state");
+      //   this.selectedSummaryType = id;
+      // }
+      if (id !== this.selectedSummaryType || this.selectedSummaryType !== "") {
+        let otherButton = document.getElementById(this.switchButtonIdentifier(id));
+        otherButton.classList.remove("selected-state");
+        // clickedButton.classList.add("selected-state");
+        // this.selectedSummaryType = id;
+        // this.setButtonSelect(id);
+      }
+      clickedButton.classList.add("selected-state");
+      this.selectedSummaryType = id;
+    }
+
+    setButtonSelect(id) {
+      let clickedButton = document.getElementById(id);
+      // console.log("Setting Button Select: ", id);
+      clickedButton.classList.add("selected-state");
+      this.selectedSummaryType = id;
+    }

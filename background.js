@@ -4,35 +4,6 @@ const Message = Object.freeze({
   SUMMARISE: 0,
   GATHERDATA: 1,
 })
-// var popupStorageContext = null;
-
-// function loadPersistantStorage(ctx_name) {
-//   storageItem = null;
-//   chrome.storage.local.get([ctx_name], function(items){
-//     storageItem = items;
-//     console.log("Storage Item - Inner: ", storageItem);
-//   });
-// }
-
-// function saveToStorage(ctx_obj) {
-//   chrome.storage.local.set(ctx_obj, function() {
-//     console.log("Storage Item Saved");
-//   });
-// }
-
-// function startupLoadPopupStorageCtx() { 
-//   chrome.storage.local.get(["popupStorageContext"], function(items){
-//     popupStorageContext = items;
-//     chrome.runtime.sendMessage({ action: 'loadPopupCtx', data: popupStorageContext});
-//     console.log("startupLoadPopupStorageCtx");
-//   });
-// }
-
-
-// chrome.runtime.onStartup.addListener(function () {
-//   console.log("onStartup");
-//   startupLoadPopupStorageCtx();
-// });
 
 //  ---------------------------------------------------------------------
 
@@ -58,9 +29,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       makeGetRequest();
       chrome.runtime.sendMessage({ action: 'gatherData' });
       break;
-    case 'configRequest':
+    case 'customisationConfigRequest':
       console.log('Background.js - Config Request');
-      makeGetRequest('jsonfile/sum_customisation', 'configResponse');
+      makeGetRequest('jsonfile/sum_customisation', 'customisationConfigResponse', request.to);
       break;
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
@@ -105,7 +76,7 @@ async function summariseRequest(data) {
   }
 }
 
-function makeGetRequest(endpoint='jsonfile', messageAction=null) {
+function makeGetRequest(endpoint='jsonfile', messageAction=null, to=null) {
   console.log('GET Request');
   fetch('http://127.0.0.1:5000/'+endpoint, { 
     method: 'GET',
@@ -114,8 +85,11 @@ function makeGetRequest(endpoint='jsonfile', messageAction=null) {
     } 
   }).then(response => response.json())
     .then(data => {
+      // if (messageAction) {
+      //   sendMessageToPopup({ action: messageAction, data: data });
+      // }
       if (messageAction) {
-        sendMessageToPopup({ action: messageAction, data: data });
+        sendMessageToPopup({ action: messageAction, data: data, to : to });
       }
       console.log('GET Response:', data);
     })

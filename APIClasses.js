@@ -1,3 +1,9 @@
+const ChangeFrom = {
+  TEXTTYPE: 1,
+  SUMMARYTYPE: 2,
+  MODELSELECT: 3,
+}
+
 class SummaryOptionsController {
     constructor(reqconfig) {
         this.configlist = reqconfig.data;
@@ -25,7 +31,7 @@ class SummaryOptionsController {
             }
       
             const summaryType = config['summary-type'];
-            const entry = { 'model-name': config['model-name'], 'summary-length': config['summary-length'] };
+            const entry = { 'model-name': config['model-name'], 'description': config['description'], 'summary-length': config['summary-length'] };
       
             textTypeList[textType][summaryType].push(entry);
           }
@@ -115,7 +121,7 @@ class SummaryOptionsController {
         // console.log(" updateFromModelChange - SELECTED MODEL : ", selectedModel)
         // console.log(this.model_list.find((model) => model['model-name'] === selectedModel))
         this.model_selected = this.model_list.find((model) => model['model-name'] === selectedModel);
-        return this.model_selected['summary-length'];
+        return this.model_selected;
       }
 
       // Used when populating the summary customisation options for the first time
@@ -155,24 +161,19 @@ class SummaryCustomisationView {
     }
 
     switchButtonIdentifier(id) {
-      if (id === "sb-1") { return 'sb-2'; }
-      else { return 'sb-1'; }
+      return id === "sb-1" ? "sb-2" : "sb-1"
     }
 
-    setButtonSelect(id) {
-      let clickedButton = document.getElementById(id);
-      // console.log("Setting Button Select: ", id);
-      clickedButton.classList.add("selected-state");
-      this.selectedSummaryType = id;
-    }
-    
     buttonSelect(id) {
-      //let clickedButton = document.getElementById(id);
-      if (id !== this.selectedSummaryType) {
+      const clickedButton = document.getElementById(id);
+
+      if (id !== this.selectedSummaryType || this.selectedSummaryType !== "") {
         let otherButton = document.getElementById(this.switchButtonIdentifier(id));
         otherButton.classList.remove("selected-state");
-        this.setButtonSelect(id);
       }
+
+      clickedButton.classList.add("selected-state");
+      this.selectedSummaryType = id;
     }
 
     createListeners() {
@@ -185,16 +186,18 @@ class SummaryCustomisationView {
 
         tt_dropdown.addEventListener("change", () => {
             console.log("Text Type Change");
-            this.updateFromTextTypeView(
-              document.getElementById("td-dropdown-textdomain").value
-            );
+            // this.updateFromTextTypeView(
+            //   document.getElementById("td-dropdown-textdomain").value
+            // );
+            this.updateView(ChangeFrom.TEXTTYPE, document.getElementById("td-dropdown-textdomain").value);
         });
 
         st_sb1.addEventListener("click", () => {
             console.log("Summary Type Change - Extractive");
             if (this.selectedSummaryType !== "sb-1") {
               this.buttonSelect("sb-1");
-              this.updateFromSummaryTypeView("ex");
+              // this.updateFromSummaryTypeView("ex");
+              this.updateView(ChangeFrom.SUMMARYTYPE, "ex");
             } else {
               this.buttonSelect("sb-1");
             }
@@ -204,7 +207,8 @@ class SummaryCustomisationView {
             console.log("Summary Type Change - Abstractive");
             if (this.selectedSummaryType !== "sb-2") {
               this.buttonSelect("sb-2");
-              this.updateFromSummaryTypeView("ab");
+              // this.updateFromSummaryTypeView("ab");
+              this.updateView(ChangeFrom.SUMMARYTYPE, "ab");
             } else {
               this.buttonSelect("sb-2");
             }
@@ -212,19 +216,17 @@ class SummaryCustomisationView {
 
         model_dropdown.addEventListener("change", () => {
             console.log("Model dropdown - PICKED: ", document.getElementById("td-dropdown-modelchoice").value)
-            this.updateFromModelSelectView(document.getElementById("td-dropdown-modelchoice").value);
+            // this.updateFromModelSelectView(document.getElementById("td-dropdown-modelchoice").value);
+            this.updateView(ChangeFrom.MODELSELECT, document.getElementById("td-dropdown-modelchoice").value);
         });
+
+        model_dropdown.addEventListener("mouseover", () => {
+          console.log("On mouseover");
+        })
 
     } 
 
-    // Change these names
-    updateFromTextTypeView(selected){
-      console.log(selected);
-      var list = this.controller.updateFromTextTypeChange(selected);
-      console.log("LISSSTST: ", list);
-      
-      this.buttonSelect(list['summary-type'] === "ab" ? "sb-2" : "sb-1");
-
+    modelChoiceBuilder(list) {
       var model_dropdown = document.getElementById("td-dropdown-modelchoice");
       model_dropdown.innerHTML = "";
       for (const model of list['model-list']) {
@@ -238,55 +240,38 @@ class SummaryCustomisationView {
 
         model_dropdown.appendChild(option);
       }
+    }
 
+    summaryLengthBuilder(list) {
       var minlength = document.getElementById("minlength");
       var maxlength = document.getElementById("maxlength");
       minlength.innerHTML = "Min length: " + list['summary-length']['min'];
       maxlength.innerHTML = "Max length: " + list['summary-length']['max'];
-
     }
 
-    updateFromSummaryTypeView(selected){
-      console.log("Summary type change: ", selected);
-      var list = this.controller.updateFromSummaryTypeChange(selected);
-      console.log("Updating Summary Type View: ", list);
-      
-      var model_dropdown = document.getElementById("td-dropdown-modelchoice");
-      model_dropdown.innerHTML = "";
-      for (const model of list['model-list']) {
-        var option = document.createElement("option");
-        option.value = model['model-name'];
-        option.text = model['model-name'];
-
-        if (model['model-name'] === list['model-selected']) {
-          option.selected = true;
-        }
-
-        model_dropdown.appendChild(option);
+    updateView(change, selectedValue) {
+      var list = null;
+      switch(change) {
+        case ChangeFrom.TEXTTYPE:
+          list = this.controller.updateFromTextTypeChange(selectedValue);
+          break;
+        case ChangeFrom.SUMMARYTYPE:
+          list = this.controller.updateFromSummaryTypeChange(selectedValue);
+          break;
+        case ChangeFrom.MODELSELECT:
+          list = this.controller.updateFromModelChange(selectedValue);
+          break;
       }
 
-      var minlength = document.getElementById("minlength");
-      var maxlength = document.getElementById("maxlength");
-      minlength.innerHTML = "Min length: " + list['summary-length']['min'];
-      maxlength.innerHTML = "Max length: " + list['summary-length']['max'];
-    }
-
-    updateFromModelSelectView(selected){
-      console.log("Upadting SL: ", selected);
-      var list = this.controller.updateFromModelChange(selected);
-      console.log("UpdatingSL2: ", list);
-      var minlength = document.getElementById("minlength");
-      var maxlength = document.getElementById("maxlength");
-      // console.log("MINLENGTH: ", list['model-list']);
-      minlength.innerHTML = "Min length: " + list['min'];
-      maxlength.innerHTML = "Max length: " + list['max'];
-    }
-    
-    packageSummaryCustomisations() {
-      return {
-        'model' : this.controller.getModelChoice(),
-        'summary-length' : document.getElementById("summary-length").value
-      };
+      switch(change) {
+        case ChangeFrom.TEXTTYPE:
+          this.buttonSelect(list['summary-type'] === "ab" ? "sb-2" : "sb-1");
+        case ChangeFrom.SUMMARYTYPE:
+          this.modelChoiceBuilder(list);
+        case ChangeFrom.MODELSELECT:
+          this.summaryLengthBuilder(list);
+          break;
+      }
     }
 
     createView() {
@@ -308,38 +293,23 @@ class SummaryCustomisationView {
 
           tt_dropdown.appendChild(option);
         }
-
-        // console.log("Text Type Dropdown: ", tt_dropdown);
         
         // Summary Types
         console.log("Summary Type: ", list['summary-type']);
-        if (list['summary-type'] === "ab") {
-          this.setButtonSelect("sb-2");
-        } else {
-          console.log("Im here");
-          this.setButtonSelect("sb-1");
-        }
+        this.buttonSelect(list['summary-type'] === "ab" ? "sb-2" : "sb-1");
         
         // Models
-        var model_dropdown = document.getElementById("td-dropdown-modelchoice");
-        for (const model of list['model-list']) {
-          var option = document.createElement("option");
-          option.value = model['model-name'];
-          option.text = model['model-name'];
-          
-          if (model['model-name'] === list['model-selected']) {
-            option.selected = true;
-          }
-
-          model_dropdown.appendChild(option);
-        }
+        this.modelChoiceBuilder(list);
 
         // Summary Length
-        var minlength = document.getElementById("minlength");
-        var maxlength = document.getElementById("maxlength");
-        // console.log("MINLENGTH: ", list['model-list']);
-        minlength.innerHTML = "Min length: " + list['summary-length']['min'];
-        maxlength.innerHTML = "Max length: " + list['summary-length']['max'];
+        this.summaryLengthBuilder(list);
+    }
+
+    packageSummaryCustomisations() {
+      return {
+        'model' : this.controller.getModelChoice(),
+        'summary-length' : document.getElementById("summary-length").value
+      };
     }
 
 }
