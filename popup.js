@@ -81,15 +81,27 @@ chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" })
 var view = null;
 
 function buildSummaryConfigs(data) {
-  console.log(data);
-  view = new SummaryCustomisationView(data);
+  // Summary Type button identifiers
+  let stb1 = "sb-1";
+  let stb2 = "sb-2";
+  // Summmary Type CSS selected state
+  let stbcss = "selected-state";
+  // Text Type Domain Dropdown
+  let ttdropdown = "td-dropdown-textdomain";
+  // Model Dropdown
+  let modeldropdown = "td-dropdown-modelchoice";
+  // Summary length
+  let milength = "minlength";
+  let malength = "maxlength";
+  // Summary length value
+  let sumlength = "summary-length"
+
+  let elements = [stb1, stb2, stbcss, ttdropdown, modeldropdown, milength, malength, sumlength];
+
+  console.log(data, elements);
+
+  view = new SummaryCustomisationView(data, elements);
   let config = view.controller;
-  // config.viewConfigSummaryOptionView();
-  // config.updateFromSummaryTypeChange("ab");
-  // config.viewConfigSummaryOptionView();
-  // config.updateFromTextTypeChange("text2");
-  // config.viewConfigSummaryOptionView();
-  // savePopupStorageCtx();
   return config;
 }
 

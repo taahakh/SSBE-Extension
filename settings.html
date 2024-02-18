@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="settings.css">
     <title>Document</title>
 </head>
 <body>
@@ -64,71 +65,134 @@
             </div>
         </div>
 
-        <div id="bs-customisation">
+        <div id="bs-config">
             <h1>Backend service: Customisation</h1>
             <div id="per-site-config">
                 <h2>Per site customisation</h2>
                 
                 <div id="bs-psc-editsite">
                     <h3>Edit site</h3>
-                    <select id="" name="">
-                        <option value="x">x</option>
-                        <option value="y">y</option>
+                    <select id="bs-edit-config-selector" name="">
+                        <!-- <option value="x">x</option>
+                        <option value="y">y</option> -->
                     </select>
-                    <button id="edit-site-button">Edit</button>                            
+                    <button id="edit-site-button">Edit</button>   
+                    <div id="bs-psc-editsite-update">
+                        
+                        <h4>url</h4>
+                        <input id="bs-add-config-URL" type="text">
+                        <!-- Customisation options  -->
+                        <h4>summarisation options</h4>
+                        <div id="summarisation-customisation">
+                            <div id="bs-customisation">
+                                <div id="edit-textdomain">
+                                <h3>Text Type</h3>
+                                <!-- <label for="td-dropdown">Text Type:</label> -->
+                                <select id="edit-td-dropdown-textdomain" name="edit-td-dropdown-textdomain">
+                                    <!-- <option value="apple">Apple</option>
+                                    <option value="banana">Banana</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="grape">Grape</option> -->
+                                </select>
+                                </div>
+                                <div id="edit-summarytype">
+                                <!-- Extractive and Abstractive Summarisation Buttons -->
+                                <h3>Summary Type</h3>
+                                <div id="edit-summarisation-buttons">
+                                    <div id="edit-sb-1" class="selectable-button">Extractive</div>
+                                    <div id="edit-sb-2" class="selectable-button">Abstractive</div>
+                                </div>
+                                </div>
+                                <div id="edit-modelchoice">
+                                <h3>Model select</h3>
+                                <select id="edit-td-dropdown-modelchoice" name="edit-td-dropdown-modelchoice">
+                                    <!-- <option value="apple">Apple</option>
+                                    <option value="banana">Banana</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="grape">Grape</option> -->
+                                </select>
+                                </div>
+                                <div id="edit-summarylength">
+                                <h3>Summary Length</h3>
+                                <h5 id="edit-minlength">Min length: 30 words </h5>
+                                <h5 id="edit-maxlength">Max length: 300 words</h5>
+                                <input type="text" id="edit-summary-length" name="edit-summary-length" placeholder="100">
+                                </div>
+                            </div>
+                            </div>
+                        <h4>scraping options</h4>
+                        <div id="edit-scraping-options">
+                            <div id="edit-auto-scrape" class="selectable-button">Automatic Scrape</div>
+                            <div id="edit-custom-scrape" class="selectable-button">Custom Scrape</div>
+                            <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
+                            <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
+                        </div>
+                        <h4>add xpath</h4>    
+                        <div id="edit-add-xpath">
+                            <input type="text" name="xpath" id="edit-add-xpath-input0">
+                            <button id="edit-add-xpath-button">Add</button>
+                        </div>
+                        <button id="edit-bs-add-config-save">Save</button>
+                     </div>
                 </div>
-                
+                <br><br><br>
+
                 <div id="bs-psc-addconfig">
                     <h3>Add new configuration</h3>
                     <h4>url</h4>
-                    <input type="text">
+                    <input id="bs-add-config-URL" type="text">
                     <!-- Customisation options  -->
                     <h4>summarisation options</h4>
                     <div id="summarisation-customisation">
-                        <div id="textdomain">
-                        <h3>Text Type</h3>
-                        <!-- <label for="td-dropdown">Text Type:</label> -->
-                        <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
-                            <option value="apple">Apple</option>
-                            <option value="banana">Banana</option>
-                            <option value="orange">Orange</option>
-                            <option value="grape">Grape</option>
-                        </select>
+                        <div id="bs-customisation">
+                            <div id="textdomain">
+                              <h3>Text Type</h3>
+                              <!-- <label for="td-dropdown">Text Type:</label> -->
+                              <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+                                  <!-- <option value="apple">Apple</option>
+                                  <option value="banana">Banana</option>
+                                  <option value="orange">Orange</option>
+                                  <option value="grape">Grape</option> -->
+                              </select>
+                            </div>
+                            <div id="summarytype">
+                              <!-- Extractive and Abstractive Summarisation Buttons -->
+                              <h3>Summary Type</h3>
+                              <div id="summarisation-buttons">
+                                <div id="sb-1" class="selectable-button">Extractive</div>
+                                <div id="sb-2" class="selectable-button">Abstractive</div>
+                              </div>
+                            </div>
+                            <div id="modelchoice">
+                              <h3>Model select</h3>
+                              <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+                                <!-- <option value="apple">Apple</option>
+                                <option value="banana">Banana</option>
+                                <option value="orange">Orange</option>
+                                <option value="grape">Grape</option> -->
+                            </select>
+                            </div>
+                            <div id="summarylength">
+                              <h3>Summary Length</h3>
+                              <h5 id="minlength">Min length: 30 words </h5>
+                              <h5 id="maxlength">Max length: 300 words</h5>
+                              <input type="text" id="summary-length" name="summary-length" placeholder="100">
+                            </div>
+                          </div>
                         </div>
-                        <div id="summarytype">
-                        <!-- Extractive and Abstractive Summarisation Buttons -->
-                        <h4>Summary Type</h4>
-                        <div id="summarisation-buttons">
-                            <div id="sb-1" class="selectable-button">Extractive</div>
-                            <div id="sb-2" class="selectable-button">Abstractive</div>
-                        </div>
-                        </div>
-                        <div id="modelchoice">
-                        <h4>Model select</h4>
-                        <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
-                            <option value="apple">Apple</option>
-                            <option value="banana">Banana</option>
-                            <option value="orange">Orange</option>
-                            <option value="grape">Grape</option>
-                        </select>
-                        </div>
-                        <div id="summarylength">
-                        <h3>Summary Length</h3>
-                        <h5>Min length: 30 words </h5>
-                        <h5>Max length: 300 words</h5>
-                        <input type="text" id="summary-length" name="summary-length" placeholder="100">
-                        </div>
-                    </div>
                     <h4>scraping options</h4>
                     <div id="scraping-options">
-                        <input type="checkbox" name="AS" id="">Automatic scrape
-                        <input type="checkbox" name="CS" id="">Custom Scrape
+                        <div id="auto-scrape" class="selectable-button">Automatic Scrape</div>
+                        <div id="custom-scrape" class="selectable-button">Custom Scrape</div>
+                        <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
+                        <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
                     </div>
                     <h4>add xpath</h4>    
                     <div id="add-xpath">
-                        <input type="text" name="xpath" id="">
+                        <input type="text" name="xpath" id="add-xpath-input0">
                         <button id="add-xpath-button">Add</button>
                     </div>
+                    <button id="bs-add-config-save">Save</button>
                 </div>
             </div>
         </div>

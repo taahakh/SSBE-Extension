@@ -218,3 +218,63 @@
       clickedButton.classList.add("selected-state");
       this.selectedSummaryType = id;
     }
+
+
+
+    <div id="bs-psc-editsite-update">
+                        
+      <h4>url</h4>
+      <input id="bs-add-config-URL" type="text">
+      <!-- Customisation options  -->
+      <h4>summarisation options</h4>
+      <div id="summarisation-customisation">
+          <div id="bs-customisation">
+              <div id="textdomain">
+              <h3>Text Type</h3>
+              <!-- <label for="td-dropdown">Text Type:</label> -->
+              <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+                  <!-- <option value="apple">Apple</option>
+                  <option value="banana">Banana</option>
+                  <option value="orange">Orange</option>
+                  <option value="grape">Grape</option> -->
+              </select>
+              </div>
+              <div id="summarytype">
+              <!-- Extractive and Abstractive Summarisation Buttons -->
+              <h3>Summary Type</h3>
+              <div id="summarisation-buttons">
+                  <div id="sb-1" class="selectable-button">Extractive</div>
+                  <div id="sb-2" class="selectable-button">Abstractive</div>
+              </div>
+              </div>
+              <div id="modelchoice">
+              <h3>Model select</h3>
+              <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+                  <!-- <option value="apple">Apple</option>
+                  <option value="banana">Banana</option>
+                  <option value="orange">Orange</option>
+                  <option value="grape">Grape</option> -->
+              </select>
+              </div>
+              <div id="summarylength">
+              <h3>Summary Length</h3>
+              <h5 id="minlength">Min length: 30 words </h5>
+              <h5 id="maxlength">Max length: 300 words</h5>
+              <input type="text" id="summary-length" name="summary-length" placeholder="100">
+              </div>
+          </div>
+          </div>
+      <h4>scraping options</h4>
+      <div id="scraping-options">
+          <div id="auto-scrape" class="selectable-button">Automatic Scrape</div>
+          <div id="custom-scrape" class="selectable-button">Custom Scrape</div>
+          <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
+          <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
+      </div>
+      <h4>add xpath</h4>    
+      <div id="add-xpath">
+          <input type="text" name="xpath" id="add-xpath-input0">
+          <button id="add-xpath-button">Add</button>
+      </div>
+      <button id="bs-add-config-save">Save</button>
+   </div>
