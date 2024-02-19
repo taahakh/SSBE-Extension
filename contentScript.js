@@ -1,6 +1,19 @@
 (() => {
     console.log("content script loaded");
-    console.log(document.body);
+    // Get the current URL of the page
+    var currentURL = window.location.href;
+
+    // Create a URL object
+    var urlObject = new URL(currentURL);
+
+    // Extract the domain name and path
+    var domainName = urlObject.hostname;
+    var path = urlObject.pathname;
+
+    // Display the extracted parts in the console (optional)
+    console.log("Domain Name:", domainName);
+    console.log("Path:", path);
+    
 
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
         console.log("CS --> Message received:", obj, sender, response);
@@ -37,7 +50,6 @@ function gatherData() {
     console.log("Gathering Data");
     // var xpathExpression = '//*[@id="mw-content-text"]/div[1]/p';
     var xpathExpression = '/html/body/div/div'
-    // Use document.evaluate to select elements based on the XPath expression
     var result = document.evaluate(xpathExpression, document, null, XPathResult.ANY_TYPE, null);
     while (node = result.iterateNext()) {
         console.log(node);

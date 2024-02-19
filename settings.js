@@ -10,11 +10,27 @@ function loadScrapingCustomisation() {
             if (isObjectEmpty(result)) {
                 console.log("its empty");
                 saveToStorage({'bsc' : {}});
+                loadScrapingCustomisation();
                 resolve();
             } else {
                 currentPSCConfigs = result['bsc'];
                 console.log(result);
                 resolve();
+            }
+        });
+    })
+}
+
+function loadUserConfigs(data) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get([data], function(result) {
+            if (isObjectEmpty(result)) {
+                console.log("its empty");
+                saveToStorage({[data] : {}});
+                resolve(loadUserConfigs(data));
+            } else {
+                console.log(result);
+                resolve(result[data]);
             }
         });
     })
@@ -101,7 +117,7 @@ var currentPSCConfigs = null;
 loadScrapingCustomisation();
 
 var bsAddConfigURL = document.getElementById("bs-add-config-URL");
-
+var oldURL = null;
 var selectedScrapeOption = "auto-scrape";
 var bsAddConfigAutoScrape = document.getElementById("auto-scrape");
 var bsAddConfigCustomScrape = document.getElementById("custom-scrape");
@@ -111,9 +127,19 @@ var bsAddConfigXPATHInput = document.getElementById("add-xpath-input0");
 
 bsAddConfigAutoScrape.classList.add("selected-state"); // CHANGE HOW THIS IS DONE
 
+var editChosen = null;
+var editOldURL = null;
+var editSelectedScrapeOption = null;
+var bsEditConfigURL = document.getElementById("edit-bs-add-config-URL");
 var bsEditConfigContainer = document.getElementById("bs-psc-editsite-update");
 var bsEditConfigSelector = document.getElementById("bs-edit-config-selector");
 var bsEditConfigEditButton = document.getElementById("edit-site-button");
+var bsEditConfigAutoScrape = document.getElementById("edit-auto-scrape");
+var bsEditConfigCustomScrape = document.getElementById("edit-custom-scrape");
+var bsEditConfigXPATH = document.getElementById("edit-add-xpath");
+var bsEditConfigXPATHAdd = document.getElementById("edit-add-xpath-button");
+var bsEditConfigXPATHInput = document.getElementById("edit-add-xpath-input0");
+var bsEditConfigDelButton = document.getElementById("edit-del-site-button");
 
 // EDIT CONFIG
 
@@ -133,18 +159,169 @@ function populateBSEditConfig() {
     }).catch((error) => { console.log(error)})
 }
 
+function setEditScrapingOptions(config) {
+    editSelectedScrapeOption = config; // do i need????
+
+    switch (editSelectedScrapeOption) { 
+        case 'auto-scrape':
+            bsEditConfigAutoScrape.classList.add("selected-state");
+            bsEditConfigCustomScrape.classList.remove("selected-state");
+            break;
+        case "custom-scrape":
+            bsEditConfigCustomScrape.classList.add("selected-state");
+            bsEditConfigAutoScrape.classList.remove("selected-state");
+            break;
+    }
+}
+
+function setEditURL(url) {
+    bsEditConfigURL.value = url;
+}
+
+var editXpathTracker = {
+    "counter" : 0,
+    "list" : [],
+    "deletelist": [],
+}
+
+function setEditXPATHs(xpathlist) {
+    for (let i=0; i<xpathlist.length; i++) {
+        addXpathInputs(editXpathTracker, "edit-add-xpath-input", bsEditConfigXPATHInput, bsEditConfigXPATH, "edit-delete-xpath", xpathlist[i]);
+    }
+}
+
+// function clearEditXPATHs(list, deletelist) {
+//     for (let i=0; i<deletelist.length; i++) {
+//         list[i].remove();
+//         deletelist[i].remove();
+//     }
+
+//     editXpathTracker['counter'] = 0;
+//     editXpathTracker['list'] = [];
+//     editXpathTracker['deletelist'] = [];
+// }
+
+function clearEditXPATHs(xpathtracker) {
+    for (let i=0; i<xpathtracker['list'].length; i++) {
+        document.getElementById(xpathtracker['list'][i]).remove();
+        document.getElementById(xpathtracker['deletelist'][i]).remove();
+    }
+
+    xpathtracker['counter'] = 0;
+    xpathtracker['list'] = [];
+    xpathtracker['deletelist'] = [];
+}
+
+
+// [
+// counter and list
+// xpathInput : "add-xpath-input"
+// addConfigXpathInput : bsAddConfigXPATHInput
+// addConfigXpath : bsAddConfigXPATH
+// deleteInputBoxID : "delete-xpath"
+// fill
+// ]
+
 // Editing for a given url
 bsEditConfigEditButton.addEventListener('click', function(){
+
+    // Clear xpath boxes if the edit option has been changed
+    clearEditXPATHs(editXpathTracker);
+
     console.log('Ivb been clicked');
-    const selected = bsEditConfigSelector.value
-    console.log(currentPSCConfigs[selected])
-    // ....
+    var selected = bsEditConfigSelector.value;
+    editOldURL = selected;
+    console.log(currentPSCConfigs[selected]);
+    editChosen = currentPSCConfigs[selected];
+    setEditURL(selected);
+    setEditScrapingOptions(editChosen["scraping-option"]);
+    if (editChosen["scraping-option"] === "custom-scrape") {
+        setEditXPATHs(editChosen['xpaths']);
+    }
+
+    editview.setPredefinedOptions(editChosen['summary-customisation']["text-type"], 
+                                  editChosen['summary-customisation']["summary-type"],  
+                                  editChosen['summary-customisation']["model-selected"],
+                                  editChosen['summary-customisation']["summary-length-chosen"]);
+    
+                                  // ....
     bsEditConfigContainer.style.display = 'block'; 
 })
 
 
 populateBSEditConfig();
 
+// Edit config listeners
+
+// edit: Scraping options
+bsEditConfigAutoScrape.addEventListener("click", function() {
+    if (editSelectedScrapeOption !== "auto-scrape") {
+        editSelectedScrapeOption = "auto-scrape";
+        bsEditConfigAutoScrape.classList.add("selected-state");
+        bsEditConfigCustomScrape.classList.remove("selected-state");
+        // Hide the custom scrape box fields
+        bsEditConfigXPATH.style.display = "none";
+    }
+})
+
+bsEditConfigCustomScrape.addEventListener("click", function (param) { 
+    if (editSelectedScrapeOption !== "custom-scrape") {
+        editSelectedScrapeOption = "custom-scrape";
+        bsEditConfigAutoScrape.classList.remove("selected-state");
+        bsEditConfigCustomScrape.classList.add("selected-state");
+        // Display the custom scrape box fields
+        bsEditConfigXPATH.style.display = "block";
+    }
+})
+
+// edit: adding xpath
+bsEditConfigXPATHAdd.addEventListener('click', function(){
+    console.log(bsEditConfigXPATHInput.value)
+    // addXpathInputs();
+    addXpathInputs(editXpathTracker, "edit-add-xpath-input", bsEditConfigXPATHInput, bsEditConfigXPATH, "edit-delete-xpath");
+    console.log(editXpathTracker["list"]);
+})
+
+
+bsEditConfigDelButton.addEventListener('click', function() {
+    var selected = bsEditConfigSelector.value;
+    console.log(selected);
+    // Delete from list
+    let toRemove = bsEditConfigSelector.querySelector('option[value="' + selected + '"]');
+    bsEditConfigSelector.removeChild(toRemove);
+    console.log("Removed URL from list:  ", selected);
+    // Delete from urllist
+    delEntryURLLIST(selected);
+    // Delete from userconfigs
+    delete currentPSCConfigs[selected]
+    console.log("Deleting for user config: ", currentPSCConfigs);
+    saveToStorage({"bsc" : currentPSCConfigs});
+
+})
+
+// Save new ADDED configuration 
+var bsEditConfigSave = document.getElementById("edit-bs-add-config-save");
+bsEditConfigSave.addEventListener("click", function () { 
+    console.log("Updating customisation ")
+    var [url, builder] = bsAddConfig(bsEditConfigURL, editview, editXpathTracker, editSelectedScrapeOption);
+    // let url = Object.keys(builder)[0];
+    console.log("url: ", url);
+    // console.log(Object.values(builder));
+    // currentPSCConfigs[url] = builder;
+    
+    delete currentPSCConfigs[editOldURL];
+    console.log("Deleted state: ", currentPSCConfigs);
+
+    updateURLLIST(url, builder, editOldURL);
+    
+    currentPSCConfigs[url] = builder;
+    console.log("yes sir (update): ", currentPSCConfigs);
+    saveToStorage({"bsc" : currentPSCConfigs});
+    // if (!currentPSCConfigs.hasOwnProperty(url)) {
+        
+    // }
+    // removeFromStorage("bsc");
+})
 
 
 
@@ -155,42 +332,94 @@ populateBSEditConfig();
 
 // Add multiple xpath input boxes
 
-var xpathInputCounter = 0;
-var xpathInputList = [];
-function addXpathInputs() {
+// var xpathInputCounter = 0;
+// var xpathInputList = [];
+// function addXpathInputs() {
+//     var newInputBox = document.createElement("input");
+//     var deleteNewInputBox = document.createElement("button");
+    
+//     xpathInputCounter += 1;
+//     let idAttrValue = "add-xpath-input"+xpathInputCounter;
+//     xpathInputList.push(idAttrValue);
+
+//     newInputBox.setAttribute('type', "text");
+//     newInputBox.setAttribute('id', idAttrValue);
+//     newInputBox.value = bsAddConfigXPATHInput.value;
+
+//     deleteNewInputBox.setAttribute('id', "delete-xpath"+xpathInputCounter);
+//     deleteNewInputBox.textContent = "Delete";
+
+//     deleteNewInputBox.addEventListener("click", function (param) { 
+
+//         let index = xpathInputList.indexOf(idAttrValue);
+
+//         if (index !== -1) { xpathInputList.splice(index, 1) }
+
+//         let parent = newInputBox.parentNode;
+//         parent.removeChild(newInputBox);                   
+//         parent.removeChild(deleteNewInputBox);
+//     })
+
+//     bsAddConfigXPATH.append(newInputBox);
+//     bsAddConfigXPATH.append(deleteNewInputBox);
+
+//     // bsAddConfigXPATH
+// }
+
+var xpathTracker = {
+    "counter" : 0,
+    "list" : [],
+    "deletelist": [],
+}
+
+// [
+// xpathInput : "add-xpath-input"
+// addConfigXpathInput : bsAddConfigXPATHInput
+// addConfigXpath : bsAddConfigXPATH
+// deleteInputBoxID : "delete-xpath"
+// ]
+function addXpathInputs(xpathTracker, xpathInput, addConfigXpathInput, addConfigXpath, deleteInputBoxID, fill=null) {
     var newInputBox = document.createElement("input");
     var deleteNewInputBox = document.createElement("button");
     
-    xpathInputCounter += 1;
-    let idAttrValue = "add-xpath-input"+xpathInputCounter;
-    xpathInputList.push(idAttrValue);
+    xpathTracker["counter"] += 1;
+    let idAttrValue = xpathInput+xpathTracker["counter"];
+    xpathTracker['list'].push(idAttrValue);
 
     newInputBox.setAttribute('type', "text");
     newInputBox.setAttribute('id', idAttrValue);
-    newInputBox.value = bsAddConfigXPATHInput.value;
+    
+    if (fill) { newInputBox.value = fill; }
+    else { newInputBox.value = addConfigXpathInput.value; }
 
-    deleteNewInputBox.setAttribute('id', "delete-xpath"+xpathInputCounter);
+    var idDeleteAttrValue = deleteInputBoxID+xpathTracker["counter"];
+    xpathTracker['deletelist'].push(idDeleteAttrValue);
+    deleteNewInputBox.setAttribute('id', idDeleteAttrValue);
+    // deleteNewInputBox.setAttribute('id', deleteInputBoxID+xpathTracker["counter"]);
     deleteNewInputBox.textContent = "Delete";
 
     deleteNewInputBox.addEventListener("click", function (param) { 
 
-        let index = xpathInputList.indexOf(idAttrValue);
+        let index = xpathTracker['list'].indexOf(idAttrValue);
+        if (index !== -1) { xpathTracker['list'].splice(index, 1) }
 
-        if (index !== -1) { xpathInputList.splice(index, 1) }
+        // for the edit code
+        index = xpathTracker['deletelist'].indexOf(idDeleteAttrValue);
+        if (index !== -1) { xpathTracker['deletelist'].splice(index, 1) }
 
         let parent = newInputBox.parentNode;
         parent.removeChild(newInputBox);                   
         parent.removeChild(deleteNewInputBox);
     })
 
-    bsAddConfigXPATH.append(newInputBox);
-    bsAddConfigXPATH.append(deleteNewInputBox);
+    addConfigXpath.append(newInputBox);
+    addConfigXpath.append(deleteNewInputBox);
 
     // bsAddConfigXPATH
 }
 
 
-// Listeners
+// Add config Listeners
 
 bsAddConfigAutoScrape.addEventListener("click", function() {
     if (selectedScrapeOption !== "auto-scrape") {
@@ -214,19 +443,28 @@ bsAddConfigCustomScrape.addEventListener("click", function (param) {
 
 bsAddConfigXPATHAdd.addEventListener("click", function (param) { 
     console.log(bsAddConfigXPATHInput.value)
-    addXpathInputs();
-    console.log(xpathInputList);
+    // addXpathInputs();
+    addXpathInputs(xpathTracker, "add-xpath-input", bsAddConfigXPATHInput, bsAddConfigXPATH, "delete-xpath");
+    console.log(xpathTracker["list"]);
 })
 
 
-function bsAddConfig() {
+// [
+// addConfigUrl : bsAddConfigURL
+// viewController : view
+// xpathTracker : xpathTracker
+// selectedScapeOption: selectedScrapeOption
+// ]
+
+
+function bsAddConfig(addConfigUrl, view, xpathTracker, selectedScrapeOption) {
     
-    let urlValue = bsAddConfigURL.value;
+    let urlValue = addConfigUrl.value;
     // let package = view.packageSummaryCustomisations();
     let package = view.packageFullCustomisation();
     let xpathlists = [];
-    for (var i=0; i<xpathInputList.length; i++) {
-        let obj = document.getElementById(xpathInputList[i]);
+    for (var i=0; i<xpathTracker["list"].length; i++) {
+        let obj = document.getElementById(xpathTracker["list"][i]);
         xpathlists.push(obj.value);
     }
     
@@ -243,21 +481,88 @@ function bsAddConfig() {
     return [urlValue, builder];
 }
 
+loadUserConfigs('urllist').then((result) => {
+    console.log('urllist: ', result);
+})
+
+function updateURLLIST(url, builder, oldUrl=null) {
+    loadUserConfigs('urllist').then((result) => {
+        console.log(result);
+        console.log("New URL: ", url)
+        var urlObj = new URL(url);
+        var dName = urlObj.hostname.toString();
+        var pName = urlObj.pathname.toString();
+
+        if (result.hasOwnProperty(dName)) {
+            var urlConfigs = result[dName];
+            urlConfigs[pName] = builder;
+        } else {
+            result[dName] = {
+                [pName] : builder
+            }
+        }
+
+        saveToStorage({'urllist' : result});
+
+        console.log(result);
+    }).then(() => {
+        if (oldUrl) {
+            console.log(oldUrl);
+            console.log("OLDURLLLLLL");
+            delEntryURLLIST(oldUrl);
+        }
+    })
+}
+
+function delEntryURLLIST(url) { 
+    loadUserConfigs('urllist').then((result) => {
+        console.log(result);
+        console.log("DELETING FROM URLLIST: ", url);
+        var urlObj = new URL(url);
+        var dName = urlObj.hostname.toString();
+        var pName = urlObj.pathname.toString();
+
+        var domain = result[dName];
+        console.log("DOOOOOOOOOOOOMNAIUBNNN: ", domain)
+        delete domain[[pName]];
+
+        // if (isObjectEmpty(domain)) {
+        //     delete domain;
+        // }
+        if (Object.keys(domain).length === 0) {
+            delete result[dName];
+        }
+
+        saveToStorage({'urllist' : result});
+
+        console.log(result);
+    })
+}
+
+
 // Save new ADDED configuration 
 var bsAddConfigSave = document.getElementById("bs-add-config-save");
 bsAddConfigSave.addEventListener("click", function () { 
     console.log("Saving new ADDED customisation ")
-    var [url, builder] = bsAddConfig();
+    var [url, builder] = bsAddConfig(bsAddConfigURL, view, xpathTracker, selectedScrapeOption);
     // let url = Object.keys(builder)[0];
-    console.log(url);
+    console.log("url: ", url);
     // console.log(Object.values(builder));
     // currentPSCConfigs[url] = builder;
     console.log(currentPSCConfigs);
-    if (!currentPSCConfigs.hasOwnProperty(url)) {
-        currentPSCConfigs[url] = builder;
-        // currentPSCConfigs[url] = Object.values(builder);
-        saveToStorage({"bsc" : currentPSCConfigs});
-    }
+
+
+    updateURLLIST(url, builder);
+
+    currentPSCConfigs[url] = builder;
+
+
+    console.log("yes sir: ", currentPSCConfigs);
+    saveToStorage({"bsc" : currentPSCConfigs});
+
+    // if (!currentPSCConfigs.hasOwnProperty(url)) {
+        
+    // }
     // removeFromStorage("bsc");
 })
 

@@ -177,7 +177,15 @@ class SummaryCustomisationView {
   }
 
   buttonSelect(id) {
-    const clickedButton = document.getElementById(id);
+    var clickedButton = null;
+    
+    if (id == "ex") {
+      clickedButton = document.getElementById(this.stb1);
+    } 
+    else if (id == "ab") {
+      clickedButton = document.getElementById(this.stb2);
+    } 
+    else { clickedButton = document.getElementById(id); }
 
     if (id !== this.selectedSummaryType || this.selectedSummaryType !== "") {
       let otherButton = document.getElementById(this.switchButtonIdentifier(id));
@@ -315,6 +323,23 @@ class SummaryCustomisationView {
 
       // Summary Length
       this.summaryLengthBuilder(list);
+  }
+
+  setPredefinedOptions(text, st, model, slvalue=null) {
+    this.updateView(ChangeFrom.TEXTTYPE, text);
+    var tt_dropdown = document.getElementById(this.ttdropdown);
+    tt_dropdown.value = text;
+
+    this.updateView(ChangeFrom.SUMMARYTYPE, st);
+    this.buttonSelect(st);
+
+    this.updateView(ChangeFrom.MODELSELECT, model);
+    var model_dropdown = document.getElementById(this.modeldropdown);
+    model_dropdown.value = model;
+
+    if (slvalue) {
+      document.getElementById(this.sumlength).value = slvalue;
+    }
   }
 
   packageSummaryCustomisations() {
