@@ -50,27 +50,6 @@ function loadPopupStorageCtx() {
 //   chrome.runtime.sendMessage({ action: 'configRequest' });
 // });
 
-// ---------------------------------------------------------------------
-// Provider Selection
-
-var providerSelect = document.getElementById("td-dropdown-provider");
-console.log("Provider value: ", providerSelect.value);
-
-providerSelect.addEventListener("change", function() {  
-  console.log("Provider Selection Changed: ", providerSelect.value);
-  var bs_customisation = document.getElementById("bs-customisation");
-  var co_customisation = document.getElementById("co-customisation");
-  if (providerSelect.value === "co") {
-    bs_customisation.style.display = "none";
-    co_customisation.style.display = "inline-block";
-  } else {
-    co_customisation.style.display = "none";
-    bs_customisation.style.display = "inline-block";
-  }
-});
-
-
-
 
 // ---------------------------------------------------------------------
 
@@ -79,7 +58,7 @@ providerSelect.addEventListener("change", function() {
 chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" });
 
 var view = null;
-
+var viewPromise = null;
 function buildSummaryConfigs(data) {
   // Summary Type button identifiers
   let stb1 = "sb-1";
@@ -100,10 +79,96 @@ function buildSummaryConfigs(data) {
 
   console.log(data, elements);
 
-  view = new SummaryCustomisationView(data, elements);
-  let config = view.controller;
-  return config;
+  return new Promise(resolve => {
+    // view = new SummaryCustomisationView(data, elements);
+    // resolve();
+    view = new SummaryCustomisationView(data, elements);
+    resolve(view);
+  })
+  
+  // let config = view.controller;
+  // return config;
 }
+
+// ------------------------------------------------------------------
+
+// REPEATED CODE - SETTINGS
+function isObjectEmpty(obj) {
+  for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+          return false;
+      }
+  }
+  return true;
+}
+
+// REPEATED CODE - SETTINGS
+// Saved user configs
+function loadUserConfigs(data) {
+  return new Promise((resolve, reject) => {
+      chrome.storage.local.get([data], function(result) {
+          if (isObjectEmpty(result)) {
+              console.log("its empty");
+              saveToStorage({[data] : {}});
+              resolve(loadUserConfigs(data));
+          } else {
+              console.log(result);
+              resolve(result[data]);
+          }
+      });
+  })
+}
+
+
+var usrConfig = null;
+
+
+function setUserConfgCustomisation(path, domain) { 
+  loadUserConfigs('urllist').then((data) => {
+    usrConfig = data;
+    console.log("path: ", path);
+    console.log("dom: ", domain);
+    var customisation = usrConfig[domain][path]['summary-customisation'];
+    console.log("setUserConfigCustomisation: ", customisation);
+    // console.log('USER CONFIG: ', usrConfig);;
+    console.log(view);
+    // viewPromise.then(() => {
+      console.log("COMPLETEDD MAYBE: ", view);
+      view.setPredefinedOptions(
+        customisation['text-type'],
+        customisation['summary-type'],
+        customisation['model-selected'],
+        customisation['summary-length-chosen']
+      );
+    // })
+
+  })
+
+}
+
+
+
+
+
+// ---------------------------------------------------------------------
+// Provider Selection
+
+var providerSelect = document.getElementById("td-dropdown-provider");
+console.log("Provider value: ", providerSelect.value);
+
+providerSelect.addEventListener("change", function() {  
+  console.log("Provider Selection Changed: ", providerSelect.value);
+  var bs_customisation = document.getElementById("bs-customisation");
+  var co_customisation = document.getElementById("co-customisation");
+  if (providerSelect.value === "co") {
+    bs_customisation.style.display = "none";
+    co_customisation.style.display = "inline-block";
+  } else {
+    co_customisation.style.display = "none";
+    bs_customisation.style.display = "inline-block";
+  }
+});
+
 
 //  --------------------------------------------------------------------- 
 
@@ -148,12 +213,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     case 'customisationConfigResponse':
       if (request.to === "home") {
-        buildSummaryConfigs(request.data);
+         buildSummaryConfigs(request.data);
+         loadUserConfigs('urllist').then((data) => {
+          usrConfig = data;
+          console.log('USER CONFIG: ', usrConfig);
+          chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { action: "urlMatcher", data : usrConfig });
+          });
+        })
       }
       break;
     case 'loadPopupCtx':
       console.log("Popup.js - Loading Popup Context");
       setPopupCtx(request.data);
+      break;
+    case 'determinedUrl':
+      console.log("Determined URL: ", request.path, request.domain);
+      if (request.path !== null) {
+        setUserConfgCustomisation(request.path, request.domain);
+      }
       break;
   }
 

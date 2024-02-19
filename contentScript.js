@@ -27,6 +27,12 @@
                     console.log(response);
                 });
                 break;
+            case 'urlMatcher':
+                console.log(obj.data);
+                var [path, domain] = determineUrl(obj.data);
+                console.log("urlMatcher: ", path, domain);
+                chrome.runtime.sendMessage({ action: 'determinedUrl', path: path, domain: domain  });
+                break;
             // case 'summariseResponse':
             //     // console.log("CS --> Summarised Data: ", obj.data.data);
             //     console.log("CS --> Summarised Data: ", obj.data);
@@ -44,6 +50,43 @@
         }
      });
 })();
+
+function determineUrl(obj) {
+    var keys = Object.keys(obj);
+    var currentUrl = new URL(window.location.href);
+    var currentHost = currentUrl.hostname;
+    var currentPath = currentUrl.pathname;
+
+    // Check if we are in a saved domain (host)
+    if (!keys.includes(currentHost)) {
+        console.log("We are NOT in a saved config domain");
+        // null, null
+        return [null, null];
+    } 
+
+    // Get all the paths for that domain
+    var paths = Object.keys(obj[currentHost]); 
+    var closestMatch = findClosestMatch(currentPath, paths);
+    console.log("Closest Path: ", closestMatch);
+
+    return [closestMatch, currentHost];
+}
+
+function findClosestMatch(currentPath, pathList) {
+    let closestMatch = null;
+    let maxMatchLength = 0;
+
+    for (const path of pathList) {
+        const commonPrefix = currentPath.startsWith(path) ? path : '';
+
+        if (commonPrefix.length > maxMatchLength) {
+            maxMatchLength = commonPrefix.length;
+            closestMatch = path;
+        }
+    }
+
+    return closestMatch;
+}
 
 // WRONG IMPLEMNTATION
 function gatherData() {

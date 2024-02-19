@@ -506,7 +506,7 @@ function updateURLLIST(url, builder, oldUrl=null) {
 
         console.log(result);
     }).then(() => {
-        if (oldUrl) {
+        if (oldUrl && url !== oldUrl) {
             console.log(oldUrl);
             console.log("OLDURLLLLLL");
             delEntryURLLIST(oldUrl);
@@ -532,6 +532,8 @@ function delEntryURLLIST(url) {
         if (Object.keys(domain).length === 0) {
             delete result[dName];
         }
+
+        console.log("DELLLLL URLLIST: ", result)
 
         saveToStorage({'urllist' : result});
 
