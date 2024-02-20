@@ -47,20 +47,26 @@
             <h1>ChatGPT / OpenAI: Customisation</h1>
             <div id="prompts">
                 <h2>Prompts</h2>
+                <p id="co-prompts-ctx-help"></p>
                 <div id="saved-prompts">
-                    <select name="" id="">
-                        <option value="x">x</option>
-                        <option value="y">y</option>
+                    <select name="" id="co-prompts-selector">
+                        <!-- <option value="x">x</option> -->
+                        <!-- <option value="y">y</option> -->
                     </select>
-                    <button>Edit</button>
+                    <button id="co-prompts-edit-button">Edit</button>
+                    <button id="co-prompts-delete-button">Delete</button>
+                    <button id="co-prompts-default-button">Set default</button>
+                    <div id="co-prompts-edit-editor">
+                        <input type="text" id="co-prompts-edit-input">
+                        <button id="co-prompts-edit-update-button">Update</button>
+                    </div>
                     <!-- Need to add to design?????? -->
                     <p><b>ADD TO DESIGN</b></p>
-                    <button>Delete</button>
-                    <button>Set default</button>
+                    
                 </div>
                 <div id="add-new-prompts">
-                    <input type="text">
-                    <button>Add</button>
+                    <input type="text" id="co-prompts-add-input">
+                    <button id="co-prompts-add-button">Add</button>
                 </div>
             </div>
         </div>

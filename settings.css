@@ -1,3 +1,21 @@
+/* --- summarisation [ co-customisation ] --- */
+
+/* Prompts contextual help  */
+
+#co-prompts-ctx-help {
+    font-weight: bold;
+    color: red;
+}
+
+/* Update prompt */
+#co-prompts-edit-editor {
+    display: none;
+}
+
+
+
+
+
 /* --- summarisation [ bs-customisation ] --- */
 
 /* #summarisation-customisation > div {

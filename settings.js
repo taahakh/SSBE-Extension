@@ -51,6 +51,178 @@ function removeFromStorage(ctx) {
       });
 }
 
+// ----------------------------------------------------------------------------------------
+// ChatGPT customisation
+
+// Elements
+var coPromptsSelector = document.getElementById('co-prompts-selector');
+var coPromptsEditButton = document.getElementById('co-prompts-edit-button');
+var coPromptsDeleteButton = document.getElementById('co-prompts-delete-button');
+var coPromptsDefaultButton = document.getElementById('co-prompts-default-button');
+var coPromptsAddInput = document.getElementById('co-prompts-add-input');
+var coPromptsAddButton = document.getElementById('co-prompts-add-button');
+
+var coPromptsEditEditor = document.getElementById('co-prompts-edit-editor');
+var coPromptsEditInput = document.getElementById('co-prompts-edit-input');
+var coPromptsEditUpdateButton = document.getElementById('co-prompts-edit-update-button');
+var coPromptsContextualHelp = document.getElementById('co-prompts-ctx-help');
+
+// edit
+var oldPrompt = null;
+coPromptsEditButton.addEventListener('click', function(){
+    // Make the edit prompts box visible
+    // .....
+    displayPromptUpdate();
+    oldPrompt = coPromptsSelector.value;
+    // console.log(oldPrompt);
+    coPromptsEditInput.value = oldPrompt;
+})
+
+// update edit
+coPromptsEditUpdateButton.addEventListener('click', function(){
+    var newPrompt = coPromptsEditInput.value;
+    if (!hasContentTag(newPrompt)) {
+        console.log("Doesnt have the {content}");
+        addCoCtxHelp("You need to add '{context}' to your prompt!");
+        return;
+    }
+
+    hidePromptUpdate();
+    
+    loadUserConfigs('coprompts').then((data) => {
+        var prompts = data['prompts'];
+        for (const i in prompts) {
+            if (prompts[i] === oldPrompt) {
+                prompts[i] = newPrompt;
+            }
+        }
+
+        // CHECK THIS CODE
+        if (data.hasOwnProperty('default')) {
+            if (data['default'] === oldPrompt) {
+                data['default'] = newPrompt;
+            }
+        }
+        removeCoCtxHelp();
+        saveToStorage({'coprompts' : data});
+        populatePromptsList();
+    })
+})
+
+// Add prompt
+coPromptsAddButton.addEventListener('click', function(){
+    let input = coPromptsAddInput.value;
+    if (!hasContentTag(input)) {
+        console.log("Doesnt have the {content}");
+        addCoCtxHelp("You need to add '{context}' to your prompt!");
+        return;
+    }
+    coPromptsAddInput.value = "";
+    loadUserConfigs('coprompts').then((data) => {
+        console.log("CO PROMPTS - PREADDED: ", data)
+        if (data.hasOwnProperty('prompts')) {
+            data['prompts'].push(input);
+        } else {
+            data['prompts'] = [input];
+        }
+        removeCoCtxHelp();
+        saveToStorage({'coprompts' : data});
+        populatePromptsList();
+    })
+})
+
+// Delete Prompt
+coPromptsDeleteButton.addEventListener('click', function(){
+    var prompt = coPromptsSelector.value;
+    coPromptsSelector.querySelector('option[value="' + prompt + '"]').remove();
+
+    loadUserConfigs('coprompts').then((data) => {
+        data['prompts'] = data['prompts'].filter(p => p !== prompt );
+
+        // CHECK THIS CODE
+        if (data.hasOwnProperty('default')) {
+            if (data['default'] === prompt) {
+                data['default'] = "";
+                if (data['prompts'].length > 0) {
+                    data['default'] = data['prompts'][0];
+                }
+            }
+        }
+
+        saveToStorage({'coprompts' : data});
+        populatePromptsList();
+    })
+})
+
+// Set default prompt
+coPromptsDefaultButton.addEventListener('click', function(){
+    var prompt = coPromptsSelector.value;
+    var def = coPromptsSelector.querySelector('option[value="' + prompt + '"]');
+    def.text = "Default: " + def.text;
+    loadUserConfigs('coprompts').then((data) => {
+        data['default'] = prompt;
+        saveToStorage({'coprompts' : data});
+        populatePromptsList();
+    })
+})
+
+// view prompt update
+function displayPromptUpdate() {
+    coPromptsEditEditor.style.display = "block";
+}
+
+// hide prompt update
+function hidePromptUpdate() {
+    coPromptsEditEditor.style.display = "none";
+}
+// Add contextual help to users
+function addCoCtxHelp(text) {
+    coPromptsContextualHelp.innerHTML = text;
+}
+
+// Remove when completed giving help
+function removeCoCtxHelp() {
+    coPromptsContextualHelp.innerHTML = "";
+}
+
+// check if prompt has {content} inside their prompt
+function hasContentTag(prompt) { 
+    return prompt.includes("{content}");
+}
+
+
+// Populate Prompts list
+function populatePromptsList() { 
+    loadUserConfigs('coprompts').then((data) => {
+        console.log("CO PROMPTS: ", data)
+        var prompts = data['prompts'];
+        
+        // oldPrompt = null;
+        coPromptsSelector.innerHTML = "";
+
+        for (const p in prompts) {
+            var option = document.createElement('option');
+            option.value = prompts[p];
+            option.text = prompts[p];
+
+            coPromptsSelector.appendChild(option);
+        }
+
+        // CHECK THIS CODE
+        if (data.hasOwnProperty('default')) {
+            coPromptsSelector.value = data['default'];
+            var def = coPromptsSelector.querySelector('option[value="' + data['default'] + '"]');
+            def.text = "Default: " + def.text;
+        }
+    })
+}
+
+populatePromptsList();
+
+
+
+
+
 // ----------------------------------------------------------------------------------
 chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "settings" });
 

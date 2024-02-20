@@ -21,8 +21,15 @@
         switch (obj.action) {  
             // Scrape text --> change name to scrapeText
             case 'gatherData':
-                // let texts = getTextWithXpath();
-                let texts = JSON.stringify({text: document.body.outerHTML});
+                let texts = null;
+                if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
+                    console.log("USING XPATHS")
+                    texts = scrapeWithXPATHs(obj.usingXpath);
+                } else {
+                    // Naive implementation
+                    texts = JSON.stringify({text: document.body.outerHTML});
+                }
+                // TURNED OFF SUMMARISING MESSAGE - CANNOT SUMMARISE
                 chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'] }, function(response) {
                     console.log(response);
                 });
@@ -100,25 +107,77 @@ function gatherData() {
     }
 }
 
-function getTextWithXpath(xpath) {
-
-    var xpath = '/html/body/div/div'
-    var texts = [];
-
-    // Grab all matching text nodes
-    var result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
-
-    while (node = result.iterateNext()) {
-        // console.log(node);
-        nodeText = getAllTextFromNode(node);
-        texts.push(nodeText);
-        // console.log(texts);
+function scrapeWithXPATHs(xpaths) {
+    var allTexts = [];
+    for (var i=0; i<xpaths.length; i++) {
+        allTexts.push(getTextWithXpath(xpaths[i]));
     }
-    textJson = JSON.stringify(texts);
-    console.log(textJson);
-    JSON.stringify(console.log({text : textJson}));
-    return JSON.stringify({text : textJson});
+    return allTexts;
 }
+
+function getTextWithXpath(xpath) {
+    console.log(xpath);
+    // var texts = "";
+    var texts = [];
+    // Grab all matching text nodes
+    // XPathResult.ANY_TYPE
+    var result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+    for (var i=0; i< result.snapshotLength; i++) {
+        var tNode = result.snapshotItem(i);
+        // var tContent = tNode.textContent || tNode.innerText;
+        var tContent = tNode.textContent;
+        texts.push(tContent);
+        // texts += tContent + "\n\n";
+        // texts.push(getAllTextFromNode(tNode));
+    }
+
+    
+    console.log(texts);
+    return JSON.stringify({text : texts});
+}
+
+// function scrapeWithXPATHs(xpaths) {
+//     var allTexts = [];
+//     for (var i=0; i<xpaths.length; i++) {
+//         allTexts.push(getTextWithXpath(xpaths[i]));
+//     }
+//     return allTexts;
+// }
+
+// function getTextWithXpath(xpath) {
+
+//     // var xpath = '/html/body/div/div'
+//     // var texts = [];
+//     var texts = "";
+
+//     // Grab all matching text nodes
+//     // XPathResult.ANY_TYPE
+//     var result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+//     // while (node = result.iterateNext()) {
+//     //     // console.log(node);
+//     //     nodeText = getAllTextFromNode(node);
+//     //     texts.push(nodeText);
+//     //     // console.log(texts);
+//     // }
+
+//     for (var i=0; i< result.snapshotLength; i++) {
+//         var tNode = result.snapshotItem(i);
+//         var tContent = tNode.textContent || tNode.innerText;
+//         texts += tContent + "\n\n";
+//     }
+
+    
+//     console.log(texts);
+//     JSON.stringify(console.log({text : texts}));
+//     return JSON.stringify({text : texts});
+
+//     // textJson = JSON.stringify(texts);
+//     // console.log(textJson);
+//     // JSON.stringify(console.log({text : textJson}));
+//     // return JSON.stringify({text : textJson});
+// }
 
 function deepText(node) {   
     var A= [];

@@ -7,6 +7,18 @@ const Message = Object.freeze({
 
 //  ---------------------------------------------------------------------
 
+chrome.commands.onCommand.addListener(function (command) {
+  switch(command) {
+    case 'summarise-page':
+      console.log("Shortcut - Summarise Page");
+      chrome.browserAction.openPopup();
+      break;
+    case 'summarise-selected':
+      console.log("Shortcut - Summarise Selected");
+      chrome.browserAction.openPopup();
+      break;
+  }
+})
 
 chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
   console.log(tabs[0].url);

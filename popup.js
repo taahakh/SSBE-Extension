@@ -121,14 +121,19 @@ function loadUserConfigs(data) {
 
 
 var usrConfig = null;
+var usrXpaths = null;
 
-
-function setUserConfgCustomisation(path, domain) { 
+function setUserConfigCustomisation(path, domain) { 
   loadUserConfigs('urllist').then((data) => {
     usrConfig = data;
     console.log("path: ", path);
     console.log("dom: ", domain);
-    var customisation = usrConfig[domain][path]['summary-customisation'];
+    let config = usrConfig[domain][path];
+    if (config['xpaths'].length !== 0){
+      usrXpaths = config['xpaths'];
+    }
+
+    var customisation = config['summary-customisation'];
     console.log("setUserConfigCustomisation: ", customisation);
     // console.log('USER CONFIG: ', usrConfig);;
     console.log(view);
@@ -163,6 +168,7 @@ providerSelect.addEventListener("change", function() {
   if (providerSelect.value === "co") {
     bs_customisation.style.display = "none";
     co_customisation.style.display = "inline-block";
+    loadCO();
   } else {
     co_customisation.style.display = "none";
     bs_customisation.style.display = "inline-block";
@@ -171,7 +177,35 @@ providerSelect.addEventListener("change", function() {
 
 
 //  --------------------------------------------------------------------- 
+// ChatGPT / OpenAI setup
 
+function loadCO() { 
+  loadUserConfigs('coprompts').then((data) => {
+    console.log("CO PROMPTS - : ", data)
+    var prompts = data['prompts'];
+    var promptsList = document.getElementById('td-dropdown-prompt');
+
+    for (const i in prompts) {
+      var option = document.createElement("option");
+      option.value = prompts[i];
+      option.text = prompts[i];
+
+      if (data['default'] !== "" && prompts[i] === data['default']) {
+        option.selected = true;
+        option.text = "Default: " + option.text;
+      }
+
+      promptsList.appendChild(option);
+
+    } 
+})
+
+}
+
+
+
+
+// -----------------------------------------------------------------------
 const getF = document.getElementById('getButton');
 
 getF.addEventListener('click', async () => {
@@ -230,7 +264,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'determinedUrl':
       console.log("Determined URL: ", request.path, request.domain);
       if (request.path !== null) {
-        setUserConfgCustomisation(request.path, request.domain);
+        setUserConfigCustomisation(request.path, request.domain);
       }
       break;
   }
@@ -239,6 +273,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
+// Prevent summarisation if not logged in
+
+function lockSummariseButton() {  }
+
+function unlockSummariseButton() {  }
+
 // Summarise button
 var summarise_button = document.getElementById("summarise-button");
 summarise_button.addEventListener("click", async () => {
@@ -246,8 +286,9 @@ summarise_button.addEventListener("click", async () => {
   if (document.getElementById("td-dropdown-provider").value === "bs") {
     let packageCustomisation = view.packageSummaryCustomisations();
     console.log("PACKAGE: ", packageCustomisation);
+    console.log("Sending these xpaths: ", usrXpaths);
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: false, customisation: packageCustomisation });
+      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation });
     });
   } else {
     console.log("CO Summarise not implemented yet");
