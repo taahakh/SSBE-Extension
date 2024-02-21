@@ -18,14 +18,25 @@
                     <option value="co">ChatGPT / OpenAI </option>
                 </select>
             </div>
-            <div id="provider-input">
-                <h3>Service URL</h3>
-                <input type="text">
-                <label for="">Username</label>
-                <input type="text">
-                <label for="">Password</label>
-                <input type="text">
-                <button>Connect</button>
+            <div id="bs-provider-connection-box">
+                <h3>Service Connect</h3>
+                <div id="bs-provider-connection-login-button" class="selectable-button">Login</div>
+                <div id="bs-provider-connection-signup-button" class="selectable-button">Signup</div>
+                <p>Host</p>
+                <input id="bs-provider-connection-host-input" type="text">
+                <p>Username</p>
+                <input id="bs-provider-connection-username-input" type="text">
+                <p>Password</p>
+                <input id="bs-provider-connection-password-input" type="text">
+                <p id="bs-provider-connection-contextual"></p>
+                <button id="bs-provider-connection-connect-button">Connect</button>
+            </div>
+            <div id="co-provider-connection-box">
+                <p>API Key</p>
+                <input type="text" name="" id="co-provider-key-input">
+                <p>API Host</p>
+                <input type="text" name="" id="co-provider-host-input">
+                <button id="co-provider-connection-connect-button">Connect</button>
             </div>
         </div>
 

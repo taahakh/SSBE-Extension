@@ -50,6 +50,83 @@ function removeFromStorage(ctx) {
         console.log(ctx, ' Removed from storage');
       });
 }
+// -----------------------------------------------------------------------------------------
+// Service Connections
+var bsPConnectionLoginButton = document.getElementById('bs-provider-connection-login-button');
+var bsPConnectionSignupButton = document.getElementById('bs-provider-connection-signup-button');
+var bsPConnectionHostInput = document.getElementById('bs-provider-connection-host-input');
+var bsPConnectionUsernameInput = document.getElementById('bs-provider-connection-username-input');
+var bsPConnectionPasswordInput = document.getElementById('bs-provider-connection-password-input');
+var bsPConnectionConnectButton = document.getElementById('bs-provider-connection-connect-button');
+var bsPConnectionCtx = document.getElementById('bs-provider-connection-contextual');
+var bsPSelectedConnect = null;
+
+// Choose between Login and Signup
+// log = login ,  sin = signup
+function setAuthenticationType(type) {
+    console.log(type);
+    if (type === undefined || type === bsPConnectionLoginButton) {
+        bsPSelectedConnect = "log";
+        bsPConnectionLoginButton.classList.add('selected-state');
+        bsPConnectionSignupButton.classList.remove('selected-state');
+        bsPConnectionConnectButton.innerText = "Connect";
+    }
+    else {
+        bsPSelectedConnect = "sin";
+        bsPConnectionSignupButton.classList.add('selected-state');
+        bsPConnectionLoginButton.classList.remove('selected-state');
+        bsPConnectionConnectButton.innerText = "Signup";
+    } 
+    removeBsAuthContext();
+    console.log(bsPSelectedConnect);
+}
+
+setAuthenticationType();
+
+// Listeners
+
+// Set to login
+bsPConnectionLoginButton.addEventListener('click', function(){
+    setAuthenticationType(bsPConnectionLoginButton);
+})
+
+// Set to signup
+bsPConnectionSignupButton.addEventListener('click', function(){
+    setAuthenticationType(bsPConnectionSignupButton);
+})
+
+// Connect / Signup
+bsPConnectionConnectButton.addEventListener('click', function(){
+    var host = bsPConnectionHostInput.value;
+    if (host === "") {
+        host = "http://127.0.0.1:5000";
+    }
+    var usr = bsPConnectionUsernameInput.value;
+    var pwd = bsPConnectionPasswordInput.value;
+    var auth = {
+        username : usr,
+        password : pwd
+    }
+    auth = JSON.stringify(auth);
+
+    if (bsPSelectedConnect === "log") {
+        chrome.runtime.sendMessage({ action: "login", host : host, auth : auth });
+    }
+    else {
+        chrome.runtime.sendMessage({ action: "signup", host : host, auth : auth });
+    }
+})
+
+// Set context
+function setBsAuthContext(message) { 
+    bsPConnectionCtx.innerHTML = message;
+}
+
+// Clear context
+function removeBsAuthContext() { 
+    bsPConnectionCtx.innerHTML = "";
+}
+
 
 // ----------------------------------------------------------------------------------------
 // ChatGPT customisation
@@ -752,12 +829,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       case 'customisationConfigResponse':
         console.log("Settings.js - Got customisation config")
         if (request.to === "settings") {
-          buildSummaryConfigs(request.data);
+            // VIEW MESSAGE THAT HAS BEEN RETRIEVED
+            // OR GET THE SUMMARYOPTIONS CONTROLLER TO HANDLE IT
+            if (request.data !== null) {
+                buildSummaryConfigs(request.data);
+            }
         }
         break;
       case 'loadPopupCtx':
         console.log("Popup.js - Loading Popup Context");
         setPopupCtx(request.data);
+        break;
+      case 'bsAuthMessageStatus':
+        setBsAuthContext(request.message);
         break;
     }
   
