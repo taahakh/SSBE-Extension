@@ -4,60 +4,63 @@ function saveToStorage(ctx_obj) {
   });
 }
 
-function savePopupStorageCtx() { 
-  // Summary Type Selection : selectedButton
-  // Provider Selection
-  providerSelect = document.getElementById("td-dropdown-provider").value;
-  // Model Selection
-  modelSelect = document.getElementById("td-dropdown-textdomain").value;
-  // Summary Length
-  summarLengthValue = document.getElementById("summary-length").value;
-  popupStorageContext = {
-    // selectedButton: selectedButton,
-    providerSelect: providerSelect,
-    modelSelect: modelSelect,
-    summarLengthValue: summarLengthValue
-  };
-
-  console.log("Popup Storage Context: ", popupStorageContext);
-  // saveToStorage({'popupStorageContext' : popupStorageContext});
+// REPEATED CODE - SETTINGS
+function isObjectEmpty(obj) {
+  for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+          return false;
+      }
+  }
+  return true;
 }
 
-function setPopupCtx(ctx) { 
-  document.getElementById("td-dropdown-provider").in = ctx.providerSelect;
-  document.getElementById("td-dropdown-textdomain").innerText = ctx.modelSelect;
-  document.getElementById("summary-length").innerText = ctx.summarLengthValue;
-  // summary type select - document.getElementById()
-  console.log("Setting Popup Storage Context: ", ctx);
+// REPEATED CODE - SETTINGS
+// Saved user configs
+function loadUserConfigs(data) {
+  return new Promise((resolve, reject) => {
+      chrome.storage.local.get([data], function(result) {
+          if (isObjectEmpty(result)) {
+              console.log("its empty");
+              saveToStorage({[data] : {}});
+              resolve(loadUserConfigs(data));
+          } else {
+              console.log(result);
+              resolve(result[data]);
+          }
+      });
+  })
 }
 
-// loadPersistantStorage("popupStorageContext");
-
-console.log("Popup.js - Loading Popup Context");
-
-function loadPopupStorageCtx() { 
-  chrome.storage.local.get(["popupStorageContext"], function(items){
-    popupStorageContext = items;
-    setPopupCtx(popupStorageContext);
-    console.log("Popup Storage Context: ", popupStorageContext);
-  });
-}
-
-// loadPopupStorageCtx();
-
-// chrome.browserAction.onClicked.addListener(function(tab) {
-//   console.log("Popup.js - Browser Action Clicked");
-//   chrome.runtime.sendMessage({ action: 'configRequest' });
-// });
 
 // ---------------------------------------------------------------------
+// CTX Messasges for users
 
 var contextual = document.getElementById('contextual');
+
 // Set ctx msg
-function setContextualMessage(message) {
+// Message order priority
+// [
+//  0 : Connection
+//  1 : Summarisation status
+//  2 : Additional context
+// ]
+var messageOrderPriority = new Array(3);
+function setContextualMessage(message, order) {
   console.log("ist this running - ctx msg")
-  contextual.innerHTML = message;
+  if (order > 2 || order < 0) {
+    order = 2;
+  }
+  messageOrderPriority[order] = message;
+  let text = "";
+  for (let i=0; i<3; i++) {
+    if (messageOrderPriority[i] !== undefined && messageOrderPriority !== "") {
+      text += ' ' + messageOrderPriority[i];
+    }
+  }
+
+  contextual.innerHTML = text;
 }
+
 // Remove ctx msg
 function removeContextualMessage() {
   contextual.innerHTML = '';
@@ -66,8 +69,6 @@ function removeContextualMessage() {
 // ---------------------------------------------------------------------
 
 // SummaryOptionsController
-
-chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" });
 
 var view = null;
 var viewPromise = null;
@@ -104,40 +105,19 @@ function buildSummaryConfigs(data) {
 
 // ------------------------------------------------------------------
 
-// REPEATED CODE - SETTINGS
-function isObjectEmpty(obj) {
-  for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-          return false;
-      }
-  }
-  return true;
-}
-
-// REPEATED CODE - SETTINGS
-// Saved user configs
-function loadUserConfigs(data) {
-  return new Promise((resolve, reject) => {
-      chrome.storage.local.get([data], function(result) {
-          if (isObjectEmpty(result)) {
-              console.log("its empty");
-              saveToStorage({[data] : {}});
-              resolve(loadUserConfigs(data));
-          } else {
-              console.log(result);
-              resolve(result[data]);
-          }
-      });
-  })
-}
-
 
 var usrConfig = null;
 var usrXpaths = null;
 
 function setUserConfigCustomisation(path, domain) { 
-  loadUserConfigs('urllist').then((data) => {
-    usrConfig = data;
+  // console.log("SUCC");
+  // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
+  // msg.then(msg => {
+  //   console.log("Inside of message: ", msg);
+  //   usrConfig = msg['response'];
+  loadUserConfigs('urllist').then(msg => {
+    console.log("Inside of message: ", msg);
+    usrConfig = msg;
     console.log("path: ", path);
     console.log("dom: ", domain);
     let config = usrConfig[domain][path];
@@ -157,14 +137,8 @@ function setUserConfigCustomisation(path, domain) {
         customisation['model-selected'],
         customisation['summary-length-chosen']
       );
-    // })
-
-  })
-
+   })
 }
-
-
-
 
 
 // ---------------------------------------------------------------------
@@ -192,25 +166,30 @@ providerSelect.addEventListener("change", function() {
 // ChatGPT / OpenAI setup
 
 function loadCO() { 
-  loadUserConfigs('coprompts').then((data) => {
-    console.log("CO PROMPTS - : ", data)
-    var prompts = data['prompts'];
-    var promptsList = document.getElementById('td-dropdown-prompt');
+  // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
+  // msg.then(msg => {
+    loadUserConfigs('coprompts').then((data) => {
+      // console.log("CO PROMPTS - : ", msg['response'])
+      // var data = msg['response'];
+      var prompts = data['prompts'];
+      var promptsList = document.getElementById('td-dropdown-prompt');
 
-    for (const i in prompts) {
-      var option = document.createElement("option");
-      option.value = prompts[i];
-      option.text = prompts[i];
+      for (const i in prompts) {
+        var option = document.createElement("option");
+        option.value = prompts[i];
+        option.text = prompts[i];
 
-      if (data['default'] !== "" && prompts[i] === data['default']) {
-        option.selected = true;
-        option.text = "Default: " + option.text;
-      }
+        if (data['default'] !== "" && prompts[i] === data['default']) {
+          option.selected = true;
+          option.text = "Default: " + option.text;
+        }
 
-      promptsList.appendChild(option);
+        promptsList.appendChild(option);
 
-    } 
+      } 
+    // })
   })
+
 }
 
 
@@ -240,6 +219,9 @@ postF.addEventListener('click', async () => {
 
 // ----------------------------------------------------------------------
 
+var userSelectedText = "";
+
+//
 // Message Passing
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -259,25 +241,34 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'customisationConfigResponse':
       if (request.to === "home") {
         console.log("CTX MESSAGE: ", request.message);
-        setContextualMessage(request.message);
+        chrome.runtime.sendMessage({ action: 'homeGetSelectedText' });
+        setContextualMessage(request.message, 0);
         buildSummaryConfigs(request.data);
+        // var msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
+        // msg.then(msg => {
+          
+        // })
         loadUserConfigs('urllist').then((data) => {
           usrConfig = data;
           console.log('USER CONFIG: ', usrConfig);
           chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, { action: "urlMatcher", data : usrConfig });
           });
-      })
+        })
       }
-      break;
-    case 'loadPopupCtx':
-      console.log("Popup.js - Loading Popup Context");
-      setPopupCtx(request.data);
       break;
     case 'determinedUrl':
       console.log("Determined URL: ", request.path, request.domain);
       if (request.path !== null) {
         setUserConfigCustomisation(request.path, request.domain);
+      }
+      break;
+    case 'userSelectedText':
+      console.log('User selected text : ', request.data);
+      if (request.data !== "") {
+        setContextualMessage("Grabbed your selected text!", 2);
+        userSelectedText = request.data;
+        console.log("saved user selected text [will disappear when clicked away]: ", userSelectedText);
       }
       break;
   }
@@ -300,6 +291,8 @@ summarise_button.addEventListener("click", async () => {
     let packageCustomisation = view.packageSummaryCustomisations();
     console.log("PACKAGE: ", packageCustomisation);
     console.log("Sending these xpaths: ", usrXpaths);
+    // Need to send user selected text if it exists
+    // in contentscript, no need to scrape. just get the urlconfig shit???????
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation });
     });
@@ -310,6 +303,9 @@ summarise_button.addEventListener("click", async () => {
   // chrome.runtime.sendMessage({ action: 'summarise', data: "SUMMARY" });
 });
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" });
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
 // Settings Button
 
@@ -338,31 +334,3 @@ save_button.addEventListener("click", function() {
   URL.revokeObjectURL(link.href);
 
 });
-
-// Summary Type Selection - Button
-
-// var selectedButton = "sb-1";
-// document.getElementById(selectedButton).classList.add("selected-state");
-
-// document.getElementById("sb-1").addEventListener("click", function() {
-//   buttonSelect("sb-1");
-// });
-
-// document.getElementById("sb-2").addEventListener("click", function() {
-//   buttonSelect("sb-2");
-// });
-
-// function switchButtonIdentifier(id) {
-//   if (id === "sb-1") { return 'sb-2'; }
-//   else { return 'sb-1'; }
-// }
-
-// function buttonSelect(id) {
-//   let clickedButton = document.getElementById(id);
-//   if (id !== selectedButton) {
-//     let otherButton = document.getElementById(switchButtonIdentifier(id));
-//     otherButton.classList.remove("selected-state");
-//     clickedButton.classList.add("selected-state");
-//     selectedButton = id;
-//   }
-// }

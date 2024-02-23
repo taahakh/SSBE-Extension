@@ -278,3 +278,52 @@
       </div>
       <button id="bs-add-config-save">Save</button>
    </div>
+
+
+
+
+   // function savePopupStorageCtx() { 
+    //   // Summary Type Selection : selectedButton
+    //   // Provider Selection
+    //   providerSelect = document.getElementById("td-dropdown-provider").value;
+    //   // Model Selection
+    //   modelSelect = document.getElementById("td-dropdown-textdomain").value;
+    //   // Summary Length
+    //   summarLengthValue = document.getElementById("summary-length").value;
+    //   popupStorageContext = {
+    //     // selectedButton: selectedButton,
+    //     providerSelect: providerSelect,
+    //     modelSelect: modelSelect,
+    //     summarLengthValue: summarLengthValue
+    //   };
+    
+    //   console.log("Popup Storage Context: ", popupStorageContext);
+    //   // saveToStorage({'popupStorageContext' : popupStorageContext});
+    // }
+    
+    // function setPopupCtx(ctx) { 
+    //   document.getElementById("td-dropdown-provider").in = ctx.providerSelect;
+    //   document.getElementById("td-dropdown-textdomain").innerText = ctx.modelSelect;
+    //   document.getElementById("summary-length").innerText = ctx.summarLengthValue;
+    //   // summary type select - document.getElementById()
+    //   console.log("Setting Popup Storage Context: ", ctx);
+    // }
+    
+    // loadPersistantStorage("popupStorageContext");
+    
+    // console.log("Popup.js - Loading Popup Context");
+    
+    // function loadPopupStorageCtx() { 
+    //   chrome.storage.local.get(["popupStorageContext"], function(items){
+    //     popupStorageContext = items;
+    //     setPopupCtx(popupStorageContext);
+    //     console.log("Popup Storage Context: ", popupStorageContext);
+    //   });
+    // }
+    
+    // loadPopupStorageCtx();
+    
+    // chrome.browserAction.onClicked.addListener(function(tab) {
+    //   console.log("Popup.js - Browser Action Clicked");
+    //   chrome.runtime.sendMessage({ action: 'configRequest' });
+    // });

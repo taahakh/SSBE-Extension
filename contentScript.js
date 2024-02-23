@@ -40,6 +40,11 @@
                 console.log("urlMatcher: ", path, domain);
                 chrome.runtime.sendMessage({ action: 'determinedUrl', path: path, domain: domain  });
                 break;
+            case 'getSelectedText':
+                var st = window.getSelection().toString();
+                console.log("Selected txt: ", st);
+                chrome.runtime.sendMessage({ action: 'retrieveSelectedText', data : st });
+                break;
             // case 'summariseResponse':
             //     // console.log("CS --> Summarised Data: ", obj.data.data);
             //     console.log("CS --> Summarised Data: ", obj.data);

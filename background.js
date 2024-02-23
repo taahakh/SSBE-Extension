@@ -55,13 +55,36 @@ chrome.commands.onCommand.addListener(function (command) {
     case 'summarise-page':
       console.log("Shortcut - Summarise Page");
       chrome.browserAction.openPopup();
+      // chrome.windows.create({
+      //   'url': 'popup.html',
+      //   'type': 'popup',
+      //   'width': 300,
+      //   'height': 200
+      // });
+      chrome.tabs.create({url: 'popup.html'})
       break;
     case 'summarise-selected':
-      console.log("Shortcut - Summarise Selected");
-      chrome.browserAction.openPopup();
+      console.log("Shortcut - Get Selected text to summarise");
+      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "getSelectedText" });
+      });
+      // chrome.runtime.sendMessage({ action: 'getSelectedText' });
+      // chrome.browserAction.openPopup();
       break;
   }
 })
+
+// chrome.browserAction.onClicked.addListener(function() {
+   
+//   var condition = true;
+
+//   if (condition) {
+//     chrome.tabs.create({ url: "popup_1.html" });
+//   } else {
+//     chrome.tabs.create({ url: "popup_2.html" });
+//   }
+// });
+
 
 chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
   console.log(tabs[0].url);
@@ -72,6 +95,8 @@ chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
 chrome.runtime.onInstalled.addListener(function() {
   console.log('Extension Installed');
 });
+
+var usrSelectedText = "";
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   console.log('B: Message received:', request);
@@ -100,13 +125,35 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'login':
       authRequest(request.host, '/auth/login', request.auth);
       break;
+    case 'retrieveSelectedText':
+      // if ('data' in request) {
+      usrSelectedText = request.data;
+      // }
+      // Try and send to POPUP if it is opened
+      // chrome.runtime.sendMessage({ action: 'userSelectedText', data : usrSelectedText });
+      break;
+    case 'homeGetSelectedText':
+      chrome.runtime.sendMessage({ action: 'userSelectedText', data : usrSelectedText });
+      usrSelectedText = "";
+      break;
+    // NOT USED ANYMORE
+    case 'loadUserConfigs':
+      console.log('Background.js: Loading user configs');
+      loadUserConfigs(request.config).then(data => {
+        console.log("WHAT DO I WANT :", request.config , ' Data : ', data);
+        // setTimeout(() =>{
+          sendResponse({ response : data });
+        // }, 600);
+      })
+      return true;
+      // break;
     case 'savePopupCtx':
       console.log("Background.js - Saving Popup Context");
       saveToStorage(request.data);
       break;
   }
 
-  sendResponse();
+  // sendResponse();
 });
 
 async function summariseRequest(data) {
