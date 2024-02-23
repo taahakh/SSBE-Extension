@@ -1,5 +1,6 @@
 // background.js
-const CHATGPT_API_KEY = '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'
+// const CHATGPT_API_KEY = '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';
+const CHATGPT_HOST_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 const Message = Object.freeze({
   SUMMARISE: 0,
   GATHERDATA: 1,
@@ -248,18 +249,43 @@ function sendRequest(host, endpoint, method, data=null, auth=null) {
 
 
 function chatgptRequest(data) {
-  fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + CHATGPT_API_KEY,
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: [{'role': 'user', 'content': data}],
-    })
-  }).then(response => {console.log(response.json());})
-  .then(response => sendMessageToCS({ action: 'summariseResponse', data: response.json() }))
+
+  loadUserConfigs('auth').then(res => {
+
+    var host = null;
+    var key = null;
+
+    if (res.hasOwnProperty('co_api_key')) {
+      if (res['co_api_key'] === "") {
+        // Send message that this needs to be filled in
+        return;
+      } else {
+        key = res['co_api_key'];
+      }
+    } else {
+      // Send message that this needs to be filled in
+      return;
+    }
+
+    if (res.hasOwnProperty('co_host')) {
+      res['co_host'] === "" ? host = CHATGPT_HOST_ENDPOINT : host = res['co_host'];
+    }
+
+    fetch(host, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + key,
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [{'role': 'user', 'content': data}],
+      })
+    }).then(response => {console.log(response.json());})
+    .then(response => sendMessageToCS({ action: 'summariseResponse', data: response.json() }))
+  })
+
+
 }
 
 function sendMessageToCS(message) {

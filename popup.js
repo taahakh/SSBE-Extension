@@ -59,7 +59,7 @@ function setContextualMessage(message) {
   contextual.innerHTML = message;
 }
 // Remove ctx msg
-function setContextualMessage() {
+function removeContextualMessage() {
   contextual.innerHTML = '';
 }
 
@@ -210,8 +210,7 @@ function loadCO() {
       promptsList.appendChild(option);
 
     } 
-})
-
+  })
 }
 
 

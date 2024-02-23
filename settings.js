@@ -51,7 +51,7 @@ function removeFromStorage(ctx) {
       });
 }
 // -----------------------------------------------------------------------------------------
-// Service Connections
+// BS Service Connections
 var bsPConnectionLoginButton = document.getElementById('bs-provider-connection-login-button');
 var bsPConnectionSignupButton = document.getElementById('bs-provider-connection-signup-button');
 var bsPConnectionHostInput = document.getElementById('bs-provider-connection-host-input');
@@ -127,6 +127,58 @@ function removeBsAuthContext() {
     bsPConnectionCtx.innerHTML = "";
 }
 
+// Switch between BS and CO
+var providerSelector = document.getElementById('provider-selector');
+var bsProviderBox = document.getElementById('bs-provider-connection-box');
+var coProviderBox = document.getElementById('co-provider-connection-box');
+
+// Listeners
+providerSelector.addEventListener('change', function(){
+    var prov = providerSelector.value;
+    if (prov === "co") {
+        bsProviderBox.style.display = 'none';
+        coProviderBox.style.display = 'block';
+    } else {
+        bsProviderBox.style.display = 'block';
+        coProviderBox.style.display = 'none';
+    }
+})
+
+
+// CO Service Connection
+var coProviderKeyInput = document.getElementById('co-provider-key-input');
+var coProviderHostInput = document.getElementById('co-provider-host-input');
+var coProviderConnectionSaveButton = document.getElementById('co-provider-connection-save-button');
+
+// Listeners
+
+coProviderConnectionSaveButton.addEventListener('click', function(){
+    var key = coProviderKeyInput.value;
+    var host = coProviderHostInput.value;
+
+    loadUserConfigs('auth').then(data => {
+        data['co_api_key'] = key;
+        data['co_host'] = host;
+        saveToStorage({'auth' : data});
+    })
+})
+
+// On load
+function populateCOServiceConnection() {
+    loadUserConfigs('auth').then(data => {
+        
+        if (data.hasOwnProperty('co_api_key')) {
+            coProviderKeyInput.value = data['co_api_key'];
+        }
+
+        if (data.hasOwnProperty('co_host')) {
+            coProviderHostInput.value = data['co_host'];
+        }
+
+    })
+}
+
+populateCOServiceConnection();
 
 // ----------------------------------------------------------------------------------------
 // ChatGPT customisation
