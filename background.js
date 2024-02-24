@@ -173,14 +173,14 @@ async function summariseRequest(data) {
     if (response.ok) {
       const result = await response.json();
       console.log('POST request successful:', result);
-      sendMessageToPopup({ action: 'summaryResponse', data: result });
+      sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation success!', data: result });
     } else {
       console.error('POST request failed:', response.status, response.statusText);
-      sendMessageToPopup({ action: 'summaryResponse', data: "failed" });
+      sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation failed!', data: "failed" });
     }
   } catch (error) {
     console.error('An error occurred during the POST request:', error);
-    sendMessageToPopup({ action: 'summaryResponse', data: "error" });
+    sendMessageToPopup({ action: 'summaryResponse', message: 'There was an error with the summarisation request.', data: "error" });
   }
 }
 
@@ -199,11 +199,11 @@ function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
       'Content-Type': 'application/json'
     } 
 
-    if (BS_API_KEY !== null || 
-        BS_API_KEY !== "" || 
-        BS_API_KEY !== undefined || 
-        BS_HOST !== "" || 
-        BS_HOST !== null || 
+    if (BS_API_KEY !== null && 
+        BS_API_KEY !== "" && 
+        BS_API_KEY !== undefined && 
+        BS_HOST !== "" && 
+        BS_HOST !== null && 
         BS_HOST !== undefined) 
     {
       headers['Authorization'] = "Bearer " + BS_API_KEY;
@@ -233,7 +233,13 @@ function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
         }
         console.log('GET Response:', data);
       })
-      .catch(error => console.error('GET Error:', error));
+      .catch(error => {
+        console.error('GET Error:', error)
+        sendMessageToPopup({ action: messageAction, 
+                             message: "Error connecting to service. Please check connection!", 
+                             data: null, to : to 
+                           });
+      });
 
   })
 
@@ -244,13 +250,16 @@ function authRequest(host, endpoint, data) {
   console.log(host, endpoint, data, BS_API_KEY);
   sendRequest(host, endpoint, 'POST', data, BS_API_KEY).then(
     (response) => {
+      console.log('AUTHINGGGGG222222222ggggggg: ', response);
       if (response instanceof Error) {
         chrome.runtime.sendMessage({ action: "bsAuthMessageStatus", message : 'Cannot find Host!' });
         return;
       }
       loadUserConfigs('auth').then(data => {
-        if (response.hasOwnProperty('bs_api_key')) {
-          BS_API_KEY = response['bs_api_key'];
+        console.log('AUTHINGGGGG');
+        if (response.hasOwnProperty('api_key')) {
+          console.log('AUTHINGGGGG222222222');
+          BS_API_KEY = response['api_key'];
           BS_HOST = host;
           data['bs_api_key'] = BS_API_KEY;
           data['bs_host'] = BS_HOST;

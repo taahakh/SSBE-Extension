@@ -33,38 +33,8 @@ function loadUserConfigs(data) {
 
 
 // ---------------------------------------------------------------------
-// CTX Messasges for users
 
-var contextual = document.getElementById('contextual');
 
-// Set ctx msg
-// Message order priority
-// [
-//  0 : Connection
-//  1 : Summarisation status
-//  2 : Additional context
-// ]
-var messageOrderPriority = new Array(3);
-function setContextualMessage(message, order) {
-  console.log("ist this running - ctx msg")
-  if (order > 2 || order < 0) {
-    order = 2;
-  }
-  messageOrderPriority[order] = message;
-  let text = "";
-  for (let i=0; i<3; i++) {
-    if (messageOrderPriority[i] !== undefined && messageOrderPriority !== "") {
-      text += ' ' + messageOrderPriority[i];
-    }
-  }
-
-  contextual.innerHTML = text;
-}
-
-// Remove ctx msg
-function removeContextualMessage() {
-  contextual.innerHTML = '';
-}
 
 // ---------------------------------------------------------------------
 
@@ -157,7 +127,8 @@ function setUserConfigCustomisation(path, domain) {
 // Provider Selection
 
 var providerSelect = document.getElementById("td-dropdown-provider");
-console.log("Provider value: ", providerSelect.value);
+var currentProviderCTX = 'bs';
+// console.log("Provider value: ", providerSelect.value);
 
 providerSelect.addEventListener("change", function() {  
   console.log("Provider Selection Changed: ", providerSelect.value);
@@ -167,11 +138,67 @@ providerSelect.addEventListener("change", function() {
     bs_customisation.style.display = "none";
     co_customisation.style.display = "inline-block";
     loadCO();
+    switchContextualMessage("co");
   } else {
     co_customisation.style.display = "none";
-    bs_customisation.style.display = "inline-block";
+    bs_customisation.style.display = "inline-block"
+    switchContextualMessage("bs");
   }
+  summariseButtonState(providerSelect.value);
 });
+
+// CTX Messasges for users
+
+var contextual = document.getElementById('contextual');
+
+// Set ctx msg
+// Message order priority
+// [
+//  0 : Connection
+//  1 : Summarisation status
+//  2 : Additional context
+// ]
+// for BS
+var messageOrderPriorityBS = new Array(3);
+// for CO
+var messageOrderPriorityCO = new Array(3);
+function setContextualMessage(message, order) {
+  
+  var messageOrderPriority = chooseContextualMessage(currentProviderCTX);
+
+  console.log("ist this running - ctx msg")
+  if (order > 2 || order < 0) {
+    order = 2;
+  }
+
+  messageOrderPriority[order] = message;
+
+  contextual.innerHTML = createContextualMessage(messageOrderPriority);
+}
+
+function chooseContextualMessage(currentProvider) {
+  return currentProvider === "bs" ? messageOrderPriorityBS : messageOrderPriorityCO;
+}
+
+function createContextualMessage(msgList) {
+  let text = "";
+  for (let i=0; i<3; i++) {
+    if (msgList[i] !== undefined && msgList !== "") {
+      text += ' ' + msgList[i];
+    }
+  }
+  return text;
+}
+
+function switchContextualMessage(provider) {
+  var messageOrderPriority = chooseContextualMessage(provider);
+  contextual.innerHTML = createContextualMessage(messageOrderPriority);
+}
+
+// Remove ctx msg
+function removeContextualMessage() {
+  contextual.innerHTML = '';
+}
 
 
 //  --------------------------------------------------------------------- 
@@ -245,24 +272,36 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       // console.log("CS --> Summarised Data: ", obj.data.data);
       console.log("CS --> Summarised Data: ", request.data);
       // console.log()
-      var summarybox = document.getElementById('summary-box');
-      var p = document.createElement('p');  
-      p.innerHTML = request.data.data;
-      summarybox.appendChild(p);
+      if (request.data === null || request.data === 'error' || request.data === 'failed'){
+        setContextualMessage(request.message + ' Please open and close the extension to refresh the summariser', 1);
+        lockSummariseButton();
+      } else {
+        var summarybox = document.getElementById('summary-box');
+        var p = document.createElement('p');  
+        p.innerHTML = request.data.data;
+        summarybox.appendChild(p);
+        setContextualMessage(request.message, 1);
+      }
+      
       break;
     case 'customisationConfigResponse':
       if (request.to === "home") {
         console.log("CTX MESSAGE: ", request.message);
         chrome.runtime.sendMessage({ action: 'homeGetSelectedText' });
         setContextualMessage(request.message, 0);
-        buildSummaryConfigs(request.data);
-        loadUserConfigs('urllist').then((data) => {
-          usrConfig = data;
-          console.log('USER CONFIG: ', usrConfig);
-          chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: "urlMatcher", data : usrConfig });
-          });
-        })
+        if (request.data !== null) {
+          buildSummaryConfigs(request.data);
+          loadUserConfigs('urllist').then((data) => {
+            usrConfig = data;
+            console.log('USER CONFIG: ', usrConfig);
+            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+              chrome.tabs.sendMessage(tabs[0].id, { action: "urlMatcher", data : usrConfig });
+            });
+          })
+          unlockSummariseButton();
+        } else {
+          lockSummariseButton();
+        }
       }
       break;
     case 'determinedUrl':
@@ -285,15 +324,37 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
-// Prevent summarisation if not logged in
 
-function lockSummariseButton() {  }
-
-function unlockSummariseButton() {  }
-
+// ----------------------------------------------------------------------------------
 // Summarise button
 var summarise_button = document.getElementById("summarise-button");
-summarise_button.addEventListener("click", async () => {
+// summarise_button.addEventListener("click", async () => {
+//   console.log("Summarise Button Clicked");
+//   if (document.getElementById("td-dropdown-provider").value === "bs") {
+//     let packageCustomisation = view.packageSummaryCustomisations();
+//     console.log("PACKAGE: ", packageCustomisation);
+//     console.log("Sending these xpaths: ", usrXpaths);
+//     if (userSelectedText !== "") {
+//       console.log('Summarising user selected text');
+//       chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation }, function(response) {
+//         console.log(response);
+//     });
+//     } else {
+//       console.log('Scraping');
+//     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+//       chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation });
+//     });
+//     }
+//   } else {
+//     console.log("CO Summarise not implemented yet");
+//   }
+
+//   // chrome.runtime.sendMessage({ action: 'summarise', data: "SUMMARY" });
+// });
+
+summarise_button.addEventListener("click", summariseButtonHandler);
+
+async function summariseButtonHandler() {
   console.log("Summarise Button Clicked");
   if (document.getElementById("td-dropdown-provider").value === "bs") {
     let packageCustomisation = view.packageSummaryCustomisations();
@@ -313,10 +374,35 @@ summarise_button.addEventListener("click", async () => {
   } else {
     console.log("CO Summarise not implemented yet");
   }
+}
 
-  // chrome.runtime.sendMessage({ action: 'summarise', data: "SUMMARY" });
-});
+// Prevent summarisation if not logged in
+var lockedSummarisation = {
+  'co' : false,
+  'bs' : false
+}
 
+function lockSummariseButton(provider='bs') {
+  lockedSummarisation[provider] = true;
+  summarise_button.disabled = true;
+  summarise_button.removeEventListener('click', summariseButtonHandler);
+}
+
+function unlockSummariseButton(provider='bs') {
+  lockedSummarisation[provider] = false;
+  summarise_button.disabled = false;
+  summarise_button.addEventListener('click', summariseButtonHandler);
+}
+
+function summariseButtonState(provider) {
+  if (lockedSummarisation[provider]) {
+    lockSummariseButton(provider);
+  } else {
+    unlockSummariseButton(provider);
+  }
+}
+
+lockSummariseButton();
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" });
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
