@@ -365,21 +365,33 @@ var editview = null;
 // check if the data is not being used in both configs
 function buildSummaryConfigs(data) {
 
+    let stheader = "st-header"; //
     let stb1 = "sb-1";
     let stb2 = "sb-2";
     // Summmary Type CSS selected state
     let stbcss = "selected-state";
+    let ttheader = "tt-header"; //
     // Text Type Domain Dropdown
     let ttdropdown = "td-dropdown-textdomain";
+    let modelheader = "model-header"; //
     // Model Dropdown
     let modeldropdown = "td-dropdown-modelchoice";
+    let slheader = "sl-header"; //
     // Summary length
     let milength = "minlength";
     let malength = "maxlength";
     // Summary length value
     let sumlength = "summary-length"
-
-    let elements = [stb1, stb2, stbcss, ttdropdown, modeldropdown, milength, malength, sumlength];
+    // Respective ctx popups
+    let ttpp = "tt-pp";
+    let stpp = "st-pp";
+    let mcpp = "mc-pp";
+    let slpp = "sl-pp";
+  
+    let elements = [stheader, stb1, stb2, stbcss, 
+                   ttheader, ttdropdown, modelheader, 
+                   modeldropdown, slheader, milength, 
+                   malength, sumlength, ttpp, stpp, mcpp, slpp];
 
     console.log(data, elements);
 
@@ -387,21 +399,32 @@ function buildSummaryConfigs(data) {
 
     view = new SummaryCustomisationView(data, elements);
 
+    let editstheader = "edit-st-header"; //
     let editstb1 = "edit-sb-1";
     let editstb2 = "edit-sb-2";
     // Summmary Type CSS selected state
     let editstbcss = "selected-state";
+    let editttheader = "edit-tt-header"; //
     // Text Type Domain Dropdown
     let editttdropdown = "edit-td-dropdown-textdomain";
+    let editmodelheader = "edit-model-header"; //
     // Model Dropdown
     let editmodeldropdown = "edit-td-dropdown-modelchoice";
+    let editslheader = "edit-sl-header"; //
     // Summary length
     let editmilength = "edit-minlength";
     let editmalength = "edit-maxlength";
     // Summary length value
     let editsumlength = "edit-summary-length"
+    let editttpp = "edit-tt-pp";
+    let editstpp = "edit-st-pp";
+    let editmcpp = "edit-mc-pp";
+    let editslpp = "edit-sl-pp";
 
-    let editelements = [editstb1, editstb2, editstbcss, editttdropdown, editmodeldropdown, editmilength, editmalength, editsumlength];
+    let editelements = [editstheader, editstb1, editstb2, editstbcss, editttheader, 
+                        editttdropdown, editmodelheader, editmodeldropdown, 
+                        editmilength, editmalength, editsumlength,
+                        editttpp, editstpp, editmcpp, editslpp];
 
     console.log(data, elements);
 
@@ -629,48 +652,6 @@ bsEditConfigSave.addEventListener("click", function () {
 })
 
 
-
-
-
-// ADD CONFIG
-
-
-// Add multiple xpath input boxes
-
-// var xpathInputCounter = 0;
-// var xpathInputList = [];
-// function addXpathInputs() {
-//     var newInputBox = document.createElement("input");
-//     var deleteNewInputBox = document.createElement("button");
-    
-//     xpathInputCounter += 1;
-//     let idAttrValue = "add-xpath-input"+xpathInputCounter;
-//     xpathInputList.push(idAttrValue);
-
-//     newInputBox.setAttribute('type', "text");
-//     newInputBox.setAttribute('id', idAttrValue);
-//     newInputBox.value = bsAddConfigXPATHInput.value;
-
-//     deleteNewInputBox.setAttribute('id', "delete-xpath"+xpathInputCounter);
-//     deleteNewInputBox.textContent = "Delete";
-
-//     deleteNewInputBox.addEventListener("click", function (param) { 
-
-//         let index = xpathInputList.indexOf(idAttrValue);
-
-//         if (index !== -1) { xpathInputList.splice(index, 1) }
-
-//         let parent = newInputBox.parentNode;
-//         parent.removeChild(newInputBox);                   
-//         parent.removeChild(deleteNewInputBox);
-//     })
-
-//     bsAddConfigXPATH.append(newInputBox);
-//     bsAddConfigXPATH.append(deleteNewInputBox);
-
-//     // bsAddConfigXPATH
-// }
-
 var xpathTracker = {
     "counter" : 0,
     "list" : [],
@@ -875,6 +856,12 @@ bsAddConfigSave.addEventListener("click", function () {
     // removeFromStorage("bsc");
 })
 
+
+// Shortcuts button
+
+document.getElementById("edit-view-shortcuts-button").addEventListener("click", function() {
+    chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+});
 
 
 

@@ -69,6 +69,24 @@ html {
 
 /* --- summarisation [ bs-customisation ] --- */
 
+.popup {
+    position: absolute;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    display: inline-block;
+    z-index: 1;
+    top: 200px;
+}
+  
+.hidden {
+    display: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
 /* #summarisation-customisation > div {
     display: inline-block;
     border: 1px solid red;

@@ -73,22 +73,34 @@ function removeContextualMessage() {
 var view = null;
 var viewPromise = null;
 function buildSummaryConfigs(data) {
-  // Summary Type button identifiers
+
+  let stheader = "st-header"; //
   let stb1 = "sb-1";
   let stb2 = "sb-2";
   // Summmary Type CSS selected state
   let stbcss = "selected-state";
+  let ttheader = "tt-header"; //
   // Text Type Domain Dropdown
   let ttdropdown = "td-dropdown-textdomain";
+  let modelheader = "model-header"; //
   // Model Dropdown
   let modeldropdown = "td-dropdown-modelchoice";
+  let slheader = "sl-header"; //
   // Summary length
   let milength = "minlength";
   let malength = "maxlength";
   // Summary length value
   let sumlength = "summary-length"
+  // Respective ctx popups
+  let ttpp = "tt-pp";
+  let stpp = "st-pp";
+  let mcpp = "mc-pp";
+  let slpp = "sl-pp";
 
-  let elements = [stb1, stb2, stbcss, ttdropdown, modeldropdown, milength, malength, sumlength];
+  let elements = [stheader, stb1, stb2, stbcss, 
+                 ttheader, ttdropdown, modelheader, 
+                 modeldropdown, slheader, milength, 
+                 malength, sumlength, ttpp, stpp, mcpp, slpp];
 
   console.log(data, elements);
 
@@ -244,10 +256,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         chrome.runtime.sendMessage({ action: 'homeGetSelectedText' });
         setContextualMessage(request.message, 0);
         buildSummaryConfigs(request.data);
-        // var msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
-        // msg.then(msg => {
-          
-        // })
         loadUserConfigs('urllist').then((data) => {
           usrConfig = data;
           console.log('USER CONFIG: ', usrConfig);
@@ -291,11 +299,17 @@ summarise_button.addEventListener("click", async () => {
     let packageCustomisation = view.packageSummaryCustomisations();
     console.log("PACKAGE: ", packageCustomisation);
     console.log("Sending these xpaths: ", usrXpaths);
-    // Need to send user selected text if it exists
-    // in contentscript, no need to scrape. just get the urlconfig shit???????
+    if (userSelectedText !== "") {
+      console.log('Summarising user selected text');
+      chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation }, function(response) {
+        console.log(response);
+    });
+    } else {
+      console.log('Scraping');
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation });
     });
+    }
   } else {
     console.log("CO Summarise not implemented yet");
   }

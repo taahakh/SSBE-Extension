@@ -6,6 +6,24 @@
 
 /* --- summarisation [ co-customisation ] --- */
 
+.popup {
+    /* position: relative; */
+    background-color: gray;
+    padding: 10px;
+    border: 1px solid #ccc;
+    display: inline-block;
+    z-index: 1;
+    /* top: 500px; */
+}
+  
+.hidden {
+    display: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
 /* Prompts contextual help  */
 
 #co-prompts-ctx-help {

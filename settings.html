@@ -43,16 +43,10 @@
 
         <div id="shortcuts">
             <h1>Shortcuts</h1>
-            <div id="sum-current-page">
-                <p>Summarise current page</p>
-                <div>Placeholder: Ctrl U</div>
-                <button>Edit</button>
-            </div>
-            <div id="sum-selected-text">
-                <p>Summarise selected text</p>
-                <div>Placeholder: Ctrl I</div>
-                <button>Edit</button>
-            </div>
+            <h2>Shortcut options</h2>
+            <p>Open extension</p>
+            <p>Select text on the webpage to summarise</p>
+            <button id="edit-view-shortcuts-button">Edit & View shortcuts</button>
         </div>
 
         <div id="co-customisation">
@@ -105,7 +99,7 @@
                         <div id="summarisation-customisation">
                             <div id="bs-customisation">
                                 <div id="edit-textdomain">
-                                <h3>Text Type</h3>
+                                <h3 id="edit-tt-header" class="pointer">Text Type</h3>
                                 <!-- <label for="td-dropdown">Text Type:</label> -->
                                 <select id="edit-td-dropdown-textdomain" name="edit-td-dropdown-textdomain">
                                     <!-- <option value="apple">Apple</option>
@@ -116,14 +110,14 @@
                                 </div>
                                 <div id="edit-summarytype">
                                 <!-- Extractive and Abstractive Summarisation Buttons -->
-                                <h3>Summary Type</h3>
+                                <h3 id="edit-st-header" class="pointer">Summary Type</h3>
                                 <div id="edit-summarisation-buttons">
                                     <div id="edit-sb-1" class="selectable-button">Extractive</div>
                                     <div id="edit-sb-2" class="selectable-button">Abstractive</div>
                                 </div>
                                 </div>
                                 <div id="edit-modelchoice">
-                                <h3>Model select</h3>
+                                <h3 id="edit-model-header" class="pointer">Model select</h3>
                                 <select id="edit-td-dropdown-modelchoice" name="edit-td-dropdown-modelchoice">
                                     <!-- <option value="apple">Apple</option>
                                     <option value="banana">Banana</option>
@@ -132,13 +126,17 @@
                                 </select>
                                 </div>
                                 <div id="edit-summarylength">
-                                <h3>Summary Length</h3>
+                                <h3 id="edit-sl-header" class="pointer">Summary Length</h3>
                                 <h5 id="edit-minlength">Min length: 30 words </h5>
                                 <h5 id="edit-maxlength">Max length: 300 words</h5>
                                 <input type="text" id="edit-summary-length" name="edit-summary-length" placeholder="100">
                                 </div>
                             </div>
                             </div>
+                        <div id="edit-tt-pp" class="popup hidden"> Choose your text type</div>
+                        <div id="edit-st-pp" class="popup hidden"> Choose your text type</div>
+                        <div id="edit-mc-pp" class="popup hidden"></div>
+                        <div id="edit-sl-pp" class="popup hidden"> Choose your text type</div>
                         <h4>scraping options</h4>
                         <div id="edit-scraping-options">
                             <div id="edit-auto-scrape" class="selectable-button">Automatic Scrape</div>
@@ -165,7 +163,7 @@
                     <div id="summarisation-customisation">
                         <div id="bs-customisation">
                             <div id="textdomain">
-                              <h3>Text Type</h3>
+                              <h3 id="tt-header" class="pointer">Text Type</h3>
                               <!-- <label for="td-dropdown">Text Type:</label> -->
                               <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
                                   <!-- <option value="apple">Apple</option>
@@ -176,14 +174,14 @@
                             </div>
                             <div id="summarytype">
                               <!-- Extractive and Abstractive Summarisation Buttons -->
-                              <h3>Summary Type</h3>
+                              <h3 id="st-header" class="pointer">Summary Type</h3>
                               <div id="summarisation-buttons">
                                 <div id="sb-1" class="selectable-button">Extractive</div>
                                 <div id="sb-2" class="selectable-button">Abstractive</div>
                               </div>
                             </div>
                             <div id="modelchoice">
-                              <h3>Model select</h3>
+                              <h3 id="model-header" class="pointer">Model select</h3>
                               <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
                                 <!-- <option value="apple">Apple</option>
                                 <option value="banana">Banana</option>
@@ -192,14 +190,18 @@
                             </select>
                             </div>
                             <div id="summarylength">
-                              <h3>Summary Length</h3>
+                              <h3 id="sl-header" class="pointer">Summary Length</h3>
                               <h5 id="minlength">Min length: 30 words </h5>
                               <h5 id="maxlength">Max length: 300 words</h5>
                               <input type="text" id="summary-length" name="summary-length" placeholder="100">
                             </div>
                           </div>
                         </div>
-                    <h4>scraping options</h4>
+                        <div id="tt-pp" class="popup hidden"> Choose your text type</div>
+                        <div id="st-pp" class="popup hidden"> Choose your text type</div>
+                        <div id="mc-pp" class="popup hidden"></div>
+                        <div id="sl-pp" class="popup hidden"> Choose your text type</div>
+                        <h4>scraping options</h4>
                     <div id="scraping-options">
                         <div id="auto-scrape" class="selectable-button">Automatic Scrape</div>
                         <div id="custom-scrape" class="selectable-button">Custom Scrape</div>
