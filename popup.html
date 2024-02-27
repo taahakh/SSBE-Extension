@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HTTP Request Extension</title>
+  <title>Site Summariser</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="static/font-awesome/css/font-awesome.min.css" />
 </head>
 <body>
-  <h1>Site summariser</h1>
+  <!-- <h1>Site summariser</h1>
   <button id="getButton">Make GET Request</button>
-  <button id="postButton">Make POST Request</button>
+  <button id="postButton">Make POST Request</button> -->
   <div id="container">
     <!-- Summarisation functionality -->
     <div id="summarisation" class="rows">
@@ -17,9 +18,9 @@
 
         <!-- Start summarisation and select provider -->
         <div id="control" class="row-item-fullwidth">
-          <div id="provider">
-            <h3>Provider</h3>
-            <select id="td-dropdown-provider" name="td-dropdown-provider">
+          <div id="provider" class="side-header-dropdown">
+            <h3>Provider:</h3>
+            <select id="td-dropdown-provider" class="box box-width-extended box-right-pad"  name="td-dropdown-provider">
               <option value="bs">Backend Service</option>
               <option value="co">ChatGPT / OpenAI </option>
             </select>
@@ -28,67 +29,63 @@
             <!-- <div id="summarise-button"> -->
             <div id="summarise-box">
               <!-- <button type="button">Summarise</button> -->
-              <button id="summarise-button" type="button">Summarise</button>
+              <button id="summarise-button" type="button" class="box box-lr-pad-long pointer clear-styling-min">Summarise</button>
             </div>
-            <button id="open-settings">Settings</button>
+            <button id="open-settings" class="clear-styling"><i class="fa fa-cog fa-3x" aria-hidden="true"></i></button>
           </div>
         </div>
 
         <!-- Contextual information -->
-        <div id="contextual-box" class="row-item-fullwidth">
-          <p id="contextual">Hello world!</p>
+        <div id="contextual-box" class="contextual-box row-item-fullwidth">
+          <p id="contextual"></p>
         </div>
 
       </div>
 
       <!-- Customisation options  -->
-      <div id="summarisation-customisation">
-        <div id="bs-customisation">
-          <div id="textdomain">
+      <div id="summarisation-customisation" class="summarisation-customisation">
+        <div id="bs-customisation" class="bs-customisation">
+          <div id="textdomain" class="bs-text-align">
             <h3 id="tt-header" class="pointer">Text Type</h3>
-            <div id="tt-pp" class="popup hidden"> Choose your text type</div>
+            <div id="tt-pp" class="popup box hidden"> Choose your text type</div>
             <!-- <label for="td-dropdown">Text Type:</label> -->
-            <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+            <select id="td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="td-dropdown-textdomain">
                 <!-- <option value="apple">Apple</option>
                 <option value="banana">Banana</option>
                 <option value="orange">Orange</option>
                 <option value="grape">Grape</option> -->
             </select>
           </div>
-          <div id="summarytype">
+          <div id="summarytype" class="bs-text-align">
             <!-- Extractive and Abstractive Summarisation Buttons -->
             <h3 id="st-header" class="pointer">Summary Type</h3>
             <div id="st-pp" class="popup hidden"> Choose your text type</div>
             <div id="summarisation-buttons">
-              <div id="sb-1" class="selectable-button">Extractive</div>
-              <div id="sb-2" class="selectable-button">Abstractive</div>
+              <div id="sb-1" class="box box-reduced-pad-uniform selectable-button">Extractive</div>
+              <div id="sb-2" class="box box-reduced-pad-uniform selectable-button">Abstractive</div>
             </div>
           </div>
-          <div id="modelchoice">
+          <div id="modelchoice" class="bs-text-align">
             <h3 id="model-header" class="pointer">Model select</h3>
-            <div id="mc-pp" class="popup hidden"></div>
-            <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+            <div id="mc-pp" class="popup box hidden"></div>
+            <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice">
               <!-- <option value="apple">Apple</option>
               <option value="banana">Banana</option>
               <option value="orange">Orange</option>
               <option value="grape">Grape</option> -->
           </select>
           </div>
-          <div id="summarylength">
+          <div id="summarylength" class="bs-text-align">
             <div id="sl-pp" class="popup hidden"> Choose your text type</div>
             <h3 id="sl-header" class="pointer">Summary Length</h3>
-            <h5 id="minlength">Min length: 30 words </h5>
-            <h5 id="maxlength">Max length: 300 words</h5>
-            <input type="text" id="summary-length" name="summary-length" placeholder="100">
+            <input type="text" id="summary-length" class="box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
+            <h5 id="minlength"></h5>
+            <h5 id="maxlength"></h5>
           </div>
         </div>
-        <div id="co-customisation">
+        <div id="co-customisation" class="side-header-dropdown">
           <h3>Select prompt</h3>
-          <select id="td-dropdown-prompt" name="td-dropdown-prompt">
-            <!-- <option value="apple">Apple</option>
-            <option value="banana">Banana</option>
-            <option value="orange">Orange</option>
-            <option value="grape">Grape</option> -->
+          <select id="td-dropdown-prompt" class="box box-width-extended-long" name="td-dropdown-prompt">
           </select>
         </div>
       </div>
@@ -96,14 +93,14 @@
     </div>
 
     <!-- Summary box -->
-    <div id="summary-box" class="rows">
+    <div id="summary-box" class="rows-inline">
       
     </div>
 
     <!-- Post summarisation functionality -->
-    <div id="post-summarisation" class="rows">
+    <div id="post-summarisation" class="rows rows-inline">
       <h3>Post Summarisation</h3>
-      <button id="save-summary">Save summarised text</button>
+      <button id="save-summary" class="box box-reduced-pad-uniform clear-styling-min pointer">Save summarised text</button>
     </div>
     <!-- <div id="summarisation" class="rows"></div>
     <div id="summary-box" class="rows"></div>

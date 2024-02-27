@@ -115,6 +115,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
+      sendMessageToPopup({ message : "Summarising..." , order : 1});
       summariseRequest({'text': request.data, 'customisation': request.customisation});
       // sendMessageToPopup({ action: 'summaryResponse', data: "SUMMARY" });
       // chatgptRequest("What are the tallest buildings in the world?");

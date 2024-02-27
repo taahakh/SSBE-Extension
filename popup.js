@@ -134,14 +134,24 @@ providerSelect.addEventListener("change", function() {
   console.log("Provider Selection Changed: ", providerSelect.value);
   var bs_customisation = document.getElementById("bs-customisation");
   var co_customisation = document.getElementById("co-customisation");
+  var summarisation = document.getElementById("summarisation");
+  var post_summarisation = document.getElementById("post-summarisation");
+  var summary_box = document.getElementById("summary-box");
+
   if (providerSelect.value === "co") {
     bs_customisation.style.display = "none";
-    co_customisation.style.display = "inline-block";
+    co_customisation.style.display = "flex";
+    summarisation.style.flex = "0 0 20%";
+    summary_box.style.flex = "0 0 65%";
+    post_summarisation.style.flex = "0 0 10%";
     loadCO();
     switchContextualMessage("co");
   } else {
     co_customisation.style.display = "none";
-    bs_customisation.style.display = "inline-block"
+    bs_customisation.style.display = "flex";
+    summarisation.style.flex = "0 0 30%";
+    summary_box.style.flex = "0 0 60%";
+    post_summarisation.style.flex = "0 0 10%";
     switchContextualMessage("bs");
   }
   summariseButtonState(providerSelect.value);
@@ -212,6 +222,7 @@ function loadCO() {
       // var data = msg['response'];
       var prompts = data['prompts'];
       var promptsList = document.getElementById('td-dropdown-prompt');
+      promptsList.innerHTML = "";
 
       for (const i in prompts) {
         var option = document.createElement("option");
@@ -235,26 +246,26 @@ function loadCO() {
 
 
 // -----------------------------------------------------------------------
-const getF = document.getElementById('getButton');
+// const getF = document.getElementById('getButton');
 
-getF.addEventListener('click', async () => {
-  console.log('GET Request');
-  // savePopupStorageCtx();
-  // chrome.runtime.sendMessage({ action: 'makeGetRequest' });
-  chrome.runtime.sendMessage({ action: 'configRequest' });
+// getF.addEventListener('click', async () => {
+//   console.log('GET Request');
+//   // savePopupStorageCtx();
+//   // chrome.runtime.sendMessage({ action: 'makeGetRequest' });
+//   chrome.runtime.sendMessage({ action: 'configRequest' });
 
-});
+// });
 
-const postF = document.getElementById('postButton');
+// const postF = document.getElementById('postButton');
 
-postF.addEventListener('click', async () => {
-  console.log('Starting POST Request process');
-  // let x = new SummariserClass();
-  // console.log(x.summarise("Hello World"));
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: false});
-    });
-});
+// postF.addEventListener('click', async () => {
+//   console.log('Starting POST Request process');
+//   // let x = new SummariserClass();
+//   // console.log(x.summarise("Hello World"));
+//     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+//         chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: false});
+//     });
+// });
 
 // ----------------------------------------------------------------------
 
@@ -273,7 +284,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       console.log("CS --> Summarised Data: ", request.data);
       // console.log()
       if (request.data === null || request.data === 'error' || request.data === 'failed'){
-        setContextualMessage(request.message + ' Please open and close the extension to refresh the summariser', 1);
+        setContextualMessage(request.message + ' Please open and close the extension to refresh the summariser', 0);
         lockSummariseButton();
       } else {
         var summarybox = document.getElementById('summary-box');
@@ -309,6 +320,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if (request.path !== null) {
         setUserConfigCustomisation(request.path, request.domain);
       }
+      break;
+    case 'contextualMessage':
+      setContextualMessage(request.message, request.order);
       break;
     case 'userSelectedText':
       console.log('User selected text : ', request.data);
