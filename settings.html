@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="common.css">
     <title>Document</title>
 </head>
 <body>
@@ -13,31 +14,31 @@
             <h1>Service Connections</h1>
             <p><i>....</i></p>
             <div id="provider-select">
-                <select id="provider-selector" name="">
+                <select id="provider-selector" class="box box-width-extended"  name="">
                     <option value="bs">Backend Service</option>
                     <option value="co">ChatGPT / OpenAI </option>
                 </select>
             </div>
             <div id="bs-provider-connection-box">
                 <h3>Service Connect</h3>
-                <div id="bs-provider-connection-login-button" class="selectable-button">Login</div>
-                <div id="bs-provider-connection-signup-button" class="selectable-button">Signup</div>
+                <div id="bs-provider-connection-login-button" class="box box-width-reduced selectable-button-side">Login</div>
+                <div id="bs-provider-connection-signup-button" class="box box-width-reduced selectable-button-side">Signup</div>
                 <p>Host</p>
-                <input id="bs-provider-connection-host-input" type="text">
+                <input id="bs-provider-connection-host-input" class="box box-width-extended-medium" type="text">
                 <p>Username</p>
-                <input id="bs-provider-connection-username-input" type="text">
+                <input id="bs-provider-connection-username-input" class="box box-width-extended-medium" type="text">
                 <p>Password</p>
-                <input id="bs-provider-connection-password-input" type="text">
+                <input id="bs-provider-connection-password-input" class="box box-width-extended-medium" type="text">
                 <p id="bs-provider-connection-contextual"></p>
-                <button id="bs-provider-connection-connect-button">Connect</button>
+                <button id="bs-provider-connection-connect-button" class="box pointer">Connect</button>
             </div>
             <div id="co-provider-connection-box">
                 <p>API Key</p>
-                <input type="text" name="" id="co-provider-key-input">
+                <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-key-input">
                 <p>API Host</p>
                 <p>Leave the host field empty if you want to use ChatGPT</p>
-                <input type="text" name="" id="co-provider-host-input">
-                <button id="co-provider-connection-save-button">Save</button>
+                <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-host-input">
+                <button id="co-provider-connection-save-button" class="box pointer">Save</button>
             </div>
         </div>
 
@@ -96,40 +97,40 @@
                         <input id="edit-bs-add-config-URL" type="text">
                         <!-- Customisation options  -->
                         <h4>summarisation options</h4>
-                        <div id="summarisation-customisation">
-                            <div id="bs-customisation">
-                                <div id="edit-textdomain">
+                        <div id="summarisation-customisation" class="summarisation-customisation">
+                            <div id="bs-customisation" class="bs-customisation">
+                                <div id="edit-textdomain" class="bs-text-align">
                                 <h3 id="edit-tt-header" class="pointer">Text Type</h3>
                                 <!-- <label for="td-dropdown">Text Type:</label> -->
-                                <select id="edit-td-dropdown-textdomain" name="edit-td-dropdown-textdomain">
+                                <select id="edit-td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="edit-td-dropdown-textdomain">
                                     <!-- <option value="apple">Apple</option>
                                     <option value="banana">Banana</option>
                                     <option value="orange">Orange</option>
                                     <option value="grape">Grape</option> -->
                                 </select>
                                 </div>
-                                <div id="edit-summarytype">
+                                <div id="edit-summarytype" class="bs-text-align">
                                 <!-- Extractive and Abstractive Summarisation Buttons -->
                                 <h3 id="edit-st-header" class="pointer">Summary Type</h3>
-                                <div id="edit-summarisation-buttons">
-                                    <div id="edit-sb-1" class="selectable-button">Extractive</div>
-                                    <div id="edit-sb-2" class="selectable-button">Abstractive</div>
+                                <div id="edit-summarisation-buttons" class="summarisation-buttons">
+                                    <div id="edit-sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
+                                    <div id="edit-sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
                                 </div>
                                 </div>
-                                <div id="edit-modelchoice">
+                                <div id="edit-modelchoice" class="bs-text-align">
                                 <h3 id="edit-model-header" class="pointer">Model select</h3>
-                                <select id="edit-td-dropdown-modelchoice" name="edit-td-dropdown-modelchoice">
+                                <select id="edit-td-dropdown-modelchoice" class="box dropdown-overflow" name="edit-td-dropdown-modelchoice">
                                     <!-- <option value="apple">Apple</option>
                                     <option value="banana">Banana</option>
                                     <option value="orange">Orange</option>
                                     <option value="grape">Grape</option> -->
                                 </select>
                                 </div>
-                                <div id="edit-summarylength">
+                                <div id="edit-summarylength" class="bs-text-align">
                                 <h3 id="edit-sl-header" class="pointer">Summary Length</h3>
                                 <h5 id="edit-minlength">Min length: 30 words </h5>
                                 <h5 id="edit-maxlength">Max length: 300 words</h5>
-                                <input type="text" id="edit-summary-length" name="edit-summary-length" placeholder="100">
+                                <input type="text" id="edit-summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="edit-summary-length" placeholder="100">
                                 </div>
                             </div>
                             </div>
@@ -139,8 +140,8 @@
                         <div id="edit-sl-pp" class="popup hidden"> Choose your text type</div>
                         <h4>scraping options</h4>
                         <div id="edit-scraping-options">
-                            <div id="edit-auto-scrape" class="selectable-button">Automatic Scrape</div>
-                            <div id="edit-custom-scrape" class="selectable-button">Custom Scrape</div>
+                            <div id="edit-auto-scrape" class="selectable-button-side">Automatic Scrape</div>
+                            <div id="edit-custom-scrape" class="selectable-button-side">Custom Scrape</div>
                             <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
                             <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
                         </div>
@@ -160,40 +161,40 @@
                     <input id="bs-add-config-URL" type="text">
                     <!-- Customisation options  -->
                     <h4>summarisation options</h4>
-                    <div id="summarisation-customisation">
-                        <div id="bs-customisation">
-                            <div id="textdomain">
+                    <div id="summarisation-customisation" class="summarisation-customisation">
+                        <div id="bs-customisation" class="bs-customisation">
+                            <div id="textdomain" class="bs-text-align">
                               <h3 id="tt-header" class="pointer">Text Type</h3>
                               <!-- <label for="td-dropdown">Text Type:</label> -->
-                              <select id="td-dropdown-textdomain" name="td-dropdown-textdomain">
+                              <select id="td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="td-dropdown-textdomain">
                                   <!-- <option value="apple">Apple</option>
                                   <option value="banana">Banana</option>
                                   <option value="orange">Orange</option>
                                   <option value="grape">Grape</option> -->
                               </select>
                             </div>
-                            <div id="summarytype">
+                            <div id="summarytype" class="bs-text-align">
                               <!-- Extractive and Abstractive Summarisation Buttons -->
                               <h3 id="st-header" class="pointer">Summary Type</h3>
-                              <div id="summarisation-buttons">
-                                <div id="sb-1" class="selectable-button">Extractive</div>
-                                <div id="sb-2" class="selectable-button">Abstractive</div>
+                              <div id="summarisation-buttons" class="summarisation-buttons">
+                                <div id="sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
+                                <div id="sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
                               </div>
                             </div>
-                            <div id="modelchoice">
+                            <div id="modelchoice" class="bs-text-align">
                               <h3 id="model-header" class="pointer">Model select</h3>
-                              <select id="td-dropdown-modelchoice" name="td-dropdown-modelchoice">
+                              <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice">
                                 <!-- <option value="apple">Apple</option>
                                 <option value="banana">Banana</option>
                                 <option value="orange">Orange</option>
                                 <option value="grape">Grape</option> -->
                             </select>
                             </div>
-                            <div id="summarylength">
+                            <div id="summarylength" class="bs-text-align">
                               <h3 id="sl-header" class="pointer">Summary Length</h3>
                               <h5 id="minlength">Min length: 30 words </h5>
                               <h5 id="maxlength">Max length: 300 words</h5>
-                              <input type="text" id="summary-length" name="summary-length" placeholder="100">
+                              <input type="text" id="summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
                             </div>
                           </div>
                         </div>
@@ -203,8 +204,8 @@
                         <div id="sl-pp" class="popup hidden"> Choose your text type</div>
                         <h4>scraping options</h4>
                     <div id="scraping-options">
-                        <div id="auto-scrape" class="selectable-button">Automatic Scrape</div>
-                        <div id="custom-scrape" class="selectable-button">Custom Scrape</div>
+                        <div id="auto-scrape" class="selectable-button-side">Automatic Scrape</div>
+                        <div id="custom-scrape" class="selectable-button-side">Custom Scrape</div>
                         <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
                         <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
                     </div>

@@ -1,0 +1,206 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* --- summarisation [ bs-customisation ] --- */
+
+.popup {
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid black;
+    /* display: inline-block; */
+    z-index: 1;
+    top: 185px;
+}
+
+.summarisation-customisation {
+    border-top: 2px solid lightgrey;
+    padding-top: 10px;
+}
+
+/* #summarisation-customisation > div {
+    display: inline-block;
+    border: 1px solid red;
+} */
+
+.bs-customisation {
+    display: flex;
+    padding-left: 30px;
+    padding-right: 30px;
+    /* flex-direction: row; */
+    /* justify-self: center;  */
+    /* align-items: center;     */
+}
+
+.bs-customisation > div {
+    width: 25%;
+    /* box-sizing: border-box;  */
+    text-align: center;
+    /* border: 1px solid blue; */
+}
+
+.bs-customisation h3 {
+    padding-bottom: 5px;
+}
+
+/* .bs-customisation > div {
+    display: inline-block;
+    text-align: center;
+    border: 1px solid red;
+} */
+
+.selectable-button {
+    border:1px solid black;
+    cursor:pointer;
+    vertical-align:middle;
+    max-width: 100px;
+    text-align: center;
+}
+
+.selected-state {
+    /* background-color: red !important; */
+    background-color: greenyellow;
+}
+
+/* BS Customisation Option Centre Align  */
+.bs-text-align {
+    text-align: center;
+}
+
+/* Text Domain (Text Type) */
+
+
+/* Summary Type */
+/* NEED TO CHANGE THIS NAME - THIS IS THE DIV WRAPPER FOR EXTRACTIVE AND ABSTRACTIVE BUTTONS */
+.summarisation-buttons div {
+    cursor: pointer; 
+    margin: 0 auto;
+    /* text-align: center; */
+    /* display: block; */
+    /* justify-self: center; */
+}
+
+.sb-1 + .sb-2 {
+    margin-top: 5px;
+}
+
+/* Summary Length */
+
+.summary-length {
+    padding-left: 4px;
+}
+
+.summary-length::placeholder {
+    text-indent: 2px;
+}
+
+
+/* Text Type / Model Select Dropdown customisation */
+.dropdown-overflow {
+  max-width: 100%;
+  overflow: hidden;      
+  white-space: nowrap;  
+  text-overflow: ellipsis; 
+}
+
+
+/* *** --- General design --- *** */
+
+/* Side Header+Dropdown design */
+/* Provider, Select Prompt */
+
+.side-header-dropdown {
+    float: left;
+    display: flex;
+    align-items: center;
+}
+
+.side-header-dropdown > h3 {
+    padding-right: 12px;
+}
+
+.side-header-dropdown > select {
+    float: right;
+}
+
+/* BOX design */
+
+.box {
+    border-radius: 20px;
+    /* background: white; */
+    padding: 10px;
+    width: 150px;
+    /* height: 150px; */
+}
+
+/* Box widened - by 20px */
+.box-width-extended {
+    width: 170px;
+}
+
+/* Box widened - by 70px */
+.box-width-extended-medium {
+    width: 270px;
+}
+
+/* Box widened - by 350px */
+.box-width-extended-long {
+    width: 500px;
+}
+
+/* Box reduced - by 50px */
+.box-width-reduced {
+    width: 100px;
+}
+
+/* Right Padding */
+.box-right-pad {
+    padding-right: 1em;
+}
+
+/* Left Right Padding */
+.box-lr-pad-long {
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+.box-reduced-pad-uniform {
+    padding: 2px 2px 2px 2px;
+}
+
+
+/* Clear default styling */
+
+.clear-styling-min {
+    background: none;
+    border: 1px solid black;
+}
+
+.clear-styling {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    color: inherit;
+    outline: none;
+}
+
+
+.hidden {
+    display: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.padding-bottom {
+    padding-bottom: 10px;
+}

@@ -1,28 +1,90 @@
+/* Container */
+
+#container {
+    width: 700px;
+    height: 100%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+/* H and P size */
+
+h1 {
+    padding-bottom: 12px;
+    font-size: 35px;
+}
+
+h2 {
+    font-size: 27px;
+    padding-bottom: 10px;
+}
+
+h3 {
+    font-size: 17px;
+    padding-bottom: 10px;
+}
+
+h4 {
+    font-size: 15px;
+    padding-bottom: 10px;
+}
+
+p {
+    font-size: 13px;
+}
+
+/* Section spacing */
+
+#provider + #shortcuts {
+    margin-top: 25px;
+}
+
+#shortcuts + #co-customisation {
+    margin-top: 25px;
+}
+
+#co-customisation + #bs-config {
+    margin-top: 25px;
+}
+
+/* *** --- Provider [co-provider] --- *** */
+
+/* #bs-provider-connection-box > p,
+#bs-provider-connection-box > div,
+#co-provider-connection-box > p,
+#co-provider-connection-box > div {
+    padding-bottom: 15px;
+} */
+
+#bs-provider-connection-box *:not(button, 
+                                  input, 
+                                  #bs-provider-connection-login-button, 
+                                  #bs-provider-connection-signup-button),
+#co-provider-connection-box *:not(button, input) {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    font-weight: bold;
+}
+
+#bs-provider-connection-box p:first-of-type,
+#co-provider-connection-box p:first-of-type {
+    padding-top: 15px;
+}
+
+/* #bs-provider-connection-box p:first-child,
+#co-provider-connection-box p:first-child {
+    padding-top: 100px;
+} */
+
+/* --- Provider [bs-provider] --- */
+
+
+
 /* --- Provider [co-provider] --- */
 #co-provider-connection-box {
     display: none;
 }
 
-
-/* --- summarisation [ co-customisation ] --- */
-
-.popup {
-    /* position: relative; */
-    background-color: gray;
-    padding: 10px;
-    border: 1px solid #ccc;
-    display: inline-block;
-    z-index: 1;
-    /* top: 500px; */
-}
-  
-.hidden {
-    display: none;
-}
-
-.pointer {
-    cursor: pointer;
-}
 
 /* Prompts contextual help  */
 
@@ -40,23 +102,13 @@
 
 
 
-/* --- summarisation [ bs-customisation ] --- */
+/* --- summarisation [ (edit) bs-customisation ] --- */
 
-/* #summarisation-customisation > div {
-    display: inline-block;
-    border: 1px solid red;
-} */
-
-#bs-customisation > div {
-    display: inline-block;
-    border: 1px solid red;
-}
-
-.selectable-button {
+.selectable-button-side {
     display:inline-block;
-    color:#444;
+    /* color:#444; */
     border:1px solid #CCC;
-    background:#DDD;
+    /* background:#DDD; */
     box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
     cursor:pointer;
     vertical-align:middle;
@@ -65,9 +117,6 @@
     text-align: center;
 }
 
-.selected-state {
-    background-color: red;
-}
 
 /* xpath */
 
