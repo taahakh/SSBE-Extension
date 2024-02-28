@@ -1,10 +1,15 @@
 /* Container */
 
 #container {
-    width: 700px;
+    width: 750px;
     height: 100%;
     margin: 0 auto;
     padding-bottom: 20px;
+    /* border: 1px solid red; */
+}
+
+#container > div {
+    padding-bottom: 30px;
 }
 
 /* H and P size */
@@ -20,17 +25,17 @@ h2 {
 }
 
 h3 {
-    font-size: 17px;
+    font-size: 21px;
     padding-bottom: 10px;
 }
 
 h4 {
-    font-size: 15px;
-    padding-bottom: 10px;
+    font-size: 17px;
+    padding-bottom: 15px;
 }
 
-p {
-    font-size: 13px;
+p, li {
+    font-size: 15px;
 }
 
 /* Section spacing */
@@ -47,14 +52,7 @@ p {
     margin-top: 25px;
 }
 
-/* *** --- Provider [co-provider] --- *** */
-
-/* #bs-provider-connection-box > p,
-#bs-provider-connection-box > div,
-#co-provider-connection-box > p,
-#co-provider-connection-box > div {
-    padding-bottom: 15px;
-} */
+/* *** --- Provider --- *** */
 
 #bs-provider-connection-box *:not(button, 
                                   input, 
@@ -85,6 +83,7 @@ p {
     display: none;
 }
 
+/* *** --- CO Customisation --- *** */
 
 /* Prompts contextual help  */
 
@@ -95,26 +94,95 @@ p {
 
 /* Update prompt */
 #co-prompts-edit-editor {
+    padding-top: 20px;
     display: none;
+}
+
+/* Part of prompts description */
+#prompts ul.guide-text {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+
+/* *** --- Shortcuts --- *** */
+
+#shortcuts p {
+    font-style: italic;
+    padding-bottom: 10px;
+}
+
+#shortcuts ul {
+    list-style-type: none;
+    padding-bottom: 10px;
+}
+
+#shortcuts ul > li {
+    /* font-size: 13px; */
+    padding-bottom: 10px;
+}
+
+#shortcuts ul > li > strong{
+    font-size: 20px;
+    font-weight: 900;
 }
 
 
 
 
+/* *** --- BS Customisation --- *** */
 
-/* --- summarisation [ (edit) bs-customisation ] --- */
+/* --- General --- */
+.summarisation-customisation {
+    border-top: none;
+}
 
-.selectable-button-side {
-    display:inline-block;
-    /* color:#444; */
-    border:1px solid #CCC;
-    /* background:#DDD; */
-    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
-    cursor:pointer;
-    vertical-align:middle;
-    max-width: 100px;
-    padding: 5px;
-    text-align: center;
+/* .per-site-config > div {
+    padding-bottom: 20px;
+} */
+
+.bs-psc-addconfig > div {
+    padding-bottom: 20px;
+}
+
+.scraping-options ul{
+    font-style: italic;
+    list-style: none;
+    padding-bottom: 20px;
+}
+
+.scraping-options ul > li{
+    /* padding-left: 20px; */
+}
+
+
+/* --- Edit --- */
+
+/* --- Add --- */
+
+/* Url descriptor box */
+#bs-psc-url-descriptor-box p,
+#bs-psc-url-descriptor-box button {
+    display: inline-block;
+}
+
+/* Url descriptor */
+#bs-psc-url-descriptor {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+/* Chevron  */
+#bs-psc-url-descriptor-toggle {
+    background: none;
+    border: none;
+}
+
+#bs-psc-url-descriptor-toggle::after {
+    content: '\25BC'; 
+    margin-left: 5px; 
 }
 
 
@@ -128,4 +196,41 @@ p {
 /* BS Edit site */
 #bs-psc-editsite-update {
     display: none;
+}
+
+/* *** --- Other --- *** */
+
+.guide-text {
+    font-style: italic;
+}
+
+.pad-btm-10 {
+    padding-bottom: 10px;
+}
+
+.pad-btm-15 {
+    padding-bottom: 15px;
+}
+
+.pad-btm-20 {
+    padding-bottom: 20px;
+}
+
+.pad-top-20 {
+    padding-top: 20px;
+}
+
+.selectable-button-side {
+    display:inline-block;
+}
+
+.line-separator {
+    width: 80%;
+    padding-top: 30px;
+    border-bottom: 3px solid lightgrey;
+    margin-bottom: 30px;
+}
+
+.green {
+    background-color: greenyellow;
 }

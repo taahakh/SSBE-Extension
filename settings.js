@@ -50,6 +50,12 @@ function removeFromStorage(ctx) {
         console.log(ctx, ' Removed from storage');
       });
 }
+// -------------------------------------------------
+// Button colour states
+var sideButtonDefault = "box box-width-reduced selectable-button-side";
+var sideButtonSelected = "box box-width-reduced selectable-button-side green";
+
+
 // -----------------------------------------------------------------------------------------
 // BS Service Connections
 var bsPConnectionLoginButton = document.getElementById('bs-provider-connection-login-button');
@@ -67,14 +73,14 @@ function setAuthenticationType(type) {
     console.log(type);
     if (type === undefined || type === bsPConnectionLoginButton) {
         bsPSelectedConnect = "log";
-        bsPConnectionLoginButton.classList.add('selected-state');
-        bsPConnectionSignupButton.classList.remove('selected-state');
+        bsPConnectionLoginButton.classList.add('green');
+        bsPConnectionSignupButton.classList.remove('green');
         bsPConnectionConnectButton.innerText = "Connect";
     }
     else {
         bsPSelectedConnect = "sin";
-        bsPConnectionSignupButton.classList.add('selected-state');
-        bsPConnectionLoginButton.classList.remove('selected-state');
+        bsPConnectionSignupButton.classList.add('green');
+        bsPConnectionLoginButton.classList.remove('green');
         bsPConnectionConnectButton.innerText = "Signup";
     } 
     removeBsAuthContext();
@@ -453,7 +459,7 @@ var bsAddConfigXPATH = document.getElementById("add-xpath");
 var bsAddConfigXPATHAdd = document.getElementById("add-xpath-button");
 var bsAddConfigXPATHInput = document.getElementById("add-xpath-input0");
 
-bsAddConfigAutoScrape.classList.add("selected-state"); // CHANGE HOW THIS IS DONE
+bsAddConfigAutoScrape.classList.add("green"); // CHANGE HOW THIS IS DONE
 
 var editChosen = null;
 var editOldURL = null;
@@ -492,12 +498,12 @@ function setEditScrapingOptions(config) {
 
     switch (editSelectedScrapeOption) { 
         case 'auto-scrape':
-            bsEditConfigAutoScrape.classList.add("selected-state");
-            bsEditConfigCustomScrape.classList.remove("selected-state");
+            bsEditConfigAutoScrape.classList.add("green");
+            bsEditConfigCustomScrape.classList.remove("green");
             break;
         case "custom-scrape":
-            bsEditConfigCustomScrape.classList.add("selected-state");
-            bsEditConfigAutoScrape.classList.remove("selected-state");
+            bsEditConfigCustomScrape.classList.add("green");
+            bsEditConfigAutoScrape.classList.remove("green");
             break;
     }
 }
@@ -585,8 +591,8 @@ populateBSEditConfig();
 bsEditConfigAutoScrape.addEventListener("click", function() {
     if (editSelectedScrapeOption !== "auto-scrape") {
         editSelectedScrapeOption = "auto-scrape";
-        bsEditConfigAutoScrape.classList.add("selected-state");
-        bsEditConfigCustomScrape.classList.remove("selected-state");
+        bsEditConfigAutoScrape.classList.add("green");
+        bsEditConfigCustomScrape.classList.remove("green");
         // Hide the custom scrape box fields
         bsEditConfigXPATH.style.display = "none";
     }
@@ -595,8 +601,8 @@ bsEditConfigAutoScrape.addEventListener("click", function() {
 bsEditConfigCustomScrape.addEventListener("click", function (param) { 
     if (editSelectedScrapeOption !== "custom-scrape") {
         editSelectedScrapeOption = "custom-scrape";
-        bsEditConfigAutoScrape.classList.remove("selected-state");
-        bsEditConfigCustomScrape.classList.add("selected-state");
+        bsEditConfigAutoScrape.classList.remove("green");
+        bsEditConfigCustomScrape.classList.add("green");
         // Display the custom scrape box fields
         bsEditConfigXPATH.style.display = "block";
     }
@@ -710,8 +716,8 @@ function addXpathInputs(xpathTracker, xpathInput, addConfigXpathInput, addConfig
 bsAddConfigAutoScrape.addEventListener("click", function() {
     if (selectedScrapeOption !== "auto-scrape") {
         selectedScrapeOption = "auto-scrape";
-        bsAddConfigAutoScrape.classList.add("selected-state");
-        bsAddConfigCustomScrape.classList.remove("selected-state");
+        bsAddConfigAutoScrape.classList.add("green");
+        bsAddConfigCustomScrape.classList.remove("green");
         // Hide the custom scrape box fields
         bsAddConfigXPATH.style.display = "none";
     }
@@ -720,8 +726,8 @@ bsAddConfigAutoScrape.addEventListener("click", function() {
 bsAddConfigCustomScrape.addEventListener("click", function (param) { 
     if (selectedScrapeOption !== "custom-scrape") {
         selectedScrapeOption = "custom-scrape";
-        bsAddConfigAutoScrape.classList.remove("selected-state");
-        bsAddConfigCustomScrape.classList.add("selected-state");
+        bsAddConfigAutoScrape.classList.remove("green");
+        bsAddConfigCustomScrape.classList.add("green");
         // Display the custom scrape box fields
         bsAddConfigXPATH.style.display = "block";
     }
@@ -854,6 +860,14 @@ bsAddConfigSave.addEventListener("click", function () {
         
     // }
     // removeFromStorage("bsc");
+})
+
+
+// Add new config for site - url descriptor toggle
+document.getElementById("bs-psc-url-descriptor-toggle").addEventListener('click', function () {
+    var descriptor = document.getElementById("bs-psc-url-descriptor");
+    var currentDisplay = window.getComputedStyle(descriptor).display;
+    descriptor.style.display = (currentDisplay === "none") ? "block" : "none";
 })
 
 

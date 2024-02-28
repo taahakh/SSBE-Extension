@@ -132,9 +132,14 @@
 .box {
     border-radius: 20px;
     /* background: white; */
+    border: 1px solid black;
     padding: 10px;
     width: 150px;
     /* height: 150px; */
+}
+
+.box-div, .box-button {
+    text-align: center;
 }
 
 /* Box widened - by 20px */
@@ -142,9 +147,15 @@
     width: 170px;
 }
 
-/* Box widened - by 70px */
+/* Box widened - by 90px */
 .box-width-extended-medium {
     width: 270px;
+}
+
+/* Box widened - by 220px */
+/* Used in settings - Prompts edit select with three side buttons */
+.box-width-extended-med-long {
+    width: 370px;
 }
 
 /* Box widened - by 350px */
@@ -156,6 +167,11 @@
 .box-width-reduced {
     width: 100px;
 }
+
+/* Box reduced even further- by 150 - 50px */
+/* .box-width-reduced-further {
+    width: 100px;
+} */
 
 /* Right Padding */
 .box-right-pad {

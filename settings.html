@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="settings.css">
     <title>Document</title>
 </head>
 <body>
@@ -12,8 +12,8 @@
         <h1 style="font-size: 40px;">Settings</h1>
         <div id="provider">
             <h1>Service Connections</h1>
-            <p><i>....</i></p>
             <div id="provider-select">
+                <h2>Select Provider</h2>
                 <select id="provider-selector" class="box box-width-extended"  name="">
                     <option value="bs">Backend Service</option>
                     <option value="co">ChatGPT / OpenAI </option>
@@ -21,8 +21,8 @@
             </div>
             <div id="bs-provider-connection-box">
                 <h3>Service Connect</h3>
-                <div id="bs-provider-connection-login-button" class="box box-width-reduced selectable-button-side">Login</div>
-                <div id="bs-provider-connection-signup-button" class="box box-width-reduced selectable-button-side">Signup</div>
+                <div id="bs-provider-connection-login-button" class="box box-div box-width-extended selectable-button-side pointer">Login</div>
+                <div id="bs-provider-connection-signup-button" class="box box-div box-width-extended selectable-button-side pointer">Signup</div>
                 <p>Host</p>
                 <input id="bs-provider-connection-host-input" class="box box-width-extended-medium" type="text">
                 <p>Username</p>
@@ -45,56 +45,75 @@
         <div id="shortcuts">
             <h1>Shortcuts</h1>
             <h2>Shortcut options</h2>
-            <p>Open extension</p>
-            <p>Select text on the webpage to summarise</p>
-            <button id="edit-view-shortcuts-button">Edit & View shortcuts</button>
+            <p>A list of shortcuts that can be used shown down below. Click on the button <strong>"Open shortcuts"</strong> down below to edit and view shortcuts</p>
+            <ul>
+                <li><strong>></strong> Activate the extension: Opens the extension</li>
+                <li><strong>></strong> Select text on the webpage to summarise</li>
+            </ul>
+            <button id="edit-view-shortcuts-button" class="box pointer">Open shortcuts</button>
         </div>
 
         <div id="co-customisation">
             <h1>ChatGPT / OpenAI: Customisation</h1>
+            <p class="guide-text pad-btm-10">This section houses the current customisation features for using ChatGPT / OpenAI</p>
             <div id="prompts">
                 <h2>Prompts</h2>
-                <p id="co-prompts-ctx-help"></p>
+                <p class="guide-text pad-btm-10">Prompts are statements that are used to help ChatGPT / OpenAI summarise in a particular way.</p>
+                <p class="guide-text pad-btm-10">For example:</p>
+                <ul class="guide-text pad-btm-10">
+                    <li><strong>></strong> Summarise this text: {content}</li>    
+                    <li><strong>></strong> Summarise this text under 100 words : {content}</li>    
+                </ul>
+                <p class="guide-text pad-btm-10"> "<strong>{content}</strong>" must be added in the statement so that the extension will know where to add the text for summarisation</p>
                 <div id="saved-prompts">
-                    <select name="" id="co-prompts-selector">
+                    <h3 class="pad-btm-10">View, Edit, Delete, Set Default Prompts </h3>
+                    <p class="guide-text pad-btm-10">
+                        View, edit and delete your saved prompts. 
+                        You can also decide which prompt you would like to be your default for summarisation.
+                    </p>
+                    <p class="guide-text pad-btm-10"> Please make sure "<strong>{content}</strong>" is added within your prompt in order for it to be valid</p>
+                    <select name="" id="co-prompts-selector" class="box box-width-extended-med-long">
                         <!-- <option value="x">x</option> -->
                         <!-- <option value="y">y</option> -->
                     </select>
-                    <button id="co-prompts-edit-button">Edit</button>
-                    <button id="co-prompts-delete-button">Delete</button>
-                    <button id="co-prompts-default-button">Set default</button>
+                    <button id="co-prompts-edit-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Edit</button>
+                    <button id="co-prompts-delete-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Delete</button>
+                    <button id="co-prompts-default-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Set default</button>
                     <div id="co-prompts-edit-editor">
-                        <input type="text" id="co-prompts-edit-input">
-                        <button id="co-prompts-edit-update-button">Update</button>
+                        <h4>Update prompt</h4>
+                        <input type="text" id="co-prompts-edit-input" class="box box-width-extended-long">
+                        <button id="co-prompts-edit-update-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Update</button>
                     </div>
-                    <!-- Need to add to design?????? -->
-                    <p><b>ADD TO DESIGN</b></p>
-                    
+                    <!-- Need to add to design?????? -->                    
                 </div>
+                
+                <div class="line-separator"></div>
+
                 <div id="add-new-prompts">
-                    <input type="text" id="co-prompts-add-input">
-                    <button id="co-prompts-add-button">Add</button>
+                    <h3>Add new prompt</h3>
+                    <p class="guide-text pad-btm-10"> Please make sure "<strong>{content}</strong>" is added within your prompt in order for it to be valid</p>
+                    <input type="text" id="co-prompts-add-input" class="box box-width-extended-long">
+                    <button id="co-prompts-add-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                 </div>
+                <p id="co-prompts-ctx-help" class="pad-btm-10"></p>
             </div>
         </div>
 
         <div id="bs-config">
             <h1>Backend service: Customisation</h1>
-            <div id="per-site-config">
+            <p class="guide-text pad-btm-10">This section houses the current customisation features for using the Backend Service</p>
+            <div id="per-site-config" class="per-site-config">
                 <h2>Per site customisation</h2>
-                
+                <p class="guide-text pad-btm-20">Customise summarisation for particular sites that you may frequently visit</p>
                 <div id="bs-psc-editsite">
-                    <h3>Edit site</h3>
-                    <select id="bs-edit-config-selector" name="">
-                        <!-- <option value="x">x</option>
-                        <option value="y">y</option> -->
-                    </select>
-                    <button id="edit-site-button">Edit</button>
-                    <button id="edit-del-site-button">Remove</button>      
+                    <h3 class="pad-btm-15">Edit configuration for a site</h3>
+                    <select id="bs-edit-config-selector" class="box box-width-extended-med-long" name=""></select>
+                    <button id="edit-site-button" class="box box-width-reduced pointer box-reduced-pad-uniform">Edit</button>
+                    <button id="edit-del-site-button" class="box box-width-reduced pointer box-reduced-pad-uniform">Remove</button>      
                     <div id="bs-psc-editsite-update">
                         
                         <h4>url</h4>
-                        <input id="edit-bs-add-config-URL" type="text">
+                        <input id="edit-bs-add-config-URL" class="box box-width-extended-long" type="text">
                         <!-- Customisation options  -->
                         <h4>summarisation options</h4>
                         <div id="summarisation-customisation" class="summarisation-customisation">
@@ -138,12 +157,10 @@
                         <div id="edit-st-pp" class="popup hidden"> Choose your text type</div>
                         <div id="edit-mc-pp" class="popup hidden"></div>
                         <div id="edit-sl-pp" class="popup hidden"> Choose your text type</div>
-                        <h4>scraping options</h4>
+                        <h4>Scraping Options</h4>
                         <div id="edit-scraping-options">
-                            <div id="edit-auto-scrape" class="selectable-button-side">Automatic Scrape</div>
-                            <div id="edit-custom-scrape" class="selectable-button-side">Custom Scrape</div>
-                            <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
-                            <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
+                            <div id="edit-auto-scrape" class="box box-width-reduced pointer selectable-button-side">Automatic Scrape</div>
+                            <div id="edit-custom-scrape" class="selectable-button-side box box-width-reduced pointer">Custom Scrape</div>
                         </div>
                         <h4>add xpath</h4>    
                         <div id="edit-add-xpath">
@@ -153,15 +170,47 @@
                         <button id="edit-bs-add-config-save">Save</button>
                      </div>
                 </div>
-                <br><br><br>
 
-                <div id="bs-psc-addconfig">
-                    <h3>Add new configuration</h3>
-                    <h4>url</h4>
-                    <input id="bs-add-config-URL" type="text">
+                <div class="line-separator"></div>
+
+                <div id="bs-psc-addconfig" class="bs-psc-addconfig">
+                    <h3 class="pad-btm-20">Add new configuration for a site</h3>
+                    <p class="guide-text pad-btm-10">Add the url you want to configure for summarisation e.g. https://example.co.uk</p>
+                    <div id="bs-psc-url-descriptor-box">
+                        <p class="guide-text">Click the chevron on how to add urls</p>
+                        <button id="bs-psc-url-descriptor-toggle" class="pointer"></button>
+                        <div id="bs-psc-url-descriptor">
+                            <p class="guide-text pad-btm-10">
+                                For more specificity in the type of pages on a site you want to summarise, add path / page of the url e.g. https://example.co.uk/news .
+                            </p>
+                            <p class="guide-text pad-btm-10">Visiting pages that match the url will load up and use the summarisation customisation.</p>
+                            <p class="guide-text pad-btm-10">
+                                Note that if you have a configuration for https://example.co.uk ,
+                                all sites that are a part that website will use the same summarisation configuration. e.g. Customisation for https://example.co.uk will work for https://example.co.uk/news .
+                            </p>
+                            <p class="guide-text pad-btm-10">
+                                You can add multiple customisations for the same site but with different paths e.g. Customisation given for https://example.co.uk and https://example.co.uk/news will use their respective configuration. 
+                                Visiting pages that match the url will load up and use the summarisation customisation.
+                            </p>
+                            <p class="guide-text pad-btm-10">
+                                Customisation is given priority to the longest matching path e.g. Customisation has been given for https://example.co.uk and https://example.co.uk/news . 
+                                Visiting site https://example.co.uk/news/sports will use customisation from https://example.co.uk/news .
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- <p class="guide-text pad-btm-20"></p> -->
+                    <div class="url-section">
+                        <h4>URL</h4>
+                        <input id="bs-add-config-URL" class="box box-width-extended-med-long" type="text">
+                    </div>
                     <!-- Customisation options  -->
-                    <h4>summarisation options</h4>
-                    <div id="summarisation-customisation" class="summarisation-customisation">
+                    <div id="summarisation-customisation" class="summarisation-customisation pad-btm-10">
+                        <h4>Summarisation Options</h4>
+                        <p class="guide-text pad-btm-20">
+                            The options below allow you to customise your summarisation experience for the webpages you visit.
+                            Hover over each option's title to get a better understanding
+                        </p>
                         <div id="bs-customisation" class="bs-customisation">
                             <div id="textdomain" class="bs-text-align">
                               <h3 id="tt-header" class="pointer">Text Type</h3>
@@ -183,12 +232,7 @@
                             </div>
                             <div id="modelchoice" class="bs-text-align">
                               <h3 id="model-header" class="pointer">Model select</h3>
-                              <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice">
-                                <!-- <option value="apple">Apple</option>
-                                <option value="banana">Banana</option>
-                                <option value="orange">Orange</option>
-                                <option value="grape">Grape</option> -->
-                            </select>
+                              <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice"></select>
                             </div>
                             <div id="summarylength" class="bs-text-align">
                               <h3 id="sl-header" class="pointer">Summary Length</h3>
@@ -202,19 +246,32 @@
                         <div id="st-pp" class="popup hidden"> Choose your text type</div>
                         <div id="mc-pp" class="popup hidden"></div>
                         <div id="sl-pp" class="popup hidden"> Choose your text type</div>
-                        <h4>scraping options</h4>
-                    <div id="scraping-options">
-                        <div id="auto-scrape" class="selectable-button-side">Automatic Scrape</div>
-                        <div id="custom-scrape" class="selectable-button-side">Custom Scrape</div>
-                        <!-- <input type="checkbox" name="AS" id="">Automatic scrape -->
-                        <!-- <input type="checkbox" name="CS" id="">Custom Scrape -->
+                    <div id="scraping-options" class="scraping-options pad-top-20">
+                        <h4>Scraping Options</h4>
+                        <ul>
+                            <li><strong>Automatic Scrape:</strong> Extension tries its best to extract the text from the webpage</li>
+                            <br>
+                            <li>
+                                <strong>Custom Scrape:  </strong>  
+                                Decide what text gets extracted from the webpage with XPATHs. This option is more advanced and requires knowledge in using XPATHs and some level of web devlopment.
+                                Resources on this topic can be found <a href="https://www.zyte.com/blog/an-introduction-to-xpath-with-examples/" target="_blank">here</a>.
+                                A simple (naive) approach of using XPATHs is described when clicking on the "<u>Custom Scrape</u>" button
+                            </li>
+                        </ul>
+                        <div id="auto-scrape" class="box box-div box-width-extended selectable-button-side pointer">Automatic Scrape</div>
+                        <div id="custom-scrape" class="box box-div box-width-extended selectable-button-side  pointer">Custom Scrape</div>
                     </div>
-                    <h4>add xpath</h4>    
                     <div id="add-xpath">
-                        <input type="text" name="xpath" id="add-xpath-input0">
-                        <button id="add-xpath-button">Add</button>
+                        <h4>Add XPATH</h4>
+                        <p>
+                            Simple approach: Visit the page you would like to summarise. Right click on the text that will need to be summarised and select Inspect Element.
+                            Hover over the <u>copy</u> item in the box and select <u>Copy XPath</u>. You may get something like this : <u>//*[@id="main-content"]/article/div[4]/div/p</u> .
+                            You can now paste it in the XPATH input box. If there are square brackets (there may be numbers inside), you may remove it.
+                        </p>
+                        <input type="text" name="xpath" id="add-xpath-input0" class="box box-width-extended-med-long">
+                        <button id="add-xpath-button" class="box box-width-reduced pointer">Add</button>
                     </div>
-                    <button id="bs-add-config-save">Save</button>
+                    <button id="bs-add-config-save" class="box box-width-reduced pointer">Save</button>
                 </div>
             </div>
         </div>
