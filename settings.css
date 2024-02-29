@@ -160,14 +160,16 @@ p, li {
 
 /* --- Add --- */
 
-/* Url descriptor box */
+/* Url + xpath descriptor p button inline */
 #bs-psc-url-descriptor-box p,
-#bs-psc-url-descriptor-box button {
+#bs-psc-url-descriptor-box button,
+#add-xpath p:first-of-type,
+#add-xpath #xpath-descriptor-toggle {
     display: inline-block;
 }
 
-/* Url descriptor */
-#bs-psc-url-descriptor {
+/* Url + xpath descriptor text box */
+.descriptor-text-box {
     display: none;
     padding: 20px;
     border: 1px solid #ccc;
@@ -175,7 +177,7 @@ p, li {
 }
 
 /* Chevron  */
-#bs-psc-url-descriptor-toggle {
+/* #bs-psc-url-descriptor-toggle {
     background: none;
     border: none;
 }
@@ -183,11 +185,22 @@ p, li {
 #bs-psc-url-descriptor-toggle::after {
     content: '\25BC'; 
     margin-left: 5px; 
+} */
+
+.guide-descriptor-toggle {
+    background: none;
+    border: none;
 }
+
+.guide-descriptor-toggle::after {
+    content: '\25BC'; 
+    margin-left: 5px; 
+}
+
+/* xpath descriptor */
 
 
 /* xpath */
-
 #add-xpath {
     display: none;
 }
@@ -233,4 +246,9 @@ p, li {
 
 .green {
     background-color: greenyellow;
+}
+
+.red-error {
+    /* color: red; */
+    font-weight: bold;
 }

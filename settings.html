@@ -29,7 +29,7 @@
                 <input id="bs-provider-connection-username-input" class="box box-width-extended-medium" type="text">
                 <p>Password</p>
                 <input id="bs-provider-connection-password-input" class="box box-width-extended-medium" type="text">
-                <p id="bs-provider-connection-contextual"></p>
+                <p id="bs-provider-connection-contextual" class="red-error"></p>
                 <button id="bs-provider-connection-connect-button" class="box pointer">Connect</button>
             </div>
             <div id="co-provider-connection-box">
@@ -175,11 +175,11 @@
 
                 <div id="bs-psc-addconfig" class="bs-psc-addconfig">
                     <h3 class="pad-btm-20">Add new configuration for a site</h3>
-                    <p class="guide-text pad-btm-10">Add the url you want to configure for summarisation e.g. https://example.co.uk</p>
+                    <p class="guide-text pad-btm-10">Add a <strong>valid</strong> url that you want to configure for summarisation e.g. https://example.co.uk</p>
                     <div id="bs-psc-url-descriptor-box">
                         <p class="guide-text">Click the chevron on how to add urls</p>
-                        <button id="bs-psc-url-descriptor-toggle" class="pointer"></button>
-                        <div id="bs-psc-url-descriptor">
+                        <button id="bs-psc-url-descriptor-toggle" class="guide-descriptor-toggle pointer"></button>
+                        <div id="bs-psc-url-descriptor" class="descriptor-text-box">
                             <p class="guide-text pad-btm-10">
                                 For more specificity in the type of pages on a site you want to summarise, add path / page of the url e.g. https://example.co.uk/news .
                             </p>
@@ -195,6 +195,9 @@
                             <p class="guide-text pad-btm-10">
                                 Customisation is given priority to the longest matching path e.g. Customisation has been given for https://example.co.uk and https://example.co.uk/news . 
                                 Visiting site https://example.co.uk/news/sports will use customisation from https://example.co.uk/news .
+                            </p>
+                            <p class="guide-text pad-btm-10">
+                                <strong>Note that urls must match the pattern for the sites you have configured</strong>
                             </p>
                         </div>
                     </div>
@@ -263,15 +266,23 @@
                     </div>
                     <div id="add-xpath">
                         <h4>Add XPATH</h4>
-                        <p>
-                            Simple approach: Visit the page you would like to summarise. Right click on the text that will need to be summarised and select Inspect Element.
-                            Hover over the <u>copy</u> item in the box and select <u>Copy XPath</u>. You may get something like this : <u>//*[@id="main-content"]/article/div[4]/div/p</u> .
-                            You can now paste it in the XPATH input box. If there are square brackets (there may be numbers inside), you may remove it.
-                        </p>
+                        <p class="guide-text">Basic guide to using XPATHs</p>
+                        <button id="xpath-descriptor-toggle" class="guide-descriptor-toggle pointer"></button>
+                        <div id="bs-psc-xpath-descriptor-box" class="descriptor-text-box">
+                            <p class="guide-text">
+                                Simple approach: Visit the page you would like to summarise. Right click on the text that will need to be summarised and select Inspect Element.
+                                Hover over the <u>copy</u> item in the box and select <u>Copy XPath</u>. You may get something like this : <u>//*[@id="main-content"]/article/div[4]/div/p</u> .
+                                You can now paste it in the XPATH input box. If there are square brackets (there may be numbers inside), you may remove it.
+                            </p>
+                        </div>
+                        <p class="guide-text pad-top-20"><strong>Empty XPATHs will not be accepted</strong></p>
+                        <br>
+                        <br>
                         <input type="text" name="xpath" id="add-xpath-input0" class="box box-width-extended-med-long">
-                        <button id="add-xpath-button" class="box box-width-reduced pointer">Add</button>
+                        <button id="add-xpath-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                     </div>
-                    <button id="bs-add-config-save" class="box box-width-reduced pointer">Save</button>
+                    <p id="bs-add-config-save-contextual" class="red-error pad-btm-20"></p>
+                    <button id="bs-add-config-save" class="box pointer">Save</button>
                 </div>
             </div>
         </div>

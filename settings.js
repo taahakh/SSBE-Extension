@@ -680,7 +680,12 @@ function addXpathInputs(xpathTracker, xpathInput, addConfigXpathInput, addConfig
 
     newInputBox.setAttribute('type', "text");
     newInputBox.setAttribute('id', idAttrValue);
-    
+
+    newInputBox.style.marginTop = "20px";
+    newInputBox.classList.add("box", "box-width-extended-med-long");
+    deleteNewInputBox.style.marginLeft = "3px";
+    deleteNewInputBox.classList.add("box", "box-width-reduced", "box-reduced-pad-uniform",  "pad-left-20", "pointer");
+
     if (fill) { newInputBox.value = fill; }
     else { newInputBox.value = addConfigXpathInput.value; }
 
@@ -734,9 +739,12 @@ bsAddConfigCustomScrape.addEventListener("click", function (param) {
 })
 
 bsAddConfigXPATHAdd.addEventListener("click", function (param) { 
-    console.log(bsAddConfigXPATHInput.value)
-    // addXpathInputs();
-    addXpathInputs(xpathTracker, "add-xpath-input", bsAddConfigXPATHInput, bsAddConfigXPATH, "delete-xpath");
+    // console.log(bsAddConfigXPATHInput.value)
+    // // addXpathInputs();
+    // Cannot be empty
+    if (bsAddConfigXPATHInput.value.trim() !== "") {
+        addXpathInputs(xpathTracker, "add-xpath-input", bsAddConfigXPATHInput, bsAddConfigXPATH, "delete-xpath");
+    }
     console.log(xpathTracker["list"]);
 })
 
@@ -835,11 +843,23 @@ function delEntryURLLIST(url) {
     })
 }
 
+function isValidURL(url) {
+    const urlPattern = /^(https?:\/\/)?([\w.]+)\.([a-z]{2,})(\/\S*)?$/i;
+    return urlPattern.test(url);
+}
+
 
 // Save new ADDED configuration 
 var bsAddConfigSave = document.getElementById("bs-add-config-save");
+var bsAddConfigSaveContextual = document.getElementById("bs-add-config-save-contextual");
 bsAddConfigSave.addEventListener("click", function () { 
-    console.log("Saving new ADDED customisation ")
+    console.log("Saving new ADDED customisation ");
+    // Cannot have empty url
+    if (bsAddConfigURL.value.trim() === ""  || !isValidURL(bsAddConfigURL.value.trim())) {
+        bsAddConfigSaveContextual.innerText = "There was an error with your url! Please check if it's valid.";
+        console.log("NOT Saving new ADDED customisation - empty url");
+        return; 
+    }
     var [url, builder] = bsAddConfig(bsAddConfigURL, view, xpathTracker, selectedScrapeOption);
     // let url = Object.keys(builder)[0];
     console.log("url: ", url);
@@ -856,6 +876,7 @@ bsAddConfigSave.addEventListener("click", function () {
     console.log("yes sir: ", currentPSCConfigs);
     saveToStorage({"bsc" : currentPSCConfigs});
 
+    bsAddConfigSaveContextual.innerText = "Saved!";
     // if (!currentPSCConfigs.hasOwnProperty(url)) {
         
     // }
@@ -863,12 +884,19 @@ bsAddConfigSave.addEventListener("click", function () {
 })
 
 
-// Add new config for site - url descriptor toggle
-document.getElementById("bs-psc-url-descriptor-toggle").addEventListener('click', function () {
-    var descriptor = document.getElementById("bs-psc-url-descriptor");
-    var currentDisplay = window.getComputedStyle(descriptor).display;
-    descriptor.style.display = (currentDisplay === "none") ? "block" : "none";
-})
+// Add new config for site - url + xpath descriptor toggle
+// [toggle, descriptor]
+function addDescriptorToggle(list) {
+    document.getElementById(list[0]).addEventListener('click', function () {
+        var descriptor = document.getElementById(list[1]);
+        var currentDisplay = window.getComputedStyle(descriptor).display;
+        descriptor.style.display = (currentDisplay === "none") ? "block" : "none";
+    })
+}
+
+addDescriptorToggle(["bs-psc-url-descriptor-toggle", "bs-psc-url-descriptor"]);
+addDescriptorToggle(["xpath-descriptor-toggle", "bs-psc-xpath-descriptor-box"]);
+
 
 
 // Shortcuts button
