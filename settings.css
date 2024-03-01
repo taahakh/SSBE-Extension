@@ -137,6 +137,21 @@ p, li {
     border-top: none;
 }
 
+/* Settings popup */
+
+.popup-settings {
+    /* position: relative; */
+    /* background-color: black; */
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    text-align: center;
+    /* display: inline-block; */
+    /* z-index: 1; */
+    /* top: 185px; */
+}
+
+
 /* .per-site-config > div {
     padding-bottom: 20px;
 } */
@@ -149,10 +164,6 @@ p, li {
     font-style: italic;
     list-style: none;
     padding-bottom: 20px;
-}
-
-.scraping-options ul > li{
-    /* padding-left: 20px; */
 }
 
 
@@ -176,24 +187,14 @@ p, li {
     margin-top: 10px;
 }
 
-/* Chevron  */
-/* #bs-psc-url-descriptor-toggle {
-    background: none;
-    border: none;
-}
-
-#bs-psc-url-descriptor-toggle::after {
-    content: '\25BC'; 
-    margin-left: 5px; 
-} */
-
+/* Chevron styling */
 .guide-descriptor-toggle {
     background: none;
     border: none;
 }
 
 .guide-descriptor-toggle::after {
-    content: '\25BC'; 
+    content: '\25BC'; /* Chevron facing down */
     margin-left: 5px; 
 }
 
@@ -209,6 +210,27 @@ p, li {
 /* BS Edit site */
 #bs-psc-editsite-update {
     display: none;
+}
+
+/* *** --- DIV buttons (box) --- *** */
+
+/* Clear some styling */
+.box-div-button {
+    text-align: center;
+    background: none;
+    background-color: #F6F193;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
+    /* border: none; */
+    border: 1px solid grey;
+    /* border: 1px solid #fff200; */
+    /* border: 1px solid green; */
+    transition: background-color 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;    
+}
+
+.box-div-button:hover {
+    background-color: #F6F193;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid #F6F193;
 }
 
 /* *** --- Other --- *** */
@@ -246,9 +268,11 @@ p, li {
 
 .green {
     background-color: greenyellow;
+    /* background-color: #D9EDBF; */
 }
 
 .red-error {
     /* color: red; */
     font-weight: bold;
 }
+

@@ -30,7 +30,7 @@
                 <p>Password</p>
                 <input id="bs-provider-connection-password-input" class="box box-width-extended-medium" type="text">
                 <p id="bs-provider-connection-contextual" class="red-error"></p>
-                <button id="bs-provider-connection-connect-button" class="box pointer">Connect</button>
+                <button id="bs-provider-connection-connect-button" class="box box-div-button pointer">Connect</button>
             </div>
             <div id="co-provider-connection-box">
                 <p>API Key</p>
@@ -38,7 +38,7 @@
                 <p>API Host</p>
                 <p>Leave the host field empty if you want to use ChatGPT</p>
                 <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-host-input">
-                <button id="co-provider-connection-save-button" class="box pointer">Save</button>
+                <button id="co-provider-connection-save-button" class="box box-div-button pointer">Save</button>
             </div>
         </div>
 
@@ -50,7 +50,7 @@
                 <li><strong>></strong> Activate the extension: Opens the extension</li>
                 <li><strong>></strong> Select text on the webpage to summarise</li>
             </ul>
-            <button id="edit-view-shortcuts-button" class="box pointer">Open shortcuts</button>
+            <button id="edit-view-shortcuts-button" class="box box-div-button pointer">Open shortcuts</button>
         </div>
 
         <div id="co-customisation">
@@ -76,13 +76,13 @@
                         <!-- <option value="x">x</option> -->
                         <!-- <option value="y">y</option> -->
                     </select>
-                    <button id="co-prompts-edit-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Edit</button>
-                    <button id="co-prompts-delete-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Delete</button>
-                    <button id="co-prompts-default-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Set default</button>
+                    <button id="co-prompts-edit-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Edit</button>
+                    <button id="co-prompts-delete-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Delete</button>
+                    <button id="co-prompts-default-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Set default</button>
                     <div id="co-prompts-edit-editor">
                         <h4>Update prompt</h4>
                         <input type="text" id="co-prompts-edit-input" class="box box-width-extended-long">
-                        <button id="co-prompts-edit-update-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Update</button>
+                        <button id="co-prompts-edit-update-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Update</button>
                     </div>
                     <!-- Need to add to design?????? -->                    
                 </div>
@@ -93,7 +93,7 @@
                     <h3>Add new prompt</h3>
                     <p class="guide-text pad-btm-10"> Please make sure "<strong>{content}</strong>" is added within your prompt in order for it to be valid</p>
                     <input type="text" id="co-prompts-add-input" class="box box-width-extended-long">
-                    <button id="co-prompts-add-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Add</button>
+                    <button id="co-prompts-add-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                 </div>
                 <p id="co-prompts-ctx-help" class="pad-btm-10"></p>
             </div>
@@ -105,70 +105,78 @@
             <div id="per-site-config" class="per-site-config">
                 <h2>Per site customisation</h2>
                 <p class="guide-text pad-btm-20">Customise summarisation for particular sites that you may frequently visit</p>
+                <!-- Edit Configuration -->
                 <div id="bs-psc-editsite">
                     <h3 class="pad-btm-15">Edit configuration for a site</h3>
                     <select id="bs-edit-config-selector" class="box box-width-extended-med-long" name=""></select>
-                    <button id="edit-site-button" class="box box-width-reduced pointer box-reduced-pad-uniform">Edit</button>
-                    <button id="edit-del-site-button" class="box box-width-reduced pointer box-reduced-pad-uniform">Remove</button>      
-                    <div id="bs-psc-editsite-update">
+                    <button id="edit-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Edit</button>
+                    <button id="edit-del-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Remove</button>      
+                    <!-- Summarisation Customisation CONFIG -->
+                    <div id="bs-psc-editsite-update" class="bs-psc-addconfig">
                         
-                        <h4>url</h4>
-                        <input id="edit-bs-add-config-URL" class="box box-width-extended-long" type="text">
-                        <!-- Customisation options  -->
-                        <h4>summarisation options</h4>
-                        <div id="summarisation-customisation" class="summarisation-customisation">
+                        <div class="url-section pad-top-20">
+                            <h4>URL</h4>
+                            <input id="edit-bs-add-config-URL" class="box box-width-extended-med-long" type="text">
+                        </div>
+                        
+                        <!-- Customisation options -->
+                        <div id="summarisation-customisation" class="summarisation-customisation pad-btm-10">
+                            <h4>Summarisation Options</h4>
+
                             <div id="bs-customisation" class="bs-customisation">
+                                
                                 <div id="edit-textdomain" class="bs-text-align">
-                                <h3 id="edit-tt-header" class="pointer">Text Type</h3>
-                                <!-- <label for="td-dropdown">Text Type:</label> -->
-                                <select id="edit-td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="edit-td-dropdown-textdomain">
-                                    <!-- <option value="apple">Apple</option>
-                                    <option value="banana">Banana</option>
-                                    <option value="orange">Orange</option>
-                                    <option value="grape">Grape</option> -->
-                                </select>
+                                    <h3 id="edit-tt-header" class="pointer">Text Type</h3>
+                                    <select id="edit-td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="edit-td-dropdown-textdomain"></select>
                                 </div>
+
                                 <div id="edit-summarytype" class="bs-text-align">
                                 <!-- Extractive and Abstractive Summarisation Buttons -->
-                                <h3 id="edit-st-header" class="pointer">Summary Type</h3>
-                                <div id="edit-summarisation-buttons" class="summarisation-buttons">
-                                    <div id="edit-sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
-                                    <div id="edit-sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
+                                    <h3 id="edit-st-header" class="pointer">Summary Type</h3>
+                                    <div id="edit-summarisation-buttons" class="summarisation-buttons">
+                                        <div id="edit-sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
+                                        <div id="edit-sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
+                                    </div>
                                 </div>
-                                </div>
+
                                 <div id="edit-modelchoice" class="bs-text-align">
-                                <h3 id="edit-model-header" class="pointer">Model select</h3>
-                                <select id="edit-td-dropdown-modelchoice" class="box dropdown-overflow" name="edit-td-dropdown-modelchoice">
-                                    <!-- <option value="apple">Apple</option>
-                                    <option value="banana">Banana</option>
-                                    <option value="orange">Orange</option>
-                                    <option value="grape">Grape</option> -->
-                                </select>
+                                    <h3 id="edit-model-header" class="pointer">Model select</h3>
+                                    <select id="edit-td-dropdown-modelchoice" class="box dropdown-overflow" name="edit-td-dropdown-modelchoice"></select>
                                 </div>
+
                                 <div id="edit-summarylength" class="bs-text-align">
-                                <h3 id="edit-sl-header" class="pointer">Summary Length</h3>
-                                <h5 id="edit-minlength">Min length: 30 words </h5>
-                                <h5 id="edit-maxlength">Max length: 300 words</h5>
-                                <input type="text" id="edit-summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="edit-summary-length" placeholder="100">
+                                    <h3 id="edit-sl-header" class="pointer">Summary Length</h3>
+                                    <input type="text" id="edit-summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="edit-summary-length" placeholder="100">
+                                    <h5 id="edit-minlength"></h5>
+                                    <h5 id="edit-maxlength"></h5>
                                 </div>
                             </div>
-                            </div>
-                        <div id="edit-tt-pp" class="popup hidden"> Choose your text type</div>
-                        <div id="edit-st-pp" class="popup hidden"> Choose your text type</div>
-                        <div id="edit-mc-pp" class="popup hidden"></div>
-                        <div id="edit-sl-pp" class="popup hidden"> Choose your text type</div>
-                        <h4>Scraping Options</h4>
-                        <div id="edit-scraping-options">
-                            <div id="edit-auto-scrape" class="box box-width-reduced pointer selectable-button-side">Automatic Scrape</div>
-                            <div id="edit-custom-scrape" class="selectable-button-side box box-width-reduced pointer">Custom Scrape</div>
                         </div>
-                        <h4>add xpath</h4>    
+
+                        <div id="edit-tt-pp" class="popup-settings hidden"> Choose your text type</div>
+                        <div id="edit-st-pp" class="popup-settings hidden"> Choose your text type</div>
+                        <div id="edit-mc-pp" class="popup-settings hidden"></div>
+                        <div id="edit-sl-pp" class="popup-settings hidden"> Choose your text type</div>
+
+                        <div id="edit-scraping-options" class="scraping-options pad-top-20">
+                            <h4>Scraping Options</h4>
+                            <div id="edit-auto-scrape" class="box box-div box-width-extended selectable-button-side pointer">Automatic Scrape</div>
+                            <div id="edit-custom-scrape" class="box box-div box-width-extended selectable-button-side pointer">Custom Scrape</div>
+                        </div>
+                        
                         <div id="edit-add-xpath">
-                            <input type="text" name="xpath" id="edit-add-xpath-input0">
-                            <button id="edit-add-xpath-button">Add</button>
+                            <h4>Add XPATH(s)</h4>
+                            <p class="guide-text"><strong>Empty XPATHs will not be accepted</strong></p>
+                            <br>
+                            <br>    
+                            <input type="text" name="xpath" id="edit-add-xpath-input0" class="box box-width-extended-med-long">
+                            <button id="edit-add-xpath-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                         </div>
-                        <button id="edit-bs-add-config-save">Save</button>
-                     </div>
+
+                        <p id="edit-bs-add-config-save-contextual" class="red-error pad-btm-20"></p>
+                        <button id="edit-bs-add-config-save" class="box box-div-button pointer">Save</button>
+                     
+                    </div>
                 </div>
 
                 <div class="line-separator"></div>
@@ -207,24 +215,23 @@
                         <h4>URL</h4>
                         <input id="bs-add-config-URL" class="box box-width-extended-med-long" type="text">
                     </div>
+
                     <!-- Customisation options  -->
                     <div id="summarisation-customisation" class="summarisation-customisation pad-btm-10">
                         <h4>Summarisation Options</h4>
                         <p class="guide-text pad-btm-20">
                             The options below allow you to customise your summarisation experience for the webpages you visit.
-                            Hover over each option's title to get a better understanding
+                            Click each option's title to get a better understanding
                         </p>
+
                         <div id="bs-customisation" class="bs-customisation">
+
                             <div id="textdomain" class="bs-text-align">
                               <h3 id="tt-header" class="pointer">Text Type</h3>
-                              <!-- <label for="td-dropdown">Text Type:</label> -->
                               <select id="td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="td-dropdown-textdomain">
-                                  <!-- <option value="apple">Apple</option>
-                                  <option value="banana">Banana</option>
-                                  <option value="orange">Orange</option>
-                                  <option value="grape">Grape</option> -->
                               </select>
                             </div>
+
                             <div id="summarytype" class="bs-text-align">
                               <!-- Extractive and Abstractive Summarisation Buttons -->
                               <h3 id="st-header" class="pointer">Summary Type</h3>
@@ -233,22 +240,28 @@
                                 <div id="sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
                               </div>
                             </div>
+
                             <div id="modelchoice" class="bs-text-align">
                               <h3 id="model-header" class="pointer">Model select</h3>
                               <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice"></select>
                             </div>
+
                             <div id="summarylength" class="bs-text-align">
-                              <h3 id="sl-header" class="pointer">Summary Length</h3>
-                              <h5 id="minlength">Min length: 30 words </h5>
-                              <h5 id="maxlength">Max length: 300 words</h5>
-                              <input type="text" id="summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
+                                <h3 id="sl-header" class="pointer">Summary Length</h3>
+                                <input type="text" id="summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
+                                <h5 id="minlength"></h5>
+                                <h5 id="maxlength"></h5>
                             </div>
-                          </div>
+
+                          <!-- </div> -->
                         </div>
-                        <div id="tt-pp" class="popup hidden"> Choose your text type</div>
-                        <div id="st-pp" class="popup hidden"> Choose your text type</div>
-                        <div id="mc-pp" class="popup hidden"></div>
-                        <div id="sl-pp" class="popup hidden"> Choose your text type</div>
+                    </div>
+
+                    <div id="tt-pp" class="popup-settings hidden"> text type</div>
+                    <div id="st-pp" class="popup-settings hidden"> summary type</div>
+                    <div id="mc-pp" class="popup-settings hidden"></div>
+                    <div id="sl-pp" class="popup-settings hidden"> Summary length</div>
+
                     <div id="scraping-options" class="scraping-options pad-top-20">
                         <h4>Scraping Options</h4>
                         <ul>
@@ -264,8 +277,9 @@
                         <div id="auto-scrape" class="box box-div box-width-extended selectable-button-side pointer">Automatic Scrape</div>
                         <div id="custom-scrape" class="box box-div box-width-extended selectable-button-side  pointer">Custom Scrape</div>
                     </div>
+
                     <div id="add-xpath">
-                        <h4>Add XPATH</h4>
+                        <h4>Add XPATH(s)</h4>
                         <p class="guide-text">Basic guide to using XPATHs</p>
                         <button id="xpath-descriptor-toggle" class="guide-descriptor-toggle pointer"></button>
                         <div id="bs-psc-xpath-descriptor-box" class="descriptor-text-box">
@@ -279,10 +293,12 @@
                         <br>
                         <br>
                         <input type="text" name="xpath" id="add-xpath-input0" class="box box-width-extended-med-long">
-                        <button id="add-xpath-button" class="box box-width-reduced box-reduced-pad-uniform pointer">Add</button>
+                        <button id="add-xpath-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                     </div>
+
                     <p id="bs-add-config-save-contextual" class="red-error pad-btm-20"></p>
-                    <button id="bs-add-config-save" class="box pointer">Save</button>
+                    <button id="bs-add-config-save" class="box box-div-button pointer">Save</button>
+
                 </div>
             </div>
         </div>

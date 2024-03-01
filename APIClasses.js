@@ -212,14 +212,6 @@ class SummaryCustomisationView {
   createListeners() {
       console.log("Creating Listeners");
 
-      // Text Type - hover
-      // Summmary type - hover
-      // Model select dropdown - hover - each option
-      // Summary length - hover
-      // var tt_header = document.getElementById(this.ttheader);
-      // var st_header = document.getElementById(this.stheader);
-      // var sl_header = document.getElementById(this.slheader);
-
       var popups_static = [document.getElementById(this.ttpp),
                            document.getElementById(this.stpp),
                            document.getElementById(this.mcpp),
@@ -238,12 +230,15 @@ class SummaryCustomisationView {
       var model_dropdown = document.getElementById(this.modeldropdown);
 
       for (let i=0; i<headers_static.length; i++) {
-        headers_static[i].addEventListener("mouseover", function(){
-          popups_static[i].classList.remove('hidden');
-        })
+        headers_static[i].addEventListener("click", function() {
 
-        headers_static[i].addEventListener("mouseout", function(){
-          popups_static[i].classList.add('hidden');
+          for (let j = 0; j < popups_static.length; j++) {
+            if (j !== i) {
+              popups_static[j].classList.add('hidden');
+            }
+          }
+
+          popups_static[i].classList.toggle('hidden');
         })
       }
 
@@ -312,6 +307,7 @@ class SummaryCustomisationView {
   }
 
   summaryLengthBuilder(list) {
+    console.log("Summary length builder: ", list, this.milength, this.malength);
     var minlength = document.getElementById(this.milength);
     var maxlength = document.getElementById(this.malength);
     minlength.innerHTML = "Min length: " + list['summary-length']['min'];
