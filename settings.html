@@ -12,6 +12,7 @@
         <h1 style="font-size: 40px;">Settings</h1>
         <div id="provider">
             <h1>Service Connections</h1>
+            <p class="guide-text pad-btm-20">Connect / Fill in the details for the serivce providers you want to use for summarisation</p>
             <div id="provider-select">
                 <h2>Select Provider</h2>
                 <select id="provider-selector" class="box box-width-extended"  name="">
@@ -19,27 +20,28 @@
                     <option value="co">ChatGPT / OpenAI </option>
                 </select>
             </div>
-            <div id="bs-provider-connection-box">
+            <div id="bs-provider-connection-box" class="pad-top-20">
                 <h3>Service Connect</h3>
                 <div id="bs-provider-connection-login-button" class="box box-div box-width-extended selectable-button-side pointer">Login</div>
                 <div id="bs-provider-connection-signup-button" class="box box-div box-width-extended selectable-button-side pointer">Signup</div>
-                <p>Host</p>
+                <h4>Host</h4>
+                <p class="guide-text pad-btm-15">If you are running the backend service locally on your machine, you can leave this field empty and it will try and connect with it. If unsuccessful, please find the address of the service when it is running</p>
                 <input id="bs-provider-connection-host-input" class="box box-width-extended-medium" type="text">
-                <p>Username</p>
+                <h4>Username</h4>
                 <input id="bs-provider-connection-username-input" class="box box-width-extended-medium" type="text">
-                <p>Password</p>
+                <h4>Password</h4>
                 <input id="bs-provider-connection-password-input" class="box box-width-extended-medium" type="text">
-                <p id="bs-provider-connection-contextual" class="red-error"></p>
-                <button id="bs-provider-connection-connect-button" class="box box-div-button pointer">Connect</button>
+                <button id="bs-provider-connection-connect-button" class="box box-div-button pad pointer block marg-top-20">Connect</button>
             </div>
             <div id="co-provider-connection-box">
-                <p>API Key</p>
+                <h4>API Key</h4>
                 <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-key-input">
-                <p>API Host</p>
-                <p>Leave the host field empty if you want to use ChatGPT</p>
+                <h4>API Host</h4>
+                <p class="guide-text pad-btm-10">Leave the host field empty if you want to use ChatGPT</p>
                 <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-host-input">
-                <button id="co-provider-connection-save-button" class="box box-div-button pointer">Save</button>
+                <button id="co-provider-connection-save-button" class="box box-div-button pointer block marg-top-20">Save</button>
             </div>
+            <p id="bs-provider-connection-contextual" class="red-error pad-top-10 pad-btm-10"></p>
         </div>
 
         <div id="shortcuts">

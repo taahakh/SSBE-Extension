@@ -109,6 +109,12 @@ bsPConnectionConnectButton.addEventListener('click', function(){
     }
     var usr = bsPConnectionUsernameInput.value;
     var pwd = bsPConnectionPasswordInput.value;
+
+    if (usr === "" || pwd === "") {
+        setBsAuthContext("Username / Password cannot be empty!");
+        return;
+    }
+
     var auth = {
         username : usr,
         password : pwd
@@ -148,6 +154,7 @@ providerSelector.addEventListener('change', function(){
         bsProviderBox.style.display = 'block';
         coProviderBox.style.display = 'none';
     }
+    removeBsAuthContext();
 })
 
 
@@ -167,6 +174,8 @@ coProviderConnectionSaveButton.addEventListener('click', function(){
         data['co_host'] = host;
         saveToStorage({'auth' : data});
     })
+
+    setBsAuthContext("Saved!");
 })
 
 // On load

@@ -54,7 +54,7 @@ p, li {
 
 /* *** --- Provider --- *** */
 
-#bs-provider-connection-box *:not(button, 
+/* #bs-provider-connection-box *:not(button, 
                                   input, 
                                   #bs-provider-connection-login-button, 
                                   #bs-provider-connection-signup-button),
@@ -62,12 +62,17 @@ p, li {
     padding-bottom: 15px;
     padding-top: 15px;
     font-weight: bold;
+} */
+
+#bs-provider-connection-box > h4,
+#co-provider-connection-box > h4 {
+    padding-top: 20px ;
 }
 
-#bs-provider-connection-box p:first-of-type,
+/* #bs-provider-connection-box p:first-of-type,
 #co-provider-connection-box p:first-of-type {
     padding-top: 15px;
-}
+} */
 
 /* #bs-provider-connection-box p:first-child,
 #co-provider-connection-box p:first-child {
@@ -251,6 +256,10 @@ p, li {
     padding-bottom: 20px;
 }
 
+.pad-top-10 {
+    padding-top: 10px;
+}
+
 .pad-top-20 {
     padding-top: 20px;
 }
@@ -269,6 +278,18 @@ p, li {
 .green {
     background-color: greenyellow;
     /* background-color: #D9EDBF; */
+}
+
+.marg-top-20 {
+    margin-top: 20px;
+}
+
+.marg-btm-20 {
+    margin-bottom: 20px;
+}
+
+.block {
+    display: block;
 }
 
 .red-error {
