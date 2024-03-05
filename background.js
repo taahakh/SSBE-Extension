@@ -116,10 +116,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
       sendMessageToPopup({ action: "contextualMessage",  message : "Summarising..." , order : 1});
-      summariseRequest({'text': request.data, 'customisation': request.customisation});
+      summariseRequest({'text': request.data, 'customisation': request.customisation, 'extractedType': request.extractedType});
       // sendMessageToPopup({ action: 'summaryResponse', data: "SUMMARY" });
       // chatgptRequest("What are the tallest buildings in the world?");
-      break;
+      return;
+      // break;
     case 'signup':
       authRequest(request.host, '/auth/signup', request.auth);
       break;
@@ -167,6 +168,7 @@ async function summariseRequest(data) {
 
     const response = await fetch(url, {
       method: 'POST',
+      timeout: 0,
       headers: { 'Content-Type': 'application/json' },
       body: data
     });

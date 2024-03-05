@@ -1,20 +1,14 @@
 (() => {
     console.log("content script loaded");
-    // Get the current URL of the page
     var currentURL = window.location.href;
-
-    // Create a URL object
     var urlObject = new URL(currentURL);
 
-    // Extract the domain name and path
     var domainName = urlObject.hostname;
     var path = urlObject.pathname;
 
-    // Display the extracted parts in the console (optional)
     console.log("Domain Name:", domainName);
     console.log("Path:", path);
     
-
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
         console.log("CS --> Message received:", obj, sender, response);
         console.log(obj);
@@ -22,16 +16,23 @@
             // Scrape text --> change name to scrapeText
             case 'gatherData':
                 let texts = null;
+                let extractedType = null;
                 if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
                     console.log("USING XPATHS")
+                    extractedType = "extracted";
                     texts = scrapeWithXPATHs(obj.usingXpath);
-                } else {
+                } 
+                // NEED TO ADD CHATGPT IMPLEMENTATION
+                // BS implementation
+                else {
+                    extractedType = "html";
                     // Naive implementation
                     // texts = JSON.stringify({text: document.body.outerHTML});
+
+                    // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
                     texts = JSON.stringify({text: document.documentElement.outerHTML});
                 }
-                // TURNED OFF SUMMARISING MESSAGE - CANNOT SUMMARISE
-                chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'] }, function(response) {
+                chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType }, function(response) {
                     console.log(response);
                 });
                 break;
@@ -201,15 +202,14 @@ function deepText(node) {
 function getAllTextFromNode(node) {
     var text = '';
   
-    // Check if the node has text content
+    // node has text content?
     if (node.nodeType === 3) {
-      // Text node
     //   text += node.nodeValue.trim();
         text += node.nodeValue.trim() + " ";
     } else if (node.nodeType === 1) {
       // Element node (e.g., div, span, etc.)
       for (var i = 0; i < node.childNodes.length; i++) {
-        // Recursively get text content from child nodes
+        // text content from child nodes
         text += getAllTextFromNode(node.childNodes[i]);
       }
     }

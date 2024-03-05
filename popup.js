@@ -376,7 +376,7 @@ async function summariseButtonHandler() {
     console.log("Sending these xpaths: ", usrXpaths);
     if (userSelectedText !== "") {
       console.log('Summarising user selected text');
-      chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation }, function(response) {
+      chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation, extractedType : 'extracted' }, function(response) {
         console.log(response);
     });
     } else {
