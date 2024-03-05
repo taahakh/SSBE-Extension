@@ -35,31 +35,56 @@
 // console.log(pattern.test("http://127.0.0.1:5500/testing/index.html/books/asdasd")); // true
 // console.log(pattern.exec("https://example.com/books").pathname.groups); // {}
 
-function findClosestMatch(currentUrl, urlList) {
-    const currentPath = new URL(currentUrl).pathname;
+// function findClosestMatch(currentUrl, urlList) {
+//     const currentPath = new URL(currentUrl).pathname;
 
-    let closestMatch = null;
-    let maxMatchLength = 0;
+//     let closestMatch = null;
+//     let maxMatchLength = 0;
 
-    for (const url of urlList) {
-        const parsedUrl = new URL(url);
-        const path = parsedUrl.pathname;
+//     for (const url of urlList) {
+//         const parsedUrl = new URL(url);
+//         const path = parsedUrl.pathname;
 
-        const commonPrefix = currentPath.startsWith(path) ? path : '';
+//         const commonPrefix = currentPath.startsWith(path) ? path : '';
 
-        if (commonPrefix.length > maxMatchLength) {
-            maxMatchLength = commonPrefix.length;
-            closestMatch = url;
-        }
+//         if (commonPrefix.length > maxMatchLength) {
+//             maxMatchLength = commonPrefix.length;
+//             closestMatch = url;
+//         }
+//     }
+
+//     return closestMatch;
+// }
+
+// // Example usage:
+// // const currentSiteUrl = 'https://www.example.com/path2/other/yes';
+// const currentSiteUrl = 'https://www.example.com/';
+// const urlList = ['https://www.example.com/path1','https://www.example.com/path2' , 'https://www.example.com/path1/other'];
+
+// const closestMatch = findClosestMatch(currentSiteUrl, urlList);
+// console.log(`Closest match: ${closestMatch}`);
+
+var host = 'http://127.0.0.1:5000';
+
+var auth = JSON.stringify({ username: 'test', password: 'test' });
+
+fetch(host + '/auth/login', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: auth
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
-    return closestMatch;
-}
-
-// Example usage:
-// const currentSiteUrl = 'https://www.example.com/path2/other/yes';
-const currentSiteUrl = 'https://www.example.com/';
-const urlList = ['https://www.example.com/path1','https://www.example.com/path2' , 'https://www.example.com/path1/other'];
-
-const closestMatch = findClosestMatch(currentSiteUrl, urlList);
-console.log(`Closest match: ${closestMatch}`);
+    return response.json();
+})
+.then(res => {
+    console.log(res);
+    // Handle the response or resolve with the data if needed.
+})
+.catch(error => {
+    console.error('Error:', error);
+});

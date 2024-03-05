@@ -119,7 +119,33 @@ bsPConnectionConnectButton.addEventListener('click', function(){
         username : usr,
         password : pwd
     }
+
+    console.log(auth);
+
     auth = JSON.stringify(auth);
+
+    console.log(auth);
+
+    // fetch(host + '/auth/login', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: auth
+    // })
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    //     return response.json();
+    // })
+    // .then(res => {
+    //     console.log(res);
+    //     // Handle the response or resolve with the data if needed.
+    // })
+    // .catch(error => {
+    //     console.error('Error:', error);
+    // });
 
     if (bsPSelectedConnect === "log") {
         chrome.runtime.sendMessage({ action: "login", host : host, auth : auth });
@@ -212,12 +238,22 @@ var coPromptsEditInput = document.getElementById('co-prompts-edit-input');
 var coPromptsEditUpdateButton = document.getElementById('co-prompts-edit-update-button');
 var coPromptsContextualHelp = document.getElementById('co-prompts-ctx-help');
 
+function isPromptEmpty(value) {
+    if (value.trim() === "") {
+        addCoCtxHelp("Prompt cannot be empty!");
+        return true;
+    }
+    return false;
+}
+
 // edit
 var oldPrompt = null;
 coPromptsEditButton.addEventListener('click', function(){
     // Make the edit prompts box visible
     // .....
-    displayPromptUpdate();
+
+    if (isPromptEmpty(coPromptsSelector.value)) { return; }
+    
     oldPrompt = coPromptsSelector.value;
     // console.log(oldPrompt);
     coPromptsEditInput.value = oldPrompt;
@@ -226,6 +262,9 @@ coPromptsEditButton.addEventListener('click', function(){
 // update edit
 coPromptsEditUpdateButton.addEventListener('click', function(){
     var newPrompt = coPromptsEditInput.value;
+
+    if (isPromptEmpty(newPrompt)) { return; }
+
     if (!hasContentTag(newPrompt)) {
         console.log("Doesnt have the {content}");
         addCoCtxHelp("You need to add '{context}' to your prompt!");
@@ -280,6 +319,9 @@ coPromptsAddButton.addEventListener('click', function(){
 // Delete Prompt
 coPromptsDeleteButton.addEventListener('click', function(){
     var prompt = coPromptsSelector.value;
+    
+    if (isPromptEmpty(prompt)) { return; }
+
     coPromptsSelector.querySelector('option[value="' + prompt + '"]').remove();
 // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
     loadUserConfigs('coprompts').then((data) => {
@@ -303,6 +345,9 @@ coPromptsDeleteButton.addEventListener('click', function(){
 // Set default prompt
 coPromptsDefaultButton.addEventListener('click', function(){
     var prompt = coPromptsSelector.value;
+    
+    if (isPromptEmpty(prompt)) { return; }
+
     var def = coPromptsSelector.querySelector('option[value="' + prompt + '"]');
     def.text = "Default: " + def.text;
     // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
@@ -483,8 +528,21 @@ var bsEditConfigXPATH = document.getElementById("edit-add-xpath");
 var bsEditConfigXPATHAdd = document.getElementById("edit-add-xpath-button");
 var bsEditConfigXPATHInput = document.getElementById("edit-add-xpath-input0");
 var bsEditConfigDelButton = document.getElementById("edit-del-site-button");
+var bsEditConfigContextual = document.getElementById("edit-bs-add-config-contextual");
 
 // EDIT CONFIG
+function isEditUrlEmpty(value) {
+    console.log(value);
+    if (value.trim() === "") {
+        bsEditConfigContextual.innerHTML = "URL cannot be empty!";
+        return true;
+    }
+    return false;
+}
+
+function clearBsEditContextual() {
+    bsEditConfigContextual.innerHTML = "";
+}
 
 // Populate list with loaded configs
 function populateBSEditConfig() {
@@ -513,6 +571,7 @@ function setEditScrapingOptions(config) {
         case "custom-scrape":
             bsEditConfigCustomScrape.classList.add("green");
             bsEditConfigAutoScrape.classList.remove("green");
+            bsEditConfigXPATH.style.display = "block";
             break;
     }
 }
@@ -568,19 +627,23 @@ function clearEditXPATHs(xpathtracker) {
 // Editing for a given url
 bsEditConfigEditButton.addEventListener('click', function(){
 
+    if (isEditUrlEmpty(bsEditConfigSelector.value)) { return; }
+    clearBsEditContextual();
+
     // Clear xpath boxes if the edit option has been changed
     clearEditXPATHs(editXpathTracker);
 
     console.log('Ivb been clicked');
     var selected = bsEditConfigSelector.value;
+
     editOldURL = selected;
     console.log(currentPSCConfigs[selected]);
     editChosen = currentPSCConfigs[selected];
     setEditURL(selected);
     setEditScrapingOptions(editChosen["scraping-option"]);
-    if (editChosen["scraping-option"] === "custom-scrape") {
-        setEditXPATHs(editChosen['xpaths']);
-    }
+    // if (editChosen["scraping-option"] === "custom-scrape") {
+    setEditXPATHs(editChosen['xpaths']);
+    // }
 
     editview.setPredefinedOptions(editChosen['summary-customisation']["text-type"], 
                                   editChosen['summary-customisation']["summary-type"],  
@@ -631,6 +694,10 @@ addingXpath(bsEditConfigXPATHAdd, [editXpathTracker, "edit-add-xpath-input", bsE
 
 bsEditConfigDelButton.addEventListener('click', function() {
     var selected = bsEditConfigSelector.value;
+    
+    if (isEditUrlEmpty(selected)) { return; }
+    clearBsEditContextual();
+
     console.log(selected);
     // Delete from list
     let toRemove = bsEditConfigSelector.querySelector('option[value="' + selected + '"]');
@@ -948,7 +1015,18 @@ document.getElementById("edit-view-shortcuts-button").addEventListener("click", 
     chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
 });
 
+var perSiteConfig = document.getElementById("per-site-config");
+var bsConfigContextual = document.getElementById("bs-config-contextual");
 
+function disableBsSettings() {
+    perSiteConfig.style.display = "none";
+    bsConfigContextual.innerHTML = "Could not build the customisation settings! Please check your connection with the backend service.";
+}
+
+function enableBsSettings() {
+    perSiteConfig.style.display = "block";
+    bsConfigContextual.innerHTML = "";
+}
 
 // ---------------------------------------------------------------------------------
 
@@ -963,6 +1041,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             // OR GET THE SUMMARYOPTIONS CONTROLLER TO HANDLE IT
             if (request.data !== null) {
                 buildSummaryConfigs(request.data);
+                enableBsSettings();
+            }
+            else {
+                disableBsSettings();
             }
         }
         break;
@@ -972,6 +1054,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     //     break;
       case 'bsAuthMessageStatus':
         setBsAuthContext(request.message);
+        // if (request.status === "ok") {
+        //     chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "settings" });
+        // }
         break;
     }
   

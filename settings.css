@@ -288,6 +288,10 @@ p, li {
     margin-bottom: 20px;
 }
 
+.red {
+    color: red;
+}
+
 .block {
     display: block;
 }

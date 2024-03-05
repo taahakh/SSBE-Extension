@@ -6,15 +6,20 @@
 
 
 /* --- summarisation [ bs-customisation ] --- */
-
+/* Not used in settings */
 .popup {
     position: absolute;
     background-color: white;
-    padding: 10px;
+    width: 80%;
     border: 1px solid black;
-    /* display: inline-block; */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1;
-    top: 185px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    top: 190px;
 }
 
 .summarisation-customisation {
@@ -153,7 +158,9 @@
 }
 
 /* Box widened - by 220px */
+/* Some places that has been used  */
 /* Used in settings - Prompts edit select with three side buttons */
+/* Used in text type hover in home (popup) page */
 .box-width-extended-med-long {
     width: 370px;
 }

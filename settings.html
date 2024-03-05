@@ -34,6 +34,7 @@
                 <button id="bs-provider-connection-connect-button" class="box box-div-button pad pointer block marg-top-20">Connect</button>
             </div>
             <div id="co-provider-connection-box">
+                <p class="guide-text pad-top-10">Click <a href="https://www.merge.dev/blog/chatgpt-api-key">here</a> to learn how to get your API key</p>
                 <h4>API Key</h4>
                 <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-key-input">
                 <h4>API Host</h4>
@@ -101,18 +102,25 @@
             </div>
         </div>
 
+
+
         <div id="bs-config">
             <h1>Backend service: Customisation</h1>
             <p class="guide-text pad-btm-10">This section houses the current customisation features for using the Backend Service</p>
+            <p id="bs-config-contextual" class="red-error red"></p>
             <div id="per-site-config" class="per-site-config">
                 <h2>Per site customisation</h2>
                 <p class="guide-text pad-btm-20">Customise summarisation for particular sites that you may frequently visit</p>
+
+
+
                 <!-- Edit Configuration -->
                 <div id="bs-psc-editsite">
                     <h3 class="pad-btm-15">Edit configuration for a site</h3>
                     <select id="bs-edit-config-selector" class="box box-width-extended-med-long" name=""></select>
                     <button id="edit-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Edit</button>
-                    <button id="edit-del-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Remove</button>      
+                    <button id="edit-del-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Remove</button>
+                    <p id="edit-bs-add-config-contextual" class="red-error pad-top-10 pad-btm-10"></p>     
                     <!-- Summarisation Customisation CONFIG -->
                     <div id="bs-psc-editsite-update" class="bs-psc-addconfig">
                         
@@ -155,10 +163,33 @@
                             </div>
                         </div>
 
-                        <div id="edit-tt-pp" class="popup-settings hidden"> Choose your text type</div>
-                        <div id="edit-st-pp" class="popup-settings hidden"> Choose your text type</div>
+                        <div id="edit-tt-pp" class="popup-settings hidden">
+                            <p>
+                                Text type dictates the kind of text or webpage content you want to summarise. e.g. news articles, blog posts, etc.
+                                This option helps determine and select particular models that could possibly produce better results.
+                            </p>
+                        </div>
+                        <div id="edit-st-pp" class="popup-settings hidden">
+                            <p><strong>Extractive:</strong> Determines and selects parts of the existing text to produce a new summary</p>
+                            <p>This option is good if you would like the summary to be faifthful and accurate with respect to the text. However, summaries can be
+                                incoherent 
+                            </p>
+                            <br>
+                            <p><strong>Abstractive:</strong> Generates a summary based on the context of the text you want summarised</p>
+                            <p>Abstractive methods excel in offering concise and coherent summaries by capturing the broader context. However, 
+                                the summary may not be as faithful to the original text and could alter the original meaning.
+                            </p>
+                            <br>
+                            <p>
+                                Depending on the length of your text that will need to be summarised, picking an abstractive model might use extractive models to help generate the summary.
+                            </p>
+                        </div>
                         <div id="edit-mc-pp" class="popup-settings hidden"></div>
-                        <div id="edit-sl-pp" class="popup-settings hidden"> Choose your text type</div>
+                        <div id="edit-sl-pp" class="popup-settings hidden">
+                            <p>
+                                The length of the summary you want to generate. The length is determined by the number of words in the summary.
+                            </p>
+                        </div>
 
                         <div id="edit-scraping-options" class="scraping-options pad-top-20">
                             <h4>Scraping Options</h4>
@@ -166,7 +197,7 @@
                             <div id="edit-custom-scrape" class="box box-div box-width-extended selectable-button-side pointer">Custom Scrape</div>
                         </div>
                         
-                        <div id="edit-add-xpath">
+                        <div id="edit-add-xpath" class="hidden">
                             <h4>Add XPATH(s)</h4>
                             <p class="guide-text"><strong>Empty XPATHs will not be accepted</strong></p>
                             <br>
@@ -181,7 +212,14 @@
                     </div>
                 </div>
 
+
+
+
                 <div class="line-separator"></div>
+
+
+                <!-- Add Configuration -->
+
 
                 <div id="bs-psc-addconfig" class="bs-psc-addconfig">
                     <h3 class="pad-btm-20">Add new configuration for a site</h3>
@@ -259,10 +297,33 @@
                         </div>
                     </div>
 
-                    <div id="tt-pp" class="popup-settings hidden"> text type</div>
-                    <div id="st-pp" class="popup-settings hidden"> summary type</div>
+                    <div id="tt-pp" class="popup-settings hidden">
+                        <p>
+                            Text type dictates the kind of text or webpage content you want to summarise. e.g. news articles, blog posts, etc.
+                            This option helps determine and select particular models that could possibly produce better results.
+                        </p>
+                    </div>
+                    <div id="st-pp" class="popup-settings hidden">
+                        <p><strong>Extractive:</strong> Determines and selects parts of the existing text to produce a new summary</p>
+                        <p>This option is good if you would like the summary to be faifthful and accurate with respect to the text. However, summaries can be
+                            incoherent 
+                        </p>
+                        <br>
+                        <p><strong>Abstractive:</strong> Generates a summary based on the context of the text you want summarised</p>
+                        <p>Abstractive methods excel in offering concise and coherent summaries by capturing the broader context. However, 
+                            the summary may not be as faithful to the original text and could alter the original meaning.
+                        </p>
+                        <br>
+                        <p>
+                            Depending on the length of your text that will need to be summarised, picking an abstractive model might use extractive models to help generate the summary.
+                        </p>
+                    </div>
                     <div id="mc-pp" class="popup-settings hidden"></div>
-                    <div id="sl-pp" class="popup-settings hidden"> Summary length</div>
+                    <div id="sl-pp" class="popup-settings hidden">
+                        <p>
+                            The length of the summary you want to generate. The length is determined by the number of words in the summary.
+                        </p>
+                    </div>
 
                     <div id="scraping-options" class="scraping-options pad-top-20">
                         <h4>Scraping Options</h4>

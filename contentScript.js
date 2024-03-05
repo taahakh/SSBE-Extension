@@ -27,7 +27,8 @@
                     texts = scrapeWithXPATHs(obj.usingXpath);
                 } else {
                     // Naive implementation
-                    texts = JSON.stringify({text: document.body.outerHTML});
+                    // texts = JSON.stringify({text: document.body.outerHTML});
+                    texts = JSON.stringify({text: document.documentElement.outerHTML});
                 }
                 // TURNED OFF SUMMARISING MESSAGE - CANNOT SUMMARISE
                 chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'] }, function(response) {

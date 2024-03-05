@@ -103,7 +103,7 @@ function setUserConfigCustomisation(path, domain) {
     console.log("path: ", path);
     console.log("dom: ", domain);
     let config = usrConfig[domain][path];
-    if (config['xpaths'].length !== 0){
+    if (config['xpaths'].length !== 0 && config['scraping-option'] === "custom-scrape"){
       usrXpaths = config['xpaths'];
     }
 

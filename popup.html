@@ -48,19 +48,34 @@
         <div id="bs-customisation" class="bs-customisation">
           <div id="textdomain" class="bs-text-align">
             <h3 id="tt-header" class="pointer">Text Type</h3>
-            <div id="tt-pp" class="popup box hidden"> Choose your text type</div>
-            <!-- <label for="td-dropdown">Text Type:</label> -->
-            <select id="td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="td-dropdown-textdomain">
-                <!-- <option value="apple">Apple</option>
-                <option value="banana">Banana</option>
-                <option value="orange">Orange</option>
-                <option value="grape">Grape</option> -->
-            </select>
+            <div id="tt-pp" class="popup box box-width-extended-med-long hidden">
+              <p>
+                Text type dictates the kind of text or webpage content you want to summarise. e.g. news articles, blog posts, etc.
+                This option helps determine and select particular models that could possibly produce better results.
+              </p>
+            </div>
+            <select id="td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="td-dropdown-textdomain"></select>
           </div>
           <div id="summarytype" class="bs-text-align">
             <!-- Extractive and Abstractive Summarisation Buttons -->
             <h3 id="st-header" class="pointer">Summary Type</h3>
-            <div id="st-pp" class="popup hidden"> Choose your text type</div>
+            <div id="st-pp" class="popup box box-width-extended-long hidden">
+              <p><strong>Extractive:</strong> Determines and selects parts of the existing text to produce a new summary</p>
+              <br>
+              <p>This option is good if you would like the summary to be faifthful and accurate with respect to the text. However, summaries can be
+                  incoherent 
+              </p>
+              <br>
+              <p><strong>Abstractive:</strong> Generates a summary based on the context of the text you want summarised</p>
+              <br>
+              <p>Abstractive methods excel in offering concise and coherent summaries by capturing the broader context. However, 
+                  the summary may not be as faithful to the original text and could alter the original meaning.
+              </p>
+              <br>
+              <p>
+                  Depending on the length of your text that will need to be summarised, picking an abstractive model might use extractive models to help generate the summary.
+              </p>
+            </div>
             <div id="summarisation-buttons" class="summarisation-buttons">
               <div id="sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
               <div id="sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
@@ -68,12 +83,16 @@
           </div>
           <div id="modelchoice" class="bs-text-align">
             <h3 id="model-header" class="pointer">Model select</h3>
-            <div id="mc-pp" class="popup box hidden"></div>
+            <div id="mc-pp" class="popup box box-width-extended-long hidden"></div>
             <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice">
           </select>
           </div>
           <div id="summarylength" class="bs-text-align">
-            <div id="sl-pp" class="popup hidden"> Choose your text type</div>
+            <div id="sl-pp" class="popup box box-width-extended-med-long hidden">
+              <p>
+                The length of the summary you want to generate. The length is determined by the number of words in the summary.
+              </p>
+            </div>
             <h3 id="sl-header" class="pointer">Summary Length</h3>
             <input type="text" id="summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
             <h5 id="minlength"></h5>
