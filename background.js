@@ -9,6 +9,31 @@ var BS_API_KEY = "";
 var BS_HOST = ""
 
 // ---------------------------------------------------------------------
+// Heartbeat - keep service worker alive
+// Reference -  https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers
+let heartbeatInterval;
+
+async function runHeartbeat() {
+  await chrome.storage.local.set({ 'last-heartbeat': new Date().getTime() });
+}
+
+async function startHeartbeat() {
+  // Run the heartbeat once at service worker startup.
+  runHeartbeat().then(() => {
+    // Then again every 20 seconds.
+    heartbeatInterval = setInterval(runHeartbeat, 20 * 1000);
+  });
+}
+
+async function stopHeartbeat() {
+  clearInterval(heartbeatInterval);
+}
+
+async function getLastHeartbeat() {
+  return (await chrome.storage.local.get('last-heartbeat'))['last-heartbeat'];
+}
+
+// ---------------------------------------------------------------------
 
 function saveToStorage(ctx_obj) {
   chrome.storage.local.set(ctx_obj, function() {
@@ -46,7 +71,7 @@ function removeFromStorage(ctx) {
     });
 }
 
-
+var abortController = new AbortController();
 
 //  ---------------------------------------------------------------------
 
@@ -162,19 +187,20 @@ async function summariseRequest(data) {
   data = JSON.stringify(data);
   
   const url = 'http://127.0.0.1:5000/servicemanager/summarise';
-  // const url = 'http://127.0.0.1:5000/servicemanager/scrape';
   
   try {
 
+    startHeartbeat();
+
     const response = await fetch(url, {
       method: 'POST',
-      timeout: 0,
       headers: { 'Content-Type': 'application/json' },
       body: data
     });
 
     if (response.ok) {
       const result = await response.json();
+      // pollSummaryRequest(abortController);
       console.log('POST request successful:', result);
       sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation success!', data: result });
     } else {
@@ -185,7 +211,44 @@ async function summariseRequest(data) {
     console.error('An error occurred during the POST request:', error);
     sendMessageToPopup({ action: 'summaryResponse', message: 'There was an error with the summarisation request.', data: "error" });
   }
+
+  stopHeartbeat();
 }
+
+// async function pollSummaryRequest(singalController) {
+//   const url = 'http://127.0.0.1:5000/servicemanager/getsummary';
+
+//   try {
+
+//     const response = await fetch(url, {
+//       method: 'GET',
+//       timeout: 0,
+//       signal: singalController.signal,
+//       headers: { 'Content-Type': 'application/json' },
+//     });
+
+//     if (response.ok) {
+//       const result = await response.json();
+//       if (result.finished === false) {
+//         console.log('Continuing polling...')
+//         abortController = new AbortController();
+//         setTimeout(() => {pollSummaryRequest(abortController)}, 5000);
+//       } 
+//       else {
+//         abortController = new AbortController();
+//         console.log('SUMMARISATION FINISHED --> POST request successful:', result);
+//         sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation success!', data: result });
+//       }
+      
+//     } else {
+//       console.error('POST request failed:', response.status, response.statusText);
+//       sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation failed!', data: "failed" });
+//     }
+//   } catch (error) {
+//     console.error('An error occurred during the POST request:', error);
+//     sendMessageToPopup({ action: 'summaryResponse', message: 'There was an error with the summarisation request.', data: "error" });
+//   }
+// }
 
 function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
   console.log('GET Request');
