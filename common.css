@@ -103,6 +103,11 @@
     text-indent: 2px;
 }
 
+/* Unique for summary length descriptor under the box */
+.pad-top-3 {
+    padding-top: 3px;
+    font-size: 12px;
+}
 
 /* Text Type / Model Select Dropdown customisation */
 .dropdown-overflow {

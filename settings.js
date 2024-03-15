@@ -251,12 +251,14 @@ var oldPrompt = null;
 coPromptsEditButton.addEventListener('click', function(){
     // Make the edit prompts box visible
     // .....
-
+    console.log(coPromptsSelector.value.trim());
+    
     if (isPromptEmpty(coPromptsSelector.value)) { return; }
     
     oldPrompt = coPromptsSelector.value;
     // console.log(oldPrompt);
     coPromptsEditInput.value = oldPrompt;
+    displayPromptUpdate();
 })
 
 // update edit
@@ -385,12 +387,17 @@ function hasContentTag(prompt) {
 
 // Populate Prompts list
 function populatePromptsList() { 
-    // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
     loadUserConfigs('coprompts').then((data) => {
         console.log("CO PROMPTS: ", data)
+        const DEFAULT_PROMPT = "Summarise this text: {content} ";
+        
+        if (data['prompts'].length === 0 || data['default'] === "") {
+            data['prompts'] = [DEFAULT_PROMPT];
+            data['default'] = DEFAULT_PROMPT;
+        }
+
         var prompts = data['prompts'];
         
-        // oldPrompt = null;
         coPromptsSelector.innerHTML = "";
 
         for (const p in prompts) {
@@ -401,12 +408,13 @@ function populatePromptsList() {
             coPromptsSelector.appendChild(option);
         }
 
-        // CHECK THIS CODE
         if (data.hasOwnProperty('default')) {
-            coPromptsSelector.value = data['default'];
             var def = coPromptsSelector.querySelector('option[value="' + data['default'] + '"]');
-            def.text = "Default: " + def.text;
+            def.selected = true
+            def.textContent = "Default: " + def.textContent;
         }
+
+        saveToStorage({'coprompts' : data});
     })
 }
 
@@ -722,6 +730,9 @@ bsEditConfigSave.addEventListener("click", function () {
     console.log(bsEditConfigURL.value);
     if (urlErrorMessage(bsEditConfigURL.value, bsEditConfigSaveContextual)) {return;}
 
+    // Incorrect summary length
+    if (badSummaryLength(view.getSummaryLength(), bsEditConfigSaveContextual)) { return; }
+
     var [url, builder] = bsAddConfig(bsEditConfigURL, editview, editXpathTracker, editSelectedScrapeOption);
     // let url = Object.keys(builder)[0];
     console.log("url: ", url);
@@ -967,6 +978,9 @@ bsAddConfigSave.addEventListener("click", function () {
     // Cannot have empty url
     if (urlErrorMessage(bsAddConfigURL.value, bsAddConfigSaveContextual)) {return;}
 
+    // Incorrect summary length
+    if (badSummaryLength(view.getSummaryLength(), bsAddConfigSaveContextual)) { return; }
+
     var [url, builder] = bsAddConfig(bsAddConfigURL, view, xpathTracker, selectedScrapeOption);
 
     console.log("url: ", url);
@@ -988,6 +1002,14 @@ bsAddConfigSave.addEventListener("click", function () {
 function urlErrorMessage(configURLValue, ctx) {
     if (configURLValue.trim() === ""  || !isValidURL(configURLValue.trim())) {
         ctx.innerText = "There was an error with your url! Please check if it's valid.";
+        return true; 
+    }
+    return false;
+}
+
+function badSummaryLength(value, ctx) {
+    if (value < 0 || value > 100) {
+        ctx.innerText = "Incorrect summary length! Please enter a value between 0 and 100.";
         return true; 
     }
     return false;

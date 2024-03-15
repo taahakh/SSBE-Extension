@@ -370,8 +370,14 @@ summarise_button.addEventListener("click", summariseButtonHandler);
 
 async function summariseButtonHandler() {
   console.log("Summarise Button Clicked");
+  setContextualMessage("", 1);
+  setContextualMessage("", 2);
   if (document.getElementById("td-dropdown-provider").value === "bs") {
     let packageCustomisation = view.packageSummaryCustomisations();
+    if (packageCustomisation['summary-length'] < 0 || packageCustomisation['summary-length'] > 100) {
+      setContextualMessage("Sumamry length value is incorrect!", 2);
+      return;
+    }
     console.log("PACKAGE: ", packageCustomisation);
     console.log("Sending these xpaths: ", usrXpaths);
     if (userSelectedText !== "") {

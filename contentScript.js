@@ -20,7 +20,8 @@
                 if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
                     console.log("USING XPATHS")
                     extractedType = "extracted";
-                    texts = scrapeWithXPATHs(obj.usingXpath);
+                    texts = scrapeWithXPATHs(obj.usingXpath)[0];
+                    console.log(texts);
                 } 
                 // NEED TO ADD CHATGPT IMPLEMENTATION
                 // BS implementation
@@ -31,6 +32,14 @@
 
                     // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
                     texts = JSON.stringify({text: document.documentElement.outerHTML});
+
+                    // for chatgpt  --> use deep text
+                    // var allVisibleText = Array.from(document.body.querySelectorAll('*'))
+                    //     .filter(el => el.offsetWidth > 0 || el.offsetHeight > 0)
+                    //     .map(el => el.textContent.trim())
+                    //     .filter(text => text !== '')
+                    //     .join(' ');
+                    // texts = JSON.stringify({text: allVisibleText});
                 }
                 chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType }, function(response) {
                     console.log(response);

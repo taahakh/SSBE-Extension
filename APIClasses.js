@@ -307,11 +307,11 @@ class SummaryCustomisationView {
   }
 
   summaryLengthBuilder(list) {
-    console.log("Summary length builder: ", list, this.milength, this.malength);
-    var minlength = document.getElementById(this.milength);
-    var maxlength = document.getElementById(this.malength);
-    minlength.innerHTML = "Min length: " + list['summary-length']['min'];
-    maxlength.innerHTML = "Max length: " + list['summary-length']['max'];
+    // console.log("Summary length builder: ", list, this.milength, this.malength);
+    // var minlength = document.getElementById(this.milength);
+    // var maxlength = document.getElementById(this.malength);
+    // minlength.innerHTML = "Min length: " + list['summary-length']['min'];
+    // maxlength.innerHTML = "Max length: " + list['summary-length']['max'];
   }
 
   updateView(change, selectedValue) {
@@ -387,10 +387,14 @@ class SummaryCustomisationView {
     }
   }
 
+  getSummaryLength() {
+    return document.getElementById(this.sumlength).value;
+  }
+
   packageSummaryCustomisations() {
     return {
       'model' : this.controller.getModelChoice(),
-      'summary-length' : document.getElementById(this.sumlength).value
+      'summary-length' : this.getSummaryLength()
     };
   }
 
