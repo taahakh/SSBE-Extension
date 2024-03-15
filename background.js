@@ -344,7 +344,37 @@ function authRequest(host, endpoint, data) {
 }
 
 // http://127.0.0.1:5000
-function sendRequest(host, endpoint, method, data=null, auth=null) {
+// function sendRequest(host, endpoint, method, data=null, auth=null) {
+//   console.log(host, endpoint, method, data, auth)
+//   var headers = {
+//     'Content-Type': 'application/json'
+//   }
+//   console.log(auth);
+//   if (auth !== null || auth !== "") {
+//     console.log("YESSSS SIRRRRR");
+//     headers["Authorization"] = "Bearer " + auth;
+//   }
+
+//   console.log("Headers: ", headers)
+
+//   return new Promise(resolve => {
+//     fetch(host+endpoint, { 
+//       method: method,
+//       headers: headers,
+//       body : data
+//     })
+//     .then(response => {
+//       return response.json();
+//     })
+//     .then(data => {
+//       resolve(data);
+//     })
+//     .catch(error => resolve(error))
+//     // .catch((error) => console.log(error))
+//   })
+// }
+
+async function sendRequest(host, endpoint, method, data=null, auth=null) {
   console.log(host, endpoint, method, data, auth)
   var headers = {
     'Content-Type': 'application/json'
@@ -357,16 +387,32 @@ function sendRequest(host, endpoint, method, data=null, auth=null) {
 
   console.log("Headers: ", headers)
 
-  return new Promise(resolve => {
-    fetch(host+endpoint, { 
+  try {
+    const response  = await fetch(host+endpoint, { 
       method: method,
       headers: headers,
       body : data
     })
-    .then(response => resolve(response.json()))
-    .catch(error => resolve(error))
-    // .catch((error) => console.log(error))
-  })
+    const val = await response.json();
+    return val;
+  } catch (error) {
+    return error;
+  }
+
+  // return new Promise(resolve => {
+  //   fetch(host+endpoint, { 
+  //     method: method,
+  //     headers: headers,
+  //     body : data
+  //   })
+  //   .then(response => {
+  //     return response.json();
+  //   })
+  //   .then(data => {
+  //     resolve(data);
+  //   })
+  //   .catch(error => resolve(error))
+  // })
 }
 
 
