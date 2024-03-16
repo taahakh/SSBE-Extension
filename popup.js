@@ -342,36 +342,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // ----------------------------------------------------------------------------------
 // Summarise button
 var summarise_button = document.getElementById("summarise-button");
-// summarise_button.addEventListener("click", async () => {
-//   console.log("Summarise Button Clicked");
-//   if (document.getElementById("td-dropdown-provider").value === "bs") {
-//     let packageCustomisation = view.packageSummaryCustomisations();
-//     console.log("PACKAGE: ", packageCustomisation);
-//     console.log("Sending these xpaths: ", usrXpaths);
-//     if (userSelectedText !== "") {
-//       console.log('Summarising user selected text');
-//       chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation }, function(response) {
-//         console.log(response);
-//     });
-//     } else {
-//       console.log('Scraping');
-//     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-//       chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation });
-//     });
-//     }
-//   } else {
-//     console.log("CO Summarise not implemented yet");
-//   }
-
-//   // chrome.runtime.sendMessage({ action: 'summarise', data: "SUMMARY" });
-// });
-
 summarise_button.addEventListener("click", summariseButtonHandler);
 
 async function summariseButtonHandler() {
   console.log("Summarise Button Clicked");
   setContextualMessage("", 1);
   setContextualMessage("", 2);
+  // For BS
   if (document.getElementById("td-dropdown-provider").value === "bs") {
     let packageCustomisation = view.packageSummaryCustomisations();
     if (packageCustomisation['summary-length'] < 0 || packageCustomisation['summary-length'] > 100) {
@@ -380,19 +357,26 @@ async function summariseButtonHandler() {
     }
     console.log("PACKAGE: ", packageCustomisation);
     console.log("Sending these xpaths: ", usrXpaths);
+    
+    // User selected text / XPath scraping
     if (userSelectedText !== "") {
       console.log('Summarising user selected text');
-      chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation, extractedType : 'extracted' }, function(response) {
+      chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation, extractedType : 'extracted', for : 'bs'}, function(response) {
         console.log(response);
     });
     } else {
       console.log('Scraping');
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation });
+      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation, for : 'bs' });
     });
     }
-  } else {
-    console.log("CO Summarise not implemented yet");
+  } 
+  // For CO
+  else {
+    // console.log("CO Summarise not implemented yet");
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, for : 'co' });
+    });
   }
 }
 

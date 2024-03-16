@@ -141,7 +141,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'summarise':
       console.log("Background.js - Data to summarise: ", request.data);
       sendMessageToPopup({ action: "contextualMessage",  message : "Summarising..." , order : 1});
-      summariseRequest({'text': request.data, 'customisation': request.customisation, 'extractedType': request.extractedType});
+      if (request.for === "bs") {
+        summariseRequest({'text': request.data, 'customisation': request.customisation, 'extractedType': request.extractedType});
+      }
+      else {
+        chatgptRequest(request.data);
+      }
       // sendMessageToPopup({ action: 'summaryResponse', data: "SUMMARY" });
       // chatgptRequest("What are the tallest buildings in the world?");
       return;
@@ -415,43 +420,44 @@ async function sendRequest(host, endpoint, method, data=null, auth=null) {
   // })
 }
 
-
 function chatgptRequest(data) {
 
-  loadUserConfigs('auth').then(res => {
+  console.log('Background.js - ChatGPT Request, Chunk length: ', JSON.parse(data)['text'].length);
 
-    var host = null;
-    var key = null;
+  // loadUserConfigs('auth').then(res => {
 
-    if (res.hasOwnProperty('co_api_key')) {
-      if (res['co_api_key'] === "") {
-        // Send message that this needs to be filled in
-        return;
-      } else {
-        key = res['co_api_key'];
-      }
-    } else {
-      // Send message that this needs to be filled in
-      return;
-    }
+  //   var host = null;
+  //   var key = null;
 
-    if (res.hasOwnProperty('co_host')) {
-      res['co_host'] === "" ? host = CHATGPT_HOST_ENDPOINT : host = res['co_host'];
-    }
+  //   if (res.hasOwnProperty('co_api_key')) {
+  //     if (res['co_api_key'] === "") {
+  //       // Send message that this needs to be filled in
+  //       return;
+  //     } else {
+  //       key = res['co_api_key'];
+  //     }
+  //   } else {
+  //     // Send message that this needs to be filled in
+  //     return;
+  //   }
 
-    fetch(host, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + key,
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [{'role': 'user', 'content': data}],
-      })
-    }).then(response => {console.log(response.json());})
-    .then(response => sendMessageToCS({ action: 'summariseResponse', data: response.json() }))
-  })
+  //   if (res.hasOwnProperty('co_host')) {
+  //     res['co_host'] === "" ? host = CHATGPT_HOST_ENDPOINT : host = res['co_host'];
+  //   }
+
+  //   fetch(host, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer ' + key,
+  //     },
+  //     body: JSON.stringify({
+  //       model: 'gpt-3.5-turbo',
+  //       messages: [{'role': 'user', 'content': data}],
+  //     })
+  //   }).then(response => {console.log(response.json());})
+  //   .then(response => sendMessageToCS({ action: 'summariseResponse', data: response.json() }))
+  // })
 
 
 }

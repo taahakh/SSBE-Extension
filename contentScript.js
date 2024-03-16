@@ -11,7 +11,7 @@
     
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
         console.log("CS --> Message received:", obj, sender, response);
-        console.log(obj);
+        // console.log(obj);
         switch (obj.action) {  
             // Scrape text --> change name to scrapeText
             case 'gatherData':
@@ -30,20 +30,56 @@
                     // Naive implementation
                     // texts = JSON.stringify({text: document.body.outerHTML});
 
-                    // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
-                    texts = JSON.stringify({text: document.documentElement.outerHTML});
+                    if (obj.for === "co") {
+                        texts = Array.from(document.body.querySelectorAll('*'))
+                            .filter(el => el.offsetWidth > 0 || el.offsetHeight > 0)
+                            .map(el => el.textContent.trim())
+                            .filter(text => text !== '')
+                            .join(' ');
 
-                    // for chatgpt  --> use deep text
-                    // var allVisibleText = Array.from(document.body.querySelectorAll('*'))
-                    //     .filter(el => el.offsetWidth > 0 || el.offsetHeight > 0)
-                    //     .map(el => el.textContent.trim())
-                    //     .filter(text => text !== '')
-                    //     .join(' ');
-                    // texts = JSON.stringify({text: allVisibleText});
+                        // for chatgpt  --> use deep text
+                        // var allVisibleText = Array.from(document.body.querySelectorAll('*'))
+                        //     .filter(el => el.offsetWidth > 0 || el.offsetHeight > 0)
+                        //     .map(el => el.textContent.trim())
+                        //     .filter(text => text !== '')
+                        //     .join(' ');
+
+                        // var [state, texts] = splitTextIntoChunks(allVisibleText);
+
+                        // if (!state) {
+                        //     console.log("Text too long");
+                        //     chrome.runtime.sendMessage({ action: 'contextualMessage', message: 'Unable to summarise this page with ChatGPT :(', order: 1 });
+                        //     return;
+                        // }
+                        
+                        // texts = JSON.stringify({text: allVisibleText});
+                    }
+
+                    else {
+                        // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
+                        texts = JSON.stringify({text: document.documentElement.outerHTML});
+                    }
                 }
-                chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType }, function(response) {
-                    console.log(response);
-                });
+
+                if (obj.for === "bs") {
+                    chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType, for: obj.for }, function(response) {
+                        console.log(response);
+                    });
+                }
+                else {
+                    var [state, textChunks] = splitTextIntoChunks(texts);
+
+                    if (!state) {
+                        console.log("Text too long");
+                        chrome.runtime.sendMessage({ action: 'contextualMessage', message: 'Unable to summarise this page with this provider :(', order: 1 });
+                        return;
+                    }
+                    
+                    send = JSON.stringify({text: textChunks});
+
+                    chrome.runtime.sendMessage({ action: 'summarise', data : send, for: obj.for });
+                }
+
                 break;
             case 'urlMatcher':
                 console.log(obj.data);
@@ -73,6 +109,66 @@
         }
      });
 })();
+
+function splitTextIntoChunks(text) {
+
+    let sentences = splitTextIntoSentences(text);;
+
+    if (!sentences) {return [false, null];}
+
+    let chunks = [];
+    let currentChunk = '';
+
+    sentences.forEach(sentence => {
+        
+        if (chunks.length === 3) {
+            return [false, null]
+        }
+
+        if ((currentChunk + ' ' + sentence).length * (3/4) <= 3500) {
+            currentChunk += ' ' + sentence.trim();
+        } else {
+            chunks.push(currentChunk.trim());
+            currentChunk = sentence.trim();
+        }
+
+    });
+
+    // Last chunk
+    if (currentChunk !== ''){
+        if (chunks.length < 3 && currentChunk.length * (3/4) <= 3500) {
+            chunks.push(currentChunk.trim());
+        }
+        else {
+            return [false, null];
+        }
+    }
+
+    return [true, chunks];
+}
+
+function splitTextIntoSentences(text) {
+    let sentences = [];
+    let currentSentence = '';
+
+    for (let i = 0; i < text.length; i++) {
+        let char = text[i];
+
+        if (char === '.' || char === '?' || char === '!') {
+            sentences.push(currentSentence.trim());
+            currentSentence = '';
+        } else {
+            currentSentence += char;
+        }
+    }
+
+    if (currentSentence !== '') {
+        sentences.push(currentSentence.trim());
+    }
+
+    return sentences;
+}
+
 
 function determineUrl(obj) {
     var keys = Object.keys(obj);
