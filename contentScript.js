@@ -31,12 +31,9 @@
                     // texts = JSON.stringify({text: document.body.outerHTML});
 
                     if (obj.for === "co") {
-                        texts = Array.from(document.body.querySelectorAll('*'))
-                            .filter(el => el.offsetWidth > 0 || el.offsetHeight > 0)
-                            .map(el => el.textContent.trim())
-                            .filter(text => text !== '')
-                            .join(' ');
 
+                        texts = getAllTextFromNode(document.body);
+                        // console.log("All visible text: ", texts);
                         // for chatgpt  --> use deep text
                         // var allVisibleText = Array.from(document.body.querySelectorAll('*'))
                         //     .filter(el => el.offsetWidth > 0 || el.offsetHeight > 0)
@@ -68,7 +65,7 @@
                 }
                 else {
                     var [state, textChunks] = splitTextIntoChunks(texts);
-
+                    console.log("Text Chunks: ", textChunks);
                     if (!state) {
                         console.log("Text too long");
                         chrome.runtime.sendMessage({ action: 'contextualMessage', message: 'Unable to summarise this page with this provider :(', order: 1 });
@@ -77,7 +74,7 @@
                     
                     send = JSON.stringify({text: textChunks});
 
-                    chrome.runtime.sendMessage({ action: 'summarise', data : send, for: obj.for });
+                    chrome.runtime.sendMessage({ action: 'summarise', data : send, for: obj.for, prompt: obj.prompt });
                 }
 
                 break;
@@ -113,6 +110,7 @@
 function splitTextIntoChunks(text) {
 
     let sentences = splitTextIntoSentences(text);;
+    console.log("Sentences: ", sentences);
 
     if (!sentences) {return [false, null];}
 
@@ -155,7 +153,7 @@ function splitTextIntoSentences(text) {
         let char = text[i];
 
         if (char === '.' || char === '?' || char === '!') {
-            sentences.push(currentSentence.trim());
+            sentences.push((currentSentence+char).trim());
             currentSentence = '';
         } else {
             currentSentence += char;

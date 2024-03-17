@@ -290,6 +290,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         var summarybox = document.getElementById('summary-box');
         var p = document.createElement('p');  
         p.innerHTML = request.data.data;
+        console.log("Summary: ", request.data.data);
         summarybox.appendChild(p);
         setContextualMessage(request.message, 1);
       }
@@ -374,8 +375,14 @@ async function summariseButtonHandler() {
   // For CO
   else {
     // console.log("CO Summarise not implemented yet");
+    console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, for : 'co' });
+      chrome.tabs.sendMessage(tabs[0].id, { 
+        action: "gatherData", 
+        usingXpath: usrXpaths, 
+        for : 'co',
+        prompt : document.getElementById('td-dropdown-prompt').value 
+      });
     });
   }
 }

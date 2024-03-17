@@ -145,7 +145,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         summariseRequest({'text': request.data, 'customisation': request.customisation, 'extractedType': request.extractedType});
       }
       else {
-        chatgptRequest(request.data);
+        chatgptRequest(request.data, request.prompt);
       }
       // sendMessageToPopup({ action: 'summaryResponse', data: "SUMMARY" });
       // chatgptRequest("What are the tallest buildings in the world?");
@@ -420,9 +420,47 @@ async function sendRequest(host, endpoint, method, data=null, auth=null) {
   // })
 }
 
-function chatgptRequest(data) {
+async function chatgptRequest(data, prompt) {
+  prompt = 'ONLY THE SUMMARY AND NOTHING ELSE, HERE IS THE PROMPT AND CONTENT TO SUMMARISE: ' + prompt;
+  chunk = JSON.parse(data)['text']
+  console.log('Background.js - ChatGPT Request, Chunk length: ', chunk.length);
 
-  console.log('Background.js - ChatGPT Request, Chunk length: ', JSON.parse(data)['text'].length);
+
+  var res = await loadUserConfigs('auth');
+  console.log('Background.js - ChatGPT Request, Auth: ', res);
+
+  var host = null;
+  var key = null;
+
+  if (res.hasOwnProperty('co_api_key')) {
+    if (res['co_api_key'] === "") {
+      // Send message that this needs to be filled in
+      return;
+    } else {
+      key = res['co_api_key'];
+    }
+  } else {
+    // Send message that this needs to be filled in
+    return;
+  }
+
+  if (res.hasOwnProperty('co_host')) {
+    res['co_host'] === "" ? host = CHATGPT_HOST_ENDPOINT : host = res['co_host'];
+  }
+
+  var responses = [];
+  for (var i=0; i<chunk.length; i++) {
+    complete_prompt = prompt.replace(/{content}/g, chunk[i]);
+    console.log('Background.js - ChatGPT Request, Chunk ${i}: ', complete_prompt);
+    var coRes = await _chatgptRequest(complete_prompt, host, key)
+    responses.push(coRes);
+  }
+
+  combined = responses.map((res) => res.choices[0].message.content).join(' ');
+  // combined = "fdsfsdfs";
+  sendMessageToPopup({ action: 'summaryResponse', data: {data : combined} });
+
+  // for
 
   // loadUserConfigs('auth').then(res => {
 
@@ -455,11 +493,36 @@ function chatgptRequest(data) {
   //       model: 'gpt-3.5-turbo',
   //       messages: [{'role': 'user', 'content': data}],
   //     })
-  //   }).then(response => {console.log(response.json());})
-  //   .then(response => sendMessageToCS({ action: 'summariseResponse', data: response.json() }))
+  //   })
+  //   // .then(response => {console.log(response.json());})
+  //   .then(response => {
+  //     const res = response.json();
+  //     sendMessageToCS({ action: 'summariseResponse', data: res });
+  //   })
   // })
 
+}
 
+async function _chatgptRequest(data, host, key) {
+    var res = await fetch(host, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + key,
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [{'role': 'user', 'content': data}],
+      })
+    })
+
+    var response = await res.json();
+    return response;
+}
+
+
+function embedWithPrompt(text, prompt) {
+  return text.replace('{content}', prompt);
 }
 
 function sendMessageToCS(message) {
