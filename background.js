@@ -9,7 +9,7 @@ var BS_API_KEY = "";
 var BS_HOST = ""
 
 // ---------------------------------------------------------------------
-// Heartbeat - keep service worker alive
+// Heartbeat - keep background.js service worker alive
 // Reference -  https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers
 let heartbeatInterval;
 
@@ -99,16 +99,6 @@ chrome.commands.onCommand.addListener(function (command) {
   }
 })
 
-// chrome.browserAction.onClicked.addListener(function() {
-   
-//   var condition = true;
-
-//   if (condition) {
-//     chrome.tabs.create({ url: "popup_1.html" });
-//   } else {
-//     chrome.tabs.create({ url: "popup_2.html" });
-//   }
-// });
 
 
 chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
@@ -220,41 +210,6 @@ async function summariseRequest(data) {
   stopHeartbeat();
 }
 
-// async function pollSummaryRequest(singalController) {
-//   const url = 'http://127.0.0.1:5000/servicemanager/getsummary';
-
-//   try {
-
-//     const response = await fetch(url, {
-//       method: 'GET',
-//       timeout: 0,
-//       signal: singalController.signal,
-//       headers: { 'Content-Type': 'application/json' },
-//     });
-
-//     if (response.ok) {
-//       const result = await response.json();
-//       if (result.finished === false) {
-//         console.log('Continuing polling...')
-//         abortController = new AbortController();
-//         setTimeout(() => {pollSummaryRequest(abortController)}, 5000);
-//       } 
-//       else {
-//         abortController = new AbortController();
-//         console.log('SUMMARISATION FINISHED --> POST request successful:', result);
-//         sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation success!', data: result });
-//       }
-      
-//     } else {
-//       console.error('POST request failed:', response.status, response.statusText);
-//       sendMessageToPopup({ action: 'summaryResponse', message: 'Summarisation failed!', data: "failed" });
-//     }
-//   } catch (error) {
-//     console.error('An error occurred during the POST request:', error);
-//     sendMessageToPopup({ action: 'summaryResponse', message: 'There was an error with the summarisation request.', data: "error" });
-//   }
-// }
-
 function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
   console.log('GET Request');
 
@@ -348,37 +303,6 @@ function authRequest(host, endpoint, data) {
   })
 }
 
-// http://127.0.0.1:5000
-// function sendRequest(host, endpoint, method, data=null, auth=null) {
-//   console.log(host, endpoint, method, data, auth)
-//   var headers = {
-//     'Content-Type': 'application/json'
-//   }
-//   console.log(auth);
-//   if (auth !== null || auth !== "") {
-//     console.log("YESSSS SIRRRRR");
-//     headers["Authorization"] = "Bearer " + auth;
-//   }
-
-//   console.log("Headers: ", headers)
-
-//   return new Promise(resolve => {
-//     fetch(host+endpoint, { 
-//       method: method,
-//       headers: headers,
-//       body : data
-//     })
-//     .then(response => {
-//       return response.json();
-//     })
-//     .then(data => {
-//       resolve(data);
-//     })
-//     .catch(error => resolve(error))
-//     // .catch((error) => console.log(error))
-//   })
-// }
-
 async function sendRequest(host, endpoint, method, data=null, auth=null) {
   console.log(host, endpoint, method, data, auth)
   var headers = {
@@ -404,20 +328,6 @@ async function sendRequest(host, endpoint, method, data=null, auth=null) {
     return error;
   }
 
-  // return new Promise(resolve => {
-  //   fetch(host+endpoint, { 
-  //     method: method,
-  //     headers: headers,
-  //     body : data
-  //   })
-  //   .then(response => {
-  //     return response.json();
-  //   })
-  //   .then(data => {
-  //     resolve(data);
-  //   })
-  //   .catch(error => resolve(error))
-  // })
 }
 
 async function chatgptRequest(data, prompt) {
@@ -459,47 +369,6 @@ async function chatgptRequest(data, prompt) {
   combined = responses.map((res) => res.choices[0].message.content).join(' ');
   // combined = "fdsfsdfs";
   sendMessageToPopup({ action: 'summaryResponse', data: {data : combined} });
-
-  // for
-
-  // loadUserConfigs('auth').then(res => {
-
-  //   var host = null;
-  //   var key = null;
-
-  //   if (res.hasOwnProperty('co_api_key')) {
-  //     if (res['co_api_key'] === "") {
-  //       // Send message that this needs to be filled in
-  //       return;
-  //     } else {
-  //       key = res['co_api_key'];
-  //     }
-  //   } else {
-  //     // Send message that this needs to be filled in
-  //     return;
-  //   }
-
-  //   if (res.hasOwnProperty('co_host')) {
-  //     res['co_host'] === "" ? host = CHATGPT_HOST_ENDPOINT : host = res['co_host'];
-  //   }
-
-  //   fetch(host, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer ' + key,
-  //     },
-  //     body: JSON.stringify({
-  //       model: 'gpt-3.5-turbo',
-  //       messages: [{'role': 'user', 'content': data}],
-  //     })
-  //   })
-  //   // .then(response => {console.log(response.json());})
-  //   .then(response => {
-  //     const res = response.json();
-  //     sendMessageToCS({ action: 'summariseResponse', data: res });
-  //   })
-  // })
 
 }
 

@@ -1,14 +1,4 @@
-(() => {
-    console.log("content script loaded");
-    var currentURL = window.location.href;
-    var urlObject = new URL(currentURL);
-
-    var domainName = urlObject.hostname;
-    var path = urlObject.pathname;
-
-    console.log("Domain Name:", domainName);
-    console.log("Path:", path);
-    
+(() => {    
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
         console.log("CS --> Message received:", obj, sender, response);
         // console.log(obj);
@@ -156,34 +146,6 @@ function determineUrl(obj) {
     return [closestMatch, currentHost];
 }
 
-function findClosestMatch(currentPath, pathList) {
-    let closestMatch = null;
-    let maxMatchLength = 0;
-
-    for (const path of pathList) {
-        const commonPrefix = currentPath.startsWith(path) ? path : '';
-
-        if (commonPrefix.length > maxMatchLength) {
-            maxMatchLength = commonPrefix.length;
-            closestMatch = path;
-        }
-    }
-
-    return closestMatch;
-}
-
-// WRONG IMPLEMNTATION
-// function gatherData() {
-//     console.log("Gathering Data");
-//     // var xpathExpression = '//*[@id="mw-content-text"]/div[1]/p';
-//     var xpathExpression = '/html/body/div/div'
-//     var result = document.evaluate(xpathExpression, document, null, XPathResult.ANY_TYPE, null);
-//     while (node = result.iterateNext()) {
-//         console.log(node);
-//         console.log(getAllTextFromNode(node));
-//     }
-// }
-
 function scrapeWithXPATHs(xpaths) {
     var allTexts = [];
     for (var i=0; i<xpaths.length; i++) {
@@ -214,18 +176,6 @@ function getTextWithXpath(xpath) {
     return JSON.stringify({text : texts});
 }
 
-// function deepText(node) {   
-//     var A= [];
-//     if(node){
-//         node= node.firstChild;
-//         while(node!= null){
-//             if(node.nodeType== 3) A[A.length]=node;
-//             else A= A.concat(deepText(node));
-//             node= node.nextSibling;
-//         }
-//     }
-//     return A;
-// } 
 
 function getAllTextFromNode(node) {
     var text = '';
