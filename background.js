@@ -181,15 +181,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 async function summariseRequest(data) {
   data = JSON.stringify(data);
   
-  const url = 'http://127.0.0.1:5000/servicemanager/summarise';
+  const endpoint = '/servicemanager/summarise';
   
   try {
 
+    var creds = await loadUserConfigs('auth');
+    if (creds.hasOwnProperty('bs_api_key')) {
+      var api_key = creds['bs_api_key'];
+      var host = creds['bs_host'];
+      console.log(api_key, host);
+    }
+    else {
+      sendMessageToPopup({ action: 'summaryResponse', message: 'Missing API key or Host', data: "error" });
+      return;
+    }
+
+    // return;
+
     startHeartbeat();
 
-    const response = await fetch(url, {
+    const response = await fetch(host+endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization' : 'Bearer ' + api_key},
       body: data
     });
 
