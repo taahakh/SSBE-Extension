@@ -17,6 +17,7 @@
             case 'gatherData':
                 let texts = null;
                 let extractedType = null;
+
                 if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
                     console.log("USING XPATHS")
                     extractedType = "extracted";
@@ -46,6 +47,8 @@
                     });
                 }
                 else {
+                    console.log("obj.data: ", obj.extractedText);
+                    if (obj.data !== "") { texts = obj.extractedText; console.log("Texts: ", texts); }
                     var [state, textChunks] = splitTextIntoChunks(texts);
                     console.log("Text Chunks: ", textChunks);
                     if (!state) {

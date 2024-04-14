@@ -351,21 +351,25 @@ async function summariseButtonHandler() {
       chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation, for : 'bs' });
     });
     }
+    // userSelectedText = "";
   } 
   // For CO
   else {
     // NEED TO IMPLEMENT USER SELECTED TEXT
     // console.log("CO Summarise not implemented yet");
+    console.log("Selected text?: ", userSelectedText);
     console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { 
         action: "gatherData", 
-        usingXpath: usrXpaths, 
+        usingXpath: usrXpaths,
+        extractedText : userSelectedText, 
         for : 'co',
         prompt : document.getElementById('td-dropdown-prompt').value 
       });
     });
   }
+  userSelectedText = "";
 }
 
 // Prevent summarisation if not logged in
