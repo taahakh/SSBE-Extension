@@ -14,29 +14,34 @@
         // console.log(obj);
         switch (obj.action) {  
             // Scrape text --> change name to scrapeText
+            
             case 'gatherData':
-                let texts = null;
+                console.log("obj.userSelectedText: ", obj.userSelectedText);   
+                let texts = obj.userSelectedText;
                 let extractedType = null;
-                if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
-                    console.log("USING XPATHS")
-                    extractedType = "extracted";
-                    texts = scrapeWithXPATHs(obj.usingXpath)[0];
-                    console.log(texts);
-                } 
-                // NEED TO ADD CHATGPT IMPLEMENTATION
-                // BS implementation
-                else {
-                    extractedType = "html";
-                    // Naive implementation
-                    // texts = JSON.stringify({text: document.body.outerHTML});
-
-                    if (obj.for === "co") {
-                        texts = getAllTextFromNode(document.body);
-                    }
-
+                
+                if (obj.userSelectedText === "") {
+                    if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
+                        console.log("USING XPATHS")
+                        extractedType = "extracted";
+                        texts = scrapeWithXPATHs(obj.usingXpath)[0];
+                        console.log(texts);
+                    } 
+                    // NEED TO ADD CHATGPT IMPLEMENTATION
+                    // BS implementation
                     else {
-                        // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
-                        texts = JSON.stringify({text: document.documentElement.outerHTML});
+                        extractedType = "html";
+                        // Naive implementation
+                        // texts = JSON.stringify({text: document.body.outerHTML});
+    
+                        if (obj.for === "co") {
+                            texts = getAllTextFromNode(document.body);
+                        }
+    
+                        else {
+                            // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
+                            texts = JSON.stringify({text: document.documentElement.outerHTML});
+                        }
                     }
                 }
 
@@ -135,6 +140,7 @@ function splitTextIntoSentences(text) {
     return sentences;
 }
 
+
 function determineUrl(obj) {
     var keys = Object.keys(obj);
     var currentUrl = new URL(window.location.href);
@@ -172,17 +178,6 @@ function findClosestMatch(currentPath, pathList) {
     return closestMatch;
 }
 
-// WRONG IMPLEMNTATION
-// function gatherData() {
-//     console.log("Gathering Data");
-//     // var xpathExpression = '//*[@id="mw-content-text"]/div[1]/p';
-//     var xpathExpression = '/html/body/div/div'
-//     var result = document.evaluate(xpathExpression, document, null, XPathResult.ANY_TYPE, null);
-//     while (node = result.iterateNext()) {
-//         console.log(node);
-//         console.log(getAllTextFromNode(node));
-//     }
-// }
 
 function scrapeWithXPATHs(xpaths) {
     var allTexts = [];
@@ -213,19 +208,6 @@ function getTextWithXpath(xpath) {
     console.log(texts);
     return JSON.stringify({text : texts});
 }
-
-// function deepText(node) {   
-//     var A= [];
-//     if(node){
-//         node= node.firstChild;
-//         while(node!= null){
-//             if(node.nodeType== 3) A[A.length]=node;
-//             else A= A.concat(deepText(node));
-//             node= node.nextSibling;
-//         }
-//     }
-//     return A;
-// } 
 
 function getAllTextFromNode(node) {
     var text = '';

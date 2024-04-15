@@ -173,7 +173,7 @@ var messageOrderPriorityBS = new Array(3);
 // for CO
 var messageOrderPriorityCO = new Array(3);
 function setContextualMessage(message, order) {
-  
+  console.log("currentProviderCTX: ", currentProviderCTX)
   var messageOrderPriority = chooseContextualMessage(currentProviderCTX);
 
   console.log("ist this running - ctx msg")
@@ -187,7 +187,9 @@ function setContextualMessage(message, order) {
 }
 
 function chooseContextualMessage(currentProvider) {
-  return currentProvider === "bs" ? messageOrderPriorityBS : messageOrderPriorityCO;
+  var prov =  currentProvider === "bs" ? messageOrderPriorityBS : messageOrderPriorityCO;
+  console.log("Current Provider: ", currentProvider);
+  return prov;
 }
 
 function createContextualMessage(msgList) {
@@ -200,7 +202,21 @@ function createContextualMessage(msgList) {
   return text;
 }
 
+function setMessageBothProviders(message, order) { 
+  messageOrderPriorityBS[order] = message;
+  messageOrderPriorityCO[order] = message;
+  contextual.innerHTML = createContextualMessage(chooseContextualMessage(currentProviderCTX));
+}
+
+function clearMessageBothProviders(order) {
+  messageOrderPriorityBS[order] = "";
+  messageOrderPriorityCO[order] = "";
+  contextual.innerHTML = createContextualMessage(chooseContextualMessage(currentProviderCTX));
+}
+
 function switchContextualMessage(provider) {
+  console.log("Switching Contextual Message: ", provider);
+  currentProviderCTX = provider;
   var messageOrderPriority = chooseContextualMessage(provider);
   contextual.innerHTML = createContextualMessage(messageOrderPriority);
 }
@@ -268,6 +284,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         lockSummariseButton();
       } else {
         var summarybox = document.getElementById('summary-box');
+        summarybox.innerHTML = "";
         var p = document.createElement('p');  
         p.innerHTML = request.data.data;
         console.log("Summary: ", request.data.data);
@@ -308,7 +325,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'userSelectedText':
       console.log('User selected text : ', request.data);
       if (request.data !== "") {
-        setContextualMessage("Grabbed your selected text!", 2);
+        // setContextualMessage("Grabbed your selected text!", 2);
+        setMessageBothProviders("Grabbed your selected text!", 2);
         userSelectedText = request.data;
         console.log("saved user selected text [will disappear when clicked away]: ", userSelectedText);
       }
@@ -327,8 +345,12 @@ summarise_button.addEventListener("click", summariseButtonHandler);
 
 async function summariseButtonHandler() {
   console.log("Summarise Button Clicked");
+  console.log("p1");
   setContextualMessage("", 1);
-  setContextualMessage("", 2);
+  // setContextualMessage("", 2);
+  clearMessageBothProviders(2);
+  console.log("p2");
+  var tempUserSelectedText = userSelectedText;
   // For BS
   if (document.getElementById("td-dropdown-provider").value === "bs") {
     let packageCustomisation = view.packageSummaryCustomisations();
@@ -342,13 +364,18 @@ async function summariseButtonHandler() {
     // User selected text / XPath scraping
     if (userSelectedText !== "") {
       console.log('Summarising user selected text');
-      chrome.runtime.sendMessage({ action: 'summarise', data : userSelectedText, customisation : packageCustomisation, extractedType : 'extracted', for : 'bs'}, function(response) {
+      chrome.runtime.sendMessage({ action: 'summarise', data : tempUserSelectedText, customisation : packageCustomisation, extractedType : 'extracted', for : 'bs'}, function(response) {
         console.log(response);
     });
     } else {
       console.log('Scraping');
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "gatherData", usingXpath: usrXpaths, customisation: packageCustomisation, for : 'bs' });
+      chrome.tabs.sendMessage(tabs[0].id, 
+        { action: "gatherData", 
+          usingXpath: usrXpaths, 
+          customisation: packageCustomisation, 
+          userSelectedText: tempUserSelectedText,
+          for : 'bs' });
     });
     }
   } 
@@ -357,15 +384,19 @@ async function summariseButtonHandler() {
     // NEED TO IMPLEMENT USER SELECTED TEXT
     // console.log("CO Summarise not implemented yet");
     console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
+    console.log("userSelectedText: ", userSelectedText);
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { 
         action: "gatherData", 
-        usingXpath: usrXpaths, 
+        usingXpath: usrXpaths,
+        userSelectedText: tempUserSelectedText,
         for : 'co',
         prompt : document.getElementById('td-dropdown-prompt').value 
       });
     });
   }
+
+  userSelectedText = "";
 }
 
 // Prevent summarisation if not logged in
@@ -405,12 +436,10 @@ document.getElementById("open-settings").addEventListener("click", function() {
   chrome.tabs.create({ url: "chrome-extension://"+chrome.runtime.id+"/settings.html" });
 });
 
-// Post summarisation functionality
+// -------- Post summarisation functionality --------
 
 // Save summarised text
-var save_button = document.getElementById("save-summary");
-save_button.addEventListener("click", function() {
-
+function saveSummarisedText() {
   var summaries = document.querySelectorAll("#summary-box p");
   let summary_list = [];
   summaries.forEach(function(summary) {
@@ -424,5 +453,25 @@ save_button.addEventListener("click", function() {
   link.download = "sample.txt";
   link.click();
   URL.revokeObjectURL(link.href);
+}
 
-});
+
+var save_button = document.getElementById("save-summary");
+save_button.addEventListener("click", saveSummarisedText);
+// save_button.addEventListener("click", function() {
+
+//   var summaries = document.querySelectorAll("#summary-box p");
+//   let summary_list = [];
+//   summaries.forEach(function(summary) {
+//     summary_list.push(summary.innerHTML + "\n");
+//   });
+
+//   const link = document.createElement("a");
+
+//   const file = new Blob(summary_list, { type: 'text/plain' });
+//   link.href = URL.createObjectURL(file);
+//   link.download = "sample.txt";
+//   link.click();
+//   URL.revokeObjectURL(link.href);
+
+// });

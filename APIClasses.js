@@ -13,6 +13,12 @@ class SummaryOptionsController {
         this.model_list = null;
         this.model_selected = null;
         this.summary_length_selected = null;
+        this.default_text_type_model = {
+          "General": {'summary_type' : 'ab', 'model_name': "BartLargeCNN"},
+          "Financial": {'summary_type' : 'ab', 'model_name': "BartLargeCNN"},
+          "Medical": {'summary_type' : 'ab', 'model_name': "T5MedicalSummarisation"},
+          "News": {'summary_type' : 'ab', 'model_name': "BartLargeCNN"},
+        };
         console.log("SummaryOptionsController - config list: ", this.configlist);
         console.log("SummaryOptionsController - TreeList: ", this.textTypeList);
         this.setPlaceholder();
@@ -42,6 +48,12 @@ class SummaryOptionsController {
 
       // Auto selects the SCV details
       setPlaceholder() {
+
+        // Default option is BartLargeCNN
+        if (this.getDefaultModelForTextType("General")) {
+          return;
+        }
+
         const ttlist = Object.keys(this.textTypeList);
 
         // Lets get the first text type and summary type that doesn't have an empty model list
@@ -69,6 +81,32 @@ class SummaryOptionsController {
         console.log("SELECTED [Summary Type]: ", this.st_selected);
         console.log("SELECTED [Model List]: ", this.model_list);
       }
+      
+      getDefaultModelForTextType(textType) {
+        if (!this.default_text_type_model.hasOwnProperty(textType)) {
+          return false;
+        }
+
+        var models = this.default_text_type_model[textType];
+        
+        if (
+          this.textTypeList.hasOwnProperty(textType) && 
+          this.textTypeList[textType].hasOwnProperty(models['summary_type']) && 
+          this.textTypeList[textType][models['summary_type']].length > 0
+        ) {
+          for (var find of this.textTypeList[textType][models['summary_type']]) {
+            if (find['model-name'] === models['model_name']) {
+              this.configSummaryOptionView(textType);
+              this.updateFromSummaryTypeChange(models['summary_type']);
+              this.updateFromModelChange(models['model_name']);
+              return true;
+            }
+          }
+        }
+
+        return false;
+
+      }
 
       // Update the SC details based on the selected text type
       configSummaryOptionView(selected_tt) {
@@ -92,7 +130,12 @@ class SummaryOptionsController {
       }
 
       updateFromTextTypeChange(selectedTextType) {
-        this.configSummaryOptionView(selectedTextType);
+        if (!this.getDefaultModelForTextType(selectedTextType)) {
+          // return;
+          console.log("no default model for text type: ", selectedTextType)
+          this.configSummaryOptionView(selectedTextType);
+        }
+        // this.configSummaryOptionView(selectedTextType);
         // select model, select summary length and send summary list
         return {
           'summary-type': this.st_selected,
@@ -192,11 +235,16 @@ class SummaryCustomisationView {
   buttonSelect(id) {
     var clickedButton = null;
     
+    var stb1 = document.getElementById(this.stb1);
+    var stb2 = document.getElementById(this.stb2);
+    stb1.classList.remove(this.stbcss);
+    stb2.classList.remove(this.stbcss);
+
     if (id == "ex") {
-      clickedButton = document.getElementById(this.stb1);
+      clickedButton = stb1;
     } 
     else if (id == "ab") {
-      clickedButton = document.getElementById(this.stb2);
+      clickedButton = stb2;
     } 
     else { clickedButton = document.getElementById(id); }
 
@@ -295,7 +343,7 @@ class SummaryCustomisationView {
       option.value = model['model-name'];
       option.text = model['model-name'];
 
-      if (model['model-name'] === list['model-selected']) {
+      if (model['model-name'] === list['model-selected']['model-name']) {
         option.selected = true;
       }
       // '\n\n'
@@ -318,16 +366,19 @@ class SummaryCustomisationView {
     var list = null;
     switch(change) {
       case ChangeFrom.TEXTTYPE:
+        console.log("ChangeFrom: t", ChangeFrom.TEXTTYPE);
         list = this.controller.updateFromTextTypeChange(selectedValue);
         break;
       case ChangeFrom.SUMMARYTYPE:
+        console.log("ChangeFrom: s", ChangeFrom.SUMMARYTYPE);
         list = this.controller.updateFromSummaryTypeChange(selectedValue);
         break;
       case ChangeFrom.MODELSELECT:
+        console.log("ChangeFrom: m", ChangeFrom.MODELSELECT);
         list = this.controller.updateFromModelChange(selectedValue);
         break;
     }
-
+    console.log("List: ", list);
     switch(change) {
       case ChangeFrom.TEXTTYPE:
         this.buttonSelect(list['summary-type'] === "ab" ? this.stb2 : this.stb1);

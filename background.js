@@ -80,12 +80,6 @@ chrome.commands.onCommand.addListener(function (command) {
     case 'summarise-page':
       console.log("Shortcut - Summarise Page");
       chrome.browserAction.openPopup();
-      // chrome.windows.create({
-      //   'url': 'popup.html',
-      //   'type': 'popup',
-      //   'width': 300,
-      //   'height': 200
-      // });
       chrome.tabs.create({url: 'popup.html'})
       break;
     case 'summarise-selected':
@@ -357,18 +351,22 @@ async function chatgptRequest(data, prompt) {
 
   if (res.hasOwnProperty('co_api_key')) {
     if (res['co_api_key'] === "") {
-      // Send message that this needs to be filled in
+      sendMessageToPopup({ action: 'summaryResponse', message: 'Missing chatgpt/openai api key!', data: "failed" });
       return;
     } else {
       key = res['co_api_key'];
     }
   } else {
-    // Send message that this needs to be filled in
+    sendMessageToPopup({ action: 'summaryResponse', message: 'Missing chatgpt/openai api key!', data: "failed" });
     return;
   }
 
   if (res.hasOwnProperty('co_host')) {
     res['co_host'] === "" ? host = CHATGPT_HOST_ENDPOINT : host = res['co_host'];
+  }
+  else {
+    sendMessageToPopup({ action: 'contextualMessage', message: 'Missing Host address, using default ChatGPT host', order: 2 });
+    host = CHATGPT_HOST_ENDPOINT;
   }
 
   var responses = [];
@@ -380,8 +378,7 @@ async function chatgptRequest(data, prompt) {
   }
 
   combined = responses.map((res) => res.choices[0].message.content).join(' ');
-  // combined = "fdsfsdfs";
-  sendMessageToPopup({ action: 'summaryResponse', data: {data : combined} });
+  sendMessageToPopup({ action: 'summaryResponse', data: {data : combined}, message: 'Summarisation success!' });
 
 }
 
@@ -403,9 +400,12 @@ async function _chatgptRequest(data, host, key) {
 }
 
 
+
 function embedWithPrompt(text, prompt) {
   return text.replace('{content}', prompt);
 }
+
+
 
 function sendMessageToCS(message) {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
