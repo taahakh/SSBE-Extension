@@ -378,11 +378,13 @@ async function summariseButtonHandler() {
           for : 'bs' });
     });
     }
+    // userSelectedText = "";
   } 
   // For CO
   else {
     // NEED TO IMPLEMENT USER SELECTED TEXT
     // console.log("CO Summarise not implemented yet");
+    console.log("Selected text?: ", userSelectedText);
     console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
     console.log("userSelectedText: ", userSelectedText);
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
@@ -395,7 +397,6 @@ async function summariseButtonHandler() {
       });
     });
   }
-
   userSelectedText = "";
 }
 
