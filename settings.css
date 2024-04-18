@@ -54,30 +54,10 @@ p, li {
 
 /* *** --- Provider --- *** */
 
-/* #bs-provider-connection-box *:not(button, 
-                                  input, 
-                                  #bs-provider-connection-login-button, 
-                                  #bs-provider-connection-signup-button),
-#co-provider-connection-box *:not(button, input) {
-    padding-bottom: 15px;
-    padding-top: 15px;
-    font-weight: bold;
-} */
-
 #bs-provider-connection-box > h4,
 #co-provider-connection-box > h4 {
     padding-top: 20px ;
 }
-
-/* #bs-provider-connection-box p:first-of-type,
-#co-provider-connection-box p:first-of-type {
-    padding-top: 15px;
-} */
-
-/* #bs-provider-connection-box p:first-child,
-#co-provider-connection-box p:first-child {
-    padding-top: 100px;
-} */
 
 /* --- Provider [bs-provider] --- */
 
@@ -133,8 +113,6 @@ p, li {
 }
 
 
-
-
 /* *** --- BS Customisation --- *** */
 
 /* --- General --- */
@@ -145,21 +123,11 @@ p, li {
 /* Settings popup */
 
 .popup-settings {
-    /* position: relative; */
-    /* background-color: black; */
     padding: 20px;
     border: 1px solid #ccc;
     margin-top: 10px;
     text-align: center;
-    /* display: inline-block; */
-    /* z-index: 1; */
-    /* top: 185px; */
 }
-
-
-/* .per-site-config > div {
-    padding-bottom: 20px;
-} */
 
 .bs-psc-addconfig > div {
     padding-bottom: 20px;
@@ -224,11 +192,7 @@ p, li {
     text-align: center;
     background: none;
     background-color: #F6F193;
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
-    /* border: none; */
     border: 1px solid grey;
-    /* border: 1px solid #fff200; */
-    /* border: 1px solid green; */
     transition: background-color 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;    
 }
 
@@ -277,7 +241,6 @@ p, li {
 
 .green {
     background-color: greenyellow;
-    /* background-color: #D9EDBF; */
 }
 
 .marg-top-20 {
@@ -297,7 +260,6 @@ p, li {
 }
 
 .red-error {
-    /* color: red; */
     font-weight: bold;
 }
 

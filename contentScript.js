@@ -1,49 +1,54 @@
 (() => {
-    console.log("content script loaded");
-    var currentURL = window.location.href;
-    var urlObject = new URL(currentURL);
+    // console.log("content script loaded");
+    // var currentURL = window.location.href;
+    // var urlObject = new URL(currentURL);
 
-    var domainName = urlObject.hostname;
-    var path = urlObject.pathname;
+    // var domainName = urlObject.hostname;
+    // var path = urlObject.pathname;
 
-    console.log("Domain Name:", domainName);
-    console.log("Path:", path);
+    // console.log("Domain Name:", domainName);
+    // console.log("Path:", path);
     
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
-        console.log("CS --> Message received:", obj, sender, response);
+        // console.log("CS --> Message received:", obj, sender, response);
         // console.log(obj);
         switch (obj.action) {  
             // Scrape text --> change name to scrapeText
             
             case 'gatherData':
-                console.log("obj.userSelectedText: ", obj.userSelectedText);   
-                let texts = obj.userSelectedText;
-                let extractedType = null;
+                // console.log("obj.userSelectedText: ", obj.userSelectedText);   
+                var scrapeContent = {
+                    texts: obj.userSelectedText,
+                    extractedType: null
+                };
+
+                scrapeTextFromWebpage(obj, scrapeContent);
+
+                let texts = scrapeContent["texts"];
+                let extractedType = scrapeContent["extractedType"];
                 
-                if (obj.userSelectedText === "") {
-                    if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
-                        console.log("USING XPATHS")
-                        extractedType = "extracted";
-                        texts = scrapeWithXPATHs(obj.usingXpath)[0];
-                        console.log(texts);
-                    } 
-                    // NEED TO ADD CHATGPT IMPLEMENTATION
-                    // BS implementation
-                    else {
-                        extractedType = "html";
-                        // Naive implementation
-                        // texts = JSON.stringify({text: document.body.outerHTML});
+                // if (obj.userSelectedText === "") {
+                //     if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
+                //         console.log("USING XPATHS")
+                //         extractedType = "extracted";
+                //         texts = scrapeWithXPATHs(obj.usingXpath)[0];
+                //         console.log(texts);
+                //     } 
+                //     // NEED TO ADD CHATGPT IMPLEMENTATION
+                //     // BS implementation
+                //     else {
+                //         extractedType = "html";
+                //         // Naive implementation
+                //         if (obj.for === "co") {
+                //             texts = getAllTextFromNode(document.body);
+                //         }
     
-                        if (obj.for === "co") {
-                            texts = getAllTextFromNode(document.body);
-                        }
-    
-                        else {
-                            // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
-                            texts = JSON.stringify({text: document.documentElement.outerHTML});
-                        }
-                    }
-                }
+                //         else {
+                //             // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
+                //             texts = JSON.stringify({text: document.documentElement.outerHTML});
+                //         }
+                //     }
+                // }
 
                 if (obj.for === "bs") {
                     chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType, for: obj.for }, function(response) {
@@ -68,24 +73,57 @@
 
                 break;
             case 'urlMatcher':
-                console.log(obj.data);
+                // console.log(obj.data);
                 var [path, domain] = determineUrl(obj.data);
-                console.log("urlMatcher: ", path, domain);
+                // console.log("urlMatcher: ", path, domain);
                 chrome.runtime.sendMessage({ action: 'determinedUrl', path: path, domain: domain  });
                 break;
             case 'getSelectedText':
                 var st = window.getSelection().toString();
-                console.log("Selected txt: ", st);
+                // console.log("Selected txt: ", st);
                 chrome.runtime.sendMessage({ action: 'retrieveSelectedText', data : st });
                 break
         }
      });
 })();
 
+function scrapeTextFromWebpage(message, scrapeContent) {
+    if (message.userSelectedText === "") {
+        if (message.usingXpath !== null && message.usingXpath.length > 0) {
+            console.log("USING XPATHS")
+            scrapeContent["extractedType"] = "extracted";
+            scrapeContent["texts"] = scrapeWithXPATHs(message.usingXpath)[0];
+            console.log(texts);
+        } 
+        // NEED TO ADD CHATGPT IMPLEMENTATION
+        // BS implementation
+        else {
+            scrapeContent["extractedType"] = "html";
+            // Naive implementation
+            if (message.for === "co") {
+                scrapeContent["texts"] = getAllTextFromNode(document.body);
+            }
+
+            else {
+                // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
+                scrapeContent["texts"] = JSON.stringify({text: document.documentElement.outerHTML});
+            }
+        }
+    }
+}
+
+
+/**
+ * Splits the given text into chunks based on a maximum character limit per chunk.
+ * Each chunk contains one or more sentences from the text.
+ *
+ * @param {string} text - The text to be split into chunks.
+ * @returns {[boolean, string[]]} - A tuple containing a boolean value indicating whether the text was successfully split and an array of chunks.
+ */
 function splitTextIntoChunks(text) {
 
     let sentences = splitTextIntoSentences(text);;
-    console.log("Sentences: ", sentences);
+    // console.log("Sentences: ", sentences);
 
     if (!sentences) {return [false, null];}
 
@@ -120,6 +158,12 @@ function splitTextIntoChunks(text) {
     return [true, chunks];
 }
 
+/**
+ * Splits a given text into an array of sentences.
+ *
+ * @param {string} text - The text to be split into sentences.
+ * @returns {string[]} An array of sentences.
+ */
 function splitTextIntoSentences(text) {
     let sentences = [];
     let currentSentence = '';
@@ -143,6 +187,11 @@ function splitTextIntoSentences(text) {
 }
 
 
+/**
+ * Determines the closest matching path for the current URL based on the provided configuration object.
+ * @param {Object} obj - The configuration object containing saved domains and their paths.
+ * @returns {Array} - An array containing the closest matching path and the current host.
+ */
 function determineUrl(obj) {
     var keys = Object.keys(obj);
     var currentUrl = new URL(window.location.href);
@@ -151,7 +200,7 @@ function determineUrl(obj) {
 
     // Check if we are in a saved domain (host)
     if (!keys.includes(currentHost)) {
-        console.log("We are NOT in a saved config domain");
+        // console.log("We are NOT in a saved config domain");
         // null, null
         return [null, null];
     } 
@@ -159,11 +208,18 @@ function determineUrl(obj) {
     // Get all the paths for that domain
     var paths = Object.keys(obj[currentHost]); 
     var closestMatch = findClosestMatch(currentPath, paths);
-    console.log("Closest Path: ", closestMatch);
+    // console.log("Closest Path: ", closestMatch);
 
     return [closestMatch, currentHost];
 }
 
+/**
+ * Finds the closest match from a list of paths based on the common prefix with the current path.
+ *
+ * @param {string} currentPath - The current path to compare against.
+ * @param {string[]} pathList - The list of paths to search for the closest match.
+ * @returns {string|null} - The closest match from the path list, or null if no match is found.
+ */
 function findClosestMatch(currentPath, pathList) {
     let closestMatch = null;
     let maxMatchLength = 0;
@@ -181,6 +237,11 @@ function findClosestMatch(currentPath, pathList) {
 }
 
 
+/**
+ * Scrapes text from the web page using the provided XPaths.
+ * @param {string[]} xpaths - An array of XPaths to extract text from.
+ * @returns {string[]} - An array of text extracted from the web page.
+ */
 function scrapeWithXPATHs(xpaths) {
     var allTexts = [];
     for (var i=0; i<xpaths.length; i++) {
@@ -189,6 +250,11 @@ function scrapeWithXPATHs(xpaths) {
     return allTexts;
 }
 
+/**
+ * Retrieves the text content of HTML elements that match the given XPath expression.
+ * @param {string} xpath - The XPath expression to match the desired elements.
+ * @returns {string} - A JSON string containing an array of text content from the matched elements.
+ */
 function getTextWithXpath(xpath) {
     console.log(xpath);
     // var texts = "";
@@ -211,6 +277,11 @@ function getTextWithXpath(xpath) {
     return JSON.stringify({text : texts});
 }
 
+/**
+ * Retrieves all text content from a given node and its child nodes.
+ * @param {Node} node - The node to retrieve text content from.
+ * @returns {string} - The concatenated text content from the node and its child nodes.
+ */
 function getAllTextFromNode(node) {
     var text = '';
   

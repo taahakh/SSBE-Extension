@@ -1,8 +1,9 @@
+/* CSS Stylesheet for popup.html */
+
 html {
     width: 700px;
     height: 600px;
 }
-
 
 #container {
     display: flex;
@@ -11,8 +12,7 @@ html {
 }
 
 
-
-/* *** ---  summarisation --- *** */
+/* *** ---  summarisation functionality --- *** */
 
 #summarisation{
     flex: 0 0 30%;
@@ -21,6 +21,7 @@ html {
 
 /* --- summarisation [ row 1 ] --- */
 
+/* sets the rows to be inline with each other */
 .rows-inline {
     padding-top: 10px;
     padding-left: 10px;
@@ -30,41 +31,33 @@ html {
 /* .row-item-fullwidth */
 .rows-inline > div {              
     width: 100%;
-    /* height: 2em; */
-    /* border: 1px solid black; */
 }
 
+/* Provider, summarise button and settings section */
 #control {
     height: 4em;
-    /* border: 1px solid black; */
 }
 
 #contextual {
     height: 2em;
-    /* border: 1px solid black; */
 }
 
 #summarise-settings-box {
     float: right;
     width: 28%;
-    /* background-color: white; */
-    /* border: 1px solid black; */
-    /* display: inline; */
 }
 
 /* Settings button */
 #summarise-settings-box > button {
     float: right;
-    /* width: 30%; */
-    /* display: inline; */
 }
 
+/* Summarise button position */
 #summarise-box {
     float: left;
 }
 
 .contextual-box {
-    /* color: ; */
     font-weight: bold;
 }
 
@@ -73,11 +66,9 @@ html {
 
 #summary-box {
     flex: 0 0 60%;
-    /* background-color: yellow; */
     border-top: 2px solid black;
     border-bottom: 2px solid black;
     font-size: 15px;
-    /* padding-bottom: 10px; */
     padding: 15px 15px 15px 15px;
 }
 
@@ -88,17 +79,17 @@ html {
 #post-summarisation  {
     flex: 0 0 10%;
     padding-top: 5px;
-    /* background-color: red; */
 }
 
+/* Header */
 #post-summarisation > h3{
-    /* padding-top: 0px; */
     padding-bottom: 5px;
 }
 
 
-/* --- summarisation [ co-customisation ] --- */
+/* --- summarisation [ (ChatGPT/OpenAI) co-customisation ] --- */
 
+/* Container */
 #co-customisation {
     display: none;
 }
@@ -111,6 +102,4 @@ html {
 #co-customisation > h3 {
     padding-right: 20px;
 }
-
-/* Other */
 

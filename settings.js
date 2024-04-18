@@ -1070,15 +1070,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             }
         }
         break;
-    //   case 'loadPopupCtx':
-    //     console.log("Popup.js - Loading Popup Context");
-    //     setPopupCtx(request.data);
-    //     break;
       case 'bsAuthMessageStatus':
         setBsAuthContext(request.message);
-        // if (request.status === "ok") {
-        //     chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "settings" });
-        // }
         break;
     }
   

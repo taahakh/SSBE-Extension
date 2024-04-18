@@ -1,24 +1,62 @@
+<!-- 
+  
+  Popup.html
+  - HTML structure for the popup
+  - Holds all summarisation functionality, access to summarisation providers, customisation options
+  - Main homepage for the extension
+
+-->
 <!DOCTYPE html>
 <html>
 <head>
   <title>Site Summariser</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="popup.css">
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="static/font-awesome/css/font-awesome.min.css" />
 </head>
 <body>
-  <!-- <h1>Site summariser</h1>
-  <button id="getButton">Make GET Request</button>
-  <button id="postButton">Make POST Request</button> -->
+
   <div id="container">
+
+    <!--
+
+    HTML structure for the popup
+
+      summarisation -- Holds all summarisation functionality, access to summarisation providers, customisation options
+        - row-1
+          - control
+            - provider -- Dropdown to select summarisation provider
+            - summarise-settings-box -- Holds the summarise button and settings button
+              - summarise-box
+              - settings-button
+          - contextual-box -- Contextual information about the state of the extension
+        - summarisation-customisation -- Holds customisation options for the summarisation
+          - bs-customisation -- Backend service customisation options with contextual boxes
+            - textdomain -- Text domain dropdown
+            - summarytype -- Summary type selection
+            - modelchoice -- Model choice dropdown
+            - summarylength -- Summary length input
+          - co-customisation -- ChatGPT/OpenAI customisation options
+
+      summary-box -- Holds the summarised text
+      
+      post-summarisation -- Post summarisation functionality
+        - save-summary -- Button to save the summarised text
+
+    -->
+
+
     <!-- Summarisation functionality -->
     <div id="summarisation" class="rows">
       
+
       <!-- Non-customisation settings - Main / critical section -->
       <div id="row-1" class="rows-inline">
 
         <!-- Start summarisation and select provider -->
         <div id="control" class="row-item-fullwidth">
+
+          <!-- Provider dropdown -->
           <div id="provider" class="side-header-dropdown">
             <h3>Provider:</h3>
             <select id="td-dropdown-provider" class="box box-width-extended box-right-pad"  name="td-dropdown-provider">
@@ -26,14 +64,17 @@
               <option value="co">ChatGPT / OpenAI </option>
             </select>
           </div>
+
+          <!-- Summarise button and settings button -->
           <div id="summarise-settings-box">
-            <!-- <div id="summarise-button"> -->
+            <!-- Summary button -->
             <div id="summarise-box">
-              <!-- <button type="button">Summarise</button> -->
               <button id="summarise-button" type="button" class="box box-lr-pad-long pointer clear-styling-min">Summarise</button>
             </div>
+            <!-- Settings button -->
             <button id="open-settings" class="clear-styling"><i class="fa fa-cog fa-3x" aria-hidden="true"></i></button>
           </div>
+
         </div>
 
         <!-- Contextual information -->
@@ -43,22 +84,31 @@
 
       </div>
 
+
       <!-- Customisation options  -->
       <div id="summarisation-customisation" class="summarisation-customisation">
+
+        <!-- Backend service customisation -->
         <div id="bs-customisation" class="bs-customisation">
+
+          <!-- Text Domain -->
           <div id="textdomain" class="bs-text-align">
             <h3 id="tt-header" class="pointer">Text Type</h3>
+            <!-- Contextual box -->
             <div id="tt-pp" class="popup box box-width-extended-med-long hidden">
               <p>
                 Text type dictates the kind of text or webpage content you want to summarise. e.g. news articles, blog posts, etc.
                 This option helps determine and select particular models that could possibly produce better results.
               </p>
             </div>
+            <!-- Dropdown -->
             <select id="td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="td-dropdown-textdomain"></select>
           </div>
+
+          <!-- Summary Type -->
           <div id="summarytype" class="bs-text-align">
-            <!-- Extractive and Abstractive Summarisation Buttons -->
             <h3 id="st-header" class="pointer">Summary Type</h3>
+            <!-- Contextual box -->
             <div id="st-pp" class="popup box box-width-extended-long hidden">
               <p><strong>Extractive:</strong> Determines and selects parts of the existing text to produce a new summary</p>
               <br>
@@ -73,18 +123,26 @@
               </p>
               <br>
             </div>
+            <!-- ST buttons -->
             <div id="summarisation-buttons" class="summarisation-buttons">
               <div id="sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
               <div id="sb-2" class="sb-2 box box-reduced-pad-uniform selectable-button">Abstractive</div>
             </div>
           </div>
+
+          <!-- Model choice -->
           <div id="modelchoice" class="bs-text-align">
             <h3 id="model-header" class="pointer">Model select</h3>
+            <!-- Contextual box -->
             <div id="mc-pp" class="popup box box-width-extended-long hidden"></div>
+            <!-- Dropdown -->
             <select id="td-dropdown-modelchoice" class="box dropdown-overflow" name="td-dropdown-modelchoice">
           </select>
           </div>
+
+          <!-- Summary Length -->
           <div id="summarylength" class="bs-text-align">
+            <!-- Contextual box -->
             <div id="sl-pp" class="popup box box-width-extended-med-long hidden">
               <p>
                 The length of the summary you want to generate. The value is a percentage of how large the summary shall be.
@@ -92,36 +150,36 @@
               </p>
             </div>
             <h3 id="sl-header" class="pointer">Summary Length</h3>
+            <!-- Summary length input -->
             <input type="text" id="summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
-            <!-- <h5 id="minlength"></h5>
-            <h5 id="maxlength"></h5> -->
             <h4 class="pad-top-3">Range: 0 - 100%</h4>
           </div>
+
         </div>
+
+        <!-- ChatGPT/OpenAI customisation -->
         <div id="co-customisation" class="side-header-dropdown">
           <h3>Select prompt</h3>
-          <select id="td-dropdown-prompt" class="box box-width-extended-long" name="td-dropdown-prompt">
-          </select>
+          <!-- Prompt selection - Populated by JS -->
+          <select id="td-dropdown-prompt" class="box box-width-extended-long" name="td-dropdown-prompt"></select>
         </div>
+
       </div>
 
     </div>
 
-    <!-- Summary box -->
-    <div id="summary-box" class="rows-inline">
-      
-    </div>
+    <!-- Summary box - Filled in with JS -->
+    <div id="summary-box" class="rows-inline"></div>
 
     <!-- Post summarisation functionality -->
     <div id="post-summarisation" class="rows rows-inline">
       <h3>Post Summarisation</h3>
       <button id="save-summary" class="box box-reduced-pad-uniform clear-styling-min pointer">Save summarised text</button>
     </div>
-    <!-- <div id="summarisation" class="rows"></div>
-    <div id="summary-box" class="rows"></div>
-    <div id="post-summarisation" class="rows"></div> -->
+
   </div>
 </body>
+<!-- Scripts -->
 <script src="APIClasses.js"></script>
 <script src="popup.js"></script>
 </html>
