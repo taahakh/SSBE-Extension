@@ -1,11 +1,14 @@
+/* CSS Stylesheet for popup.html and settings.html */
+
+/* *** --- HTML Structure --- *** */
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-
-/* --- summarisation [ bs-customisation ] --- */
+/* *** --- summarisation [ bs-customisation ] --- *** */
 /* Not used in settings */
 .popup {
     position: absolute;
@@ -42,6 +45,7 @@
     padding-bottom: 5px;
 }
 
+/* For all selectable button / box */
 .selectable-button {
     border:1px solid black;
     cursor:pointer;
@@ -50,6 +54,7 @@
     text-align: center;
 }
 
+/* Button state */
 .selected-state {
     background-color: greenyellow;
 }
@@ -59,16 +64,13 @@
     text-align: center;
 }
 
-/* Text Domain (Text Type) */
-
-
 /* Summary Type */
-/* NEED TO CHANGE THIS NAME - THIS IS THE DIV WRAPPER FOR EXTRACTIVE AND ABSTRACTIVE BUTTONS */
 .summarisation-buttons div {
     cursor: pointer; 
     margin: 0 auto;
 }
 
+/* Button [sb-1 --> extractive, sb-2 --> abstractive ] */
 .sb-1 + .sb-2 {
     margin-top: 5px;
 }
@@ -113,6 +115,7 @@
     padding-right: 12px;
 }
 
+/* Side header dropdown position */
 .side-header-dropdown > select {
     float: right;
 }
@@ -158,11 +161,6 @@
     width: 100px;
 }
 
-/* Box reduced even further- by 150 - 50px */
-/* .box-width-reduced-further {
-    width: 100px;
-} */
-
 /* Right Padding */
 .box-right-pad {
     padding-right: 1em;
@@ -174,6 +172,7 @@
     padding-right: 2em;
 }
 
+/* Reduced normal padding */
 .box-reduced-pad-uniform {
     padding: 2px 2px 2px 2px;
 }
@@ -197,6 +196,8 @@
     color: inherit;
     outline: none;
 }
+
+/* --- Other --- */
 
 .hidden {
     display: none;

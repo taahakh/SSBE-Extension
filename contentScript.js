@@ -1,3 +1,9 @@
+/**
+ * Content script that runs in the context of the current webpage.
+ * This script is responsible for scraping text from the webpage, splitting the text into chunks, and communicating with the background / popup script.
+ * The content script listens for messages from the background script and popup script to perform the required actions.
+ */
+
 (() => {
     // console.log("content script loaded");
     // var currentURL = window.location.href;
@@ -9,14 +15,17 @@
     // console.log("Domain Name:", domainName);
     // console.log("Path:", path);
     
+    // Message API Listener, communicates with background.js and popup.js
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
         // console.log("CS --> Message received:", obj, sender, response);
         // console.log(obj);
         switch (obj.action) {  
-            // Scrape text --> change name to scrapeText
-            
+
+            // Scraping the text from the webpage in part of the summarisation pipeline
             case 'gatherData':
                 // console.log("obj.userSelectedText: ", obj.userSelectedText);   
+                // texts: obj.userSelectedText,
+                // extractedType = null
                 var scrapeContent = {
                     texts: obj.userSelectedText,
                     extractedType: null
@@ -49,19 +58,21 @@
                 //         }
                 //     }
                 // }
-
+                
+                // For BS summarisation
                 if (obj.for === "bs") {
-                    chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType, for: obj.for }, function(response) {
-                        console.log(response);
-                    });
+                    chrome.runtime.sendMessage({ action: 'summarise', data : texts, customisation : obj['customisation'], extractedType: extractedType, for: obj.for });
                 }
+                // For CO summarisation
                 else {
-                    console.log("obj.data: ", obj.extractedText);
-                    if (obj.data !== "") { texts = obj.extractedText; console.log("Texts: ", texts); }
+                    // console.log("obj.data: ", obj.extractedText);
+                    // if (obj.data !== "") { texts = obj.extractedText; console.log("Texts: ", texts); }
+                    if (obj.data !== "") { texts = obj.extractedText; }
                     var [state, textChunks] = splitTextIntoChunks(texts);
-                    console.log("Text Chunks: ", textChunks);
+                    // console.log("Text Chunks: ", textChunks);
+                    // Text too long
                     if (!state) {
-                        console.log("Text too long");
+                        // console.log("Text too long");
                         chrome.runtime.sendMessage({ action: 'contextualMessage', message: 'Unable to summarise this page with this provider :(', order: 1 });
                         return;
                     }
@@ -72,12 +83,14 @@
                 }
 
                 break;
+            // Determining the closest matching path for the current URL, to load the saved configuration set by the user - triggered by the popup.js
             case 'urlMatcher':
                 // console.log(obj.data);
                 var [path, domain] = determineUrl(obj.data);
                 // console.log("urlMatcher: ", path, domain);
                 chrome.runtime.sendMessage({ action: 'determinedUrl', path: path, domain: domain  });
                 break;
+            // Get the selected text from the webpage - triggered by the background.js and to be sent to the popup.js
             case 'getSelectedText':
                 var st = window.getSelection().toString();
                 // console.log("Selected txt: ", st);
@@ -87,25 +100,31 @@
      });
 })();
 
+/**
+ * Scrapes text from a webpage based on the provided message and scrapeContent objects.
+ * @param {object} message - The message object containing information about the selected text and scraping options.
+ * @param {object} scrapeContent - The scrapeContent object to store the extracted text.
+ */
 function scrapeTextFromWebpage(message, scrapeContent) {
+    // If user has not selected any text
     if (message.userSelectedText === "") {
+        // User has provided XPaths in customisation
         if (message.usingXpath !== null && message.usingXpath.length > 0) {
-            console.log("USING XPATHS")
+            // console.log("USING XPATHS")
             scrapeContent["extractedType"] = "extracted";
             scrapeContent["texts"] = scrapeWithXPATHs(message.usingXpath)[0];
-            console.log(texts);
+            // console.log(texts);
         } 
-        // NEED TO ADD CHATGPT IMPLEMENTATION
-        // BS implementation
+        // Scraping implementation
         else {
             scrapeContent["extractedType"] = "html";
-            // Naive implementation
+            
+            // CO Scraping implementation
             if (message.for === "co") {
                 scrapeContent["texts"] = getAllTextFromNode(document.body);
             }
-
+            // BS Scraping implementation
             else {
-                // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
                 scrapeContent["texts"] = JSON.stringify({text: document.documentElement.outerHTML});
             }
         }
@@ -116,6 +135,9 @@ function scrapeTextFromWebpage(message, scrapeContent) {
 /**
  * Splits the given text into chunks based on a maximum character limit per chunk.
  * Each chunk contains one or more sentences from the text.
+ * This implementation is for the CO summarisation.
+ * Maximum character limit per chunk is 3500 characters, as the summarisation model has a maximum input length of 4096 tokens.
+ * This implementation makes sure that the prompt added to the text does not exceed the maximum input length and guarantees non-rejection by token limit from CO
  *
  * @param {string} text - The text to be split into chunks.
  * @returns {[boolean, string[]]} - A tuple containing a boolean value indicating whether the text was successfully split and an array of chunks.
@@ -125,11 +147,13 @@ function splitTextIntoChunks(text) {
     let sentences = splitTextIntoSentences(text);;
     // console.log("Sentences: ", sentences);
 
+    // If no sentences are found, return false
     if (!sentences) {return [false, null];}
 
     let chunks = [];
     let currentChunk = '';
-
+    
+    // Split the text into chunks based on a maximum character limit per chunk
     sentences.forEach(sentence => {
         
         if (chunks.length === 3) {
@@ -160,7 +184,8 @@ function splitTextIntoChunks(text) {
 
 /**
  * Splits a given text into an array of sentences.
- *
+ * This implementation is for the CO summarisation.
+ * 
  * @param {string} text - The text to be split into sentences.
  * @returns {string[]} An array of sentences.
  */
@@ -171,6 +196,7 @@ function splitTextIntoSentences(text) {
     for (let i = 0; i < text.length; i++) {
         let char = text[i];
 
+        // Check if the current character is a sentence-ending punctuation mark
         if (char === '.' || char === '?' || char === '!') {
             sentences.push((currentSentence+char).trim());
             currentSentence = '';
@@ -188,7 +214,7 @@ function splitTextIntoSentences(text) {
 
 
 /**
- * Determines the closest matching path for the current URL based on the provided configuration object.
+ * Determines the closest matching path for the current URL based on the provided user configuration object.
  * @param {Object} obj - The configuration object containing saved domains and their paths.
  * @returns {Array} - An array containing the closest matching path and the current host.
  */
@@ -225,8 +251,10 @@ function findClosestMatch(currentPath, pathList) {
     let maxMatchLength = 0;
 
     for (const path of pathList) {
+        // Check if the current path starts with the path from the list
         const commonPrefix = currentPath.startsWith(path) ? path : '';
 
+        // Update the closest match if the common prefix is longer than the current max match length
         if (commonPrefix.length > maxMatchLength) {
             maxMatchLength = commonPrefix.length;
             closestMatch = path;
@@ -256,13 +284,14 @@ function scrapeWithXPATHs(xpaths) {
  * @returns {string} - A JSON string containing an array of text content from the matched elements.
  */
 function getTextWithXpath(xpath) {
-    console.log(xpath);
+    // console.log(xpath);
     // var texts = "";
     var texts = [];
-    // Grab all matching text nodes
-    // XPathResult.ANY_TYPE
+
+    // Grab all matching text nodesE
     var result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
+    // Get all text content from the matched nodes
     for (var i=0; i< result.snapshotLength; i++) {
         var tNode = result.snapshotItem(i);
         // var tContent = tNode.textContent || tNode.innerText;
@@ -273,7 +302,7 @@ function getTextWithXpath(xpath) {
     }
 
     
-    console.log(texts);
+    // console.log(texts);
     return JSON.stringify({text : texts});
 }
 
@@ -287,10 +316,11 @@ function getAllTextFromNode(node) {
   
     // node has text content?
     if (node.nodeType === 3) {
-    //   text += node.nodeValue.trim();
         text += node.nodeValue.trim() + " ";
-    } else if (node.nodeType === 1) {
-      // Element node (e.g., div, span, etc.)
+    } 
+    // node has child nodes?
+    else if (node.nodeType === 1) {
+      // Element node (e.g. div, span, etc.)
       for (var i = 0; i < node.childNodes.length; i++) {
         // text content from child nodes
         text += getAllTextFromNode(node.childNodes[i]);

@@ -33,15 +33,16 @@ function loadUserConfigs(data) {
 
 
 // ---------------------------------------------------------------------
-
-
-
-// ---------------------------------------------------------------------
-
 // SummaryOptionsController
 
 var view = null;
 var viewPromise = null;
+/**
+ * Builds the summarisation customisation configurations (JSON model descriptors), retrieved from backend service request.
+ * 
+ * @param {any} data - The data used to build the summary configurations.
+ * @returns {Promise<SummaryCustomisationView>} A promise that resolves to a SummaryCustomisationView instance.
+ */
 function buildSummaryConfigs(data) {
 
   let stheader = "st-header"; //
@@ -168,10 +169,10 @@ var contextual = document.getElementById('contextual');
 //  1 : Summarisation status
 //  2 : Additional context
 // ]
-// for BS
-var messageOrderPriorityBS = new Array(3);
-// for CO
-var messageOrderPriorityCO = new Array(3);
+
+var messageOrderPriorityBS = new Array(3); // for BS
+var messageOrderPriorityCO = new Array(3); // for CO
+
 function setContextualMessage(message, order) {
   console.log("currentProviderCTX: ", currentProviderCTX)
   var messageOrderPriority = chooseContextualMessage(currentProviderCTX);
@@ -258,11 +259,6 @@ function loadCO() {
 
 }
 
-
-
-
-// -----------------------------------------------------------------------
-
 // ----------------------------------------------------------------------
 
 var userSelectedText = "";
@@ -344,12 +340,12 @@ var summarise_button = document.getElementById("summarise-button");
 summarise_button.addEventListener("click", summariseButtonHandler);
 
 async function summariseButtonHandler() {
-  console.log("Summarise Button Clicked");
-  console.log("p1");
+  // console.log("Summarise Button Clicked");
+  // console.log("p1");
   setContextualMessage("", 1);
   // setContextualMessage("", 2);
   clearMessageBothProviders(2);
-  console.log("p2");
+  // console.log("p2");
   var tempUserSelectedText = userSelectedText;
   // For BS
   if (document.getElementById("td-dropdown-provider").value === "bs") {
@@ -358,17 +354,17 @@ async function summariseButtonHandler() {
       setContextualMessage("Sumamry length value is incorrect!", 2);
       return;
     }
-    console.log("PACKAGE: ", packageCustomisation);
-    console.log("Sending these xpaths: ", usrXpaths);
+    // console.log("PACKAGE: ", packageCustomisation);
+    // console.log("Sending these xpaths: ", usrXpaths);
     
     // User selected text / XPath scraping
     if (userSelectedText !== "") {
-      console.log('Summarising user selected text');
+      // console.log('Summarising user selected text');
       chrome.runtime.sendMessage({ action: 'summarise', data : tempUserSelectedText, customisation : packageCustomisation, extractedType : 'extracted', for : 'bs'}, function(response) {
-        console.log(response);
+        // console.log(response);
     });
     } else {
-      console.log('Scraping');
+      // console.log('Scraping');
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, 
         { action: "gatherData", 
@@ -384,9 +380,9 @@ async function summariseButtonHandler() {
   else {
     // NEED TO IMPLEMENT USER SELECTED TEXT
     // console.log("CO Summarise not implemented yet");
-    console.log("Selected text?: ", userSelectedText);
-    console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
-    console.log("userSelectedText: ", userSelectedText);
+    // console.log("Selected text?: ", userSelectedText);
+    // console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
+    // console.log("userSelectedText: ", userSelectedText);
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { 
         action: "gatherData", 
@@ -427,19 +423,26 @@ function summariseButtonState(provider) {
 }
 
 lockSummariseButton();
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 chrome.runtime.sendMessage({ action: 'customisationConfigRequest', to: "home" });
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
-// Settings Button
+// -------- Settings Button --------
 
-document.getElementById("open-settings").addEventListener("click", function() {
+function openSettings() {
   chrome.tabs.create({ url: "chrome-extension://"+chrome.runtime.id+"/settings.html" });
-});
+}
+
+document.getElementById("open-settings").addEventListener("click", openSettings);
+
+// ---------------------------------------------------------------------
 
 // -------- Post summarisation functionality --------
 
-// Save summarised text
+/**
+ * Saves the summarised text from the summary-box element into a text file.
+ */
 function saveSummarisedText() {
   var summaries = document.querySelectorAll("#summary-box p");
   let summary_list = [];
@@ -456,23 +459,5 @@ function saveSummarisedText() {
   URL.revokeObjectURL(link.href);
 }
 
-
-var save_button = document.getElementById("save-summary");
-save_button.addEventListener("click", saveSummarisedText);
-// save_button.addEventListener("click", function() {
-
-//   var summaries = document.querySelectorAll("#summary-box p");
-//   let summary_list = [];
-//   summaries.forEach(function(summary) {
-//     summary_list.push(summary.innerHTML + "\n");
-//   });
-
-//   const link = document.createElement("a");
-
-//   const file = new Blob(summary_list, { type: 'text/plain' });
-//   link.href = URL.createObjectURL(file);
-//   link.download = "sample.txt";
-//   link.click();
-//   URL.revokeObjectURL(link.href);
-
-// });
+// Save button functionality attached
+document.getElementById("save-summary").addEventListener("click", saveSummarisedText);

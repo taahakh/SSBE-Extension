@@ -1,3 +1,7 @@
+/* CSS Stylesheet for settings.html */
+
+/* *** --- Overall HTML Structure --- *** */
+
 /* Container */
 
 #container {
@@ -5,7 +9,6 @@
     height: 100%;
     margin: 0 auto;
     padding-bottom: 20px;
-    /* border: 1px solid red; */
 }
 
 #container > div {
@@ -59,10 +62,6 @@ p, li {
     padding-top: 20px ;
 }
 
-/* --- Provider [bs-provider] --- */
-
-
-
 /* --- Provider [co-provider] --- */
 #co-provider-connection-box {
     display: none;
@@ -97,13 +96,13 @@ p, li {
     padding-bottom: 10px;
 }
 
+/* Lists */
 #shortcuts ul {
     list-style-type: none;
     padding-bottom: 10px;
 }
 
 #shortcuts ul > li {
-    /* font-size: 13px; */
     padding-bottom: 10px;
 }
 
@@ -129,18 +128,17 @@ p, li {
     text-align: center;
 }
 
+/* Add new config */
 .bs-psc-addconfig > div {
     padding-bottom: 20px;
 }
 
+/* Automatic or Scraping options */
 .scraping-options ul{
     font-style: italic;
     list-style: none;
     padding-bottom: 20px;
 }
-
-
-/* --- Edit --- */
 
 /* --- Add --- */
 
@@ -171,14 +169,10 @@ p, li {
     margin-left: 5px; 
 }
 
-/* xpath descriptor */
-
-
 /* xpath */
 #add-xpath {
     display: none;
 }
-
 
 /* BS Edit site */
 #bs-psc-editsite-update {
@@ -204,10 +198,12 @@ p, li {
 
 /* *** --- Other --- *** */
 
+/* Contextual guide text */
 .guide-text {
     font-style: italic;
 }
 
+/* Padding bottom */
 .pad-btm-10 {
     padding-bottom: 10px;
 }
@@ -220,6 +216,7 @@ p, li {
     padding-bottom: 20px;
 }
 
+/* Padding top */
 .pad-top-10 {
     padding-top: 10px;
 }
@@ -228,10 +225,12 @@ p, li {
     padding-top: 20px;
 }
 
+/* Side buttons of input box throughout the page */
 .selectable-button-side {
     display:inline-block;
 }
 
+/* Grey line separator */
 .line-separator {
     width: 80%;
     padding-top: 30px;
@@ -243,10 +242,12 @@ p, li {
     background-color: greenyellow;
 }
 
+/* Margin spacing Top */
 .marg-top-20 {
     margin-top: 20px;
 }
 
+/* Margin spacing Bottom */
 .marg-btm-20 {
     margin-bottom: 20px;
 }
