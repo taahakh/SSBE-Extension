@@ -33,87 +33,82 @@ function loadUserConfigs(data) {
 
 
 // ---------------------------------------------------------------------
-// SummaryOptionsController
+// Create the view for the summarisation customisation options and available configurations set by the user configurations and backend service.
 
-var view = null;
-var viewPromise = null;
+var view = null;            // SummaryCustomisationView instance
+// var viewPromise = null;     // Promise for the SummaryCustomisationView instance
+var usrConfig = null;       // User configurations
+var usrXpaths = null;       // User XPaths
+
 /**
  * Builds the summarisation customisation configurations (JSON model descriptors), retrieved from backend service request.
  * 
  * @param {any} data - The data used to build the summary configurations.
- * @returns {Promise<SummaryCustomisationView>} A promise that resolves to a SummaryCustomisationView instance.
+ * @returns {Promise<SummaryCustomisationView>} A promise that resolves to a SummaryCustomisationView instance - aysnchronous operation.
  */
 function buildSummaryConfigs(data) {
 
-  let stheader = "st-header"; //
-  let stb1 = "sb-1";
-  let stb2 = "sb-2";
-  // Summmary Type CSS selected state
-  let stbcss = "selected-state";
-  let ttheader = "tt-header"; //
-  // Text Type Domain Dropdown
-  let ttdropdown = "td-dropdown-textdomain";
-  let modelheader = "model-header"; //
-  // Model Dropdown
-  let modeldropdown = "td-dropdown-modelchoice";
-  let slheader = "sl-header"; //
-  // Summary length
-  let milength = "minlength";
-  let malength = "maxlength";
-  // Summary length value
-  let sumlength = "summary-length"
-  // Respective ctx popups
-  let ttpp = "tt-pp";
-  let stpp = "st-pp";
-  let mcpp = "mc-pp";
-  let slpp = "sl-pp";
+  let stheader = "st-header";                       // Summary Type Header
+  let stb1 = "sb-1";                                // Extractive button
+  let stb2 = "sb-2";                                // Abstractive button
+  let stbcss = "selected-state";                    // Summmary Type CSS selected state
+  let ttheader = "tt-header";                       // Text Type Header
+  let ttdropdown = "td-dropdown-textdomain";        // Text Type Domain Dropdown
+  let modelheader = "model-header";                 // Model Header
+  let modeldropdown = "td-dropdown-modelchoice";    // Model Dropdown
+  let slheader = "sl-header";                       // Summary Length Header
+  let milength = "minlength";                       // Minimum summary length
+  let malength = "maxlength";                       // Maximum summary length          
+  let sumlength = "summary-length"                  // Summary length value
+  let ttpp = "tt-pp";                               // Text Type Popup - contextual information                
+  let stpp = "st-pp";                               // Summary Type Popup - contextual information              
+  let mcpp = "mc-pp";                               // Model Choice Popup - contextual information                         
+  let slpp = "sl-pp";                               // Summary Length Popup - contextual information                      
 
   let elements = [stheader, stb1, stb2, stbcss, 
                  ttheader, ttdropdown, modelheader, 
                  modeldropdown, slheader, milength, 
                  malength, sumlength, ttpp, stpp, mcpp, slpp];
 
-  console.log(data, elements);
+  // console.log(data, elements);
 
   return new Promise(resolve => {
-    // view = new SummaryCustomisationView(data, elements);
-    // resolve();
     view = new SummaryCustomisationView(data, elements);
     resolve(view);
   })
-  
-  // let config = view.controller;
-  // return config;
 }
 
-// ------------------------------------------------------------------
-
-
-var usrConfig = null;
-var usrXpaths = null;
-
+/**
+ * Sets the user configuration customisation for a given path and domain - set in the settings page under per site configurations.
+ * @param {string} path - The path for which the user configuration is being set.
+ * @param {string} domain - The domain for which the user configuration is being set.
+ */
 function setUserConfigCustomisation(path, domain) { 
   // console.log("SUCC");
   // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
   // msg.then(msg => {
   //   console.log("Inside of message: ", msg);
   //   usrConfig = msg['response'];
+
+  // Load the user configurations
   loadUserConfigs('urllist').then(msg => {
-    console.log("Inside of message: ", msg);
+    // console.log("Inside of message: ", msg);
     usrConfig = msg;
-    console.log("path: ", path);
-    console.log("dom: ", domain);
+    // console.log("path: ", path);
+    // console.log("dom: ", domain);
     let config = usrConfig[domain][path];
+    // Set available xpaths
     if (config['xpaths'].length !== 0 && config['scraping-option'] === "custom-scrape"){
       usrXpaths = config['xpaths'];
     }
 
     var customisation = config['summary-customisation'];
-    console.log("setUserConfigCustomisation: ", customisation);
+    // console.log("setUserConfigCustomisation: ", customisation);
     // console.log('USER CONFIG: ', usrConfig);;
-    console.log(view);
+    // console.log(view);
     // viewPromise.then(() => {
-      console.log("COMPLETEDD MAYBE: ", view);
+      // console.log("COMPLETEDD MAYBE: ", view);
+      // Set the predefined options for the view, updating it with the user configurations
       view.setPredefinedOptions(
         customisation['text-type'],
         customisation['summary-type'],
@@ -130,6 +125,33 @@ function setUserConfigCustomisation(path, domain) {
 var providerSelect = document.getElementById("td-dropdown-provider");
 var currentProviderCTX = 'bs';
 // console.log("Provider value: ", providerSelect.value);
+
+function switchProviderSelection() {
+  console.log("Provider Selection Changed: ", providerSelect.value);
+  var bs_customisation = document.getElementById("bs-customisation");
+  var co_customisation = document.getElementById("co-customisation");
+  var summarisation = document.getElementById("summarisation");
+  var post_summarisation = document.getElementById("post-summarisation");
+  var summary_box = document.getElementById("summary-box");
+
+  if (providerSelect.value === "co") {
+    bs_customisation.style.display = "none";
+    co_customisation.style.display = "flex";
+    summarisation.style.flex = "0 0 20%";
+    summary_box.style.flex = "0 0 65%";
+    post_summarisation.style.flex = "0 0 10%";
+    loadCO();
+    switchContextualMessage("co");
+  } else {
+    co_customisation.style.display = "none";
+    bs_customisation.style.display = "flex";
+    summarisation.style.flex = "0 0 30%";
+    summary_box.style.flex = "0 0 60%";
+    post_summarisation.style.flex = "0 0 10%";
+    switchContextualMessage("bs");
+  }
+  summariseButtonState(providerSelect.value);
+}
 
 providerSelect.addEventListener("change", function() {  
   console.log("Provider Selection Changed: ", providerSelect.value);

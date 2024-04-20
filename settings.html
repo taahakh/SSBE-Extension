@@ -10,16 +10,19 @@
 <body>
     <div id="container">
         <h1 style="font-size: 40px;">Settings</h1>
+
         <div id="provider">
+
             <h1>Service Connections</h1>
             <p class="guide-text pad-btm-20">Connect / Fill in the details for the serivce providers you want to use for summarisation</p>
             <div id="provider-select">
                 <h2>Select Provider</h2>
-                <select id="provider-selector" class="box box-width-extended"  name="">
+                <select id="provider-selector" class="box box-width-extended">
                     <option value="bs">Backend Service</option>
                     <option value="co">ChatGPT / OpenAI </option>
                 </select>
             </div>
+
             <div id="bs-provider-connection-box" class="pad-top-20">
                 <h3>Service Connect</h3>
                 <div id="bs-provider-connection-login-button" class="box box-div box-width-extended selectable-button-side pointer">Login</div>
@@ -33,6 +36,7 @@
                 <input id="bs-provider-connection-password-input" class="box box-width-extended-medium" type="text">
                 <button id="bs-provider-connection-connect-button" class="box box-div-button pad pointer block marg-top-20">Connect</button>
             </div>
+
             <div id="co-provider-connection-box">
                 <p class="guide-text pad-top-10">Click <a href="https://www.merge.dev/blog/chatgpt-api-key">here</a> to learn how to get your API key</p>
                 <h4>API Key</h4>
@@ -42,7 +46,9 @@
                 <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-host-input">
                 <button id="co-provider-connection-save-button" class="box box-div-button pointer block marg-top-20">Save</button>
             </div>
+
             <p id="bs-provider-connection-contextual" class="red-error pad-top-10 pad-btm-10"></p>
+
         </div>
 
         <div id="shortcuts">
@@ -59,7 +65,9 @@
         <div id="co-customisation">
             <h1>ChatGPT / OpenAI: Customisation</h1>
             <p class="guide-text pad-btm-10">This section houses the current customisation features for using ChatGPT / OpenAI</p>
+
             <div id="prompts">
+
                 <h2>Prompts</h2>
                 <p class="guide-text pad-btm-10">Prompts are statements that are used to help ChatGPT / OpenAI summarise in a particular way.</p>
                 <p class="guide-text pad-btm-10">For example:</p>
@@ -68,6 +76,7 @@
                     <li><strong>></strong> Summarise this text under 100 words : {content}</li>    
                 </ul>
                 <p class="guide-text pad-btm-10"> "<strong>{content}</strong>" must be added in the statement so that the extension will know where to add the text for summarisation</p>
+                
                 <div id="saved-prompts">
                     <h3 class="pad-btm-10">View, Edit, Delete, Set Default Prompts </h3>
                     <p class="guide-text pad-btm-10">
@@ -75,10 +84,7 @@
                         You can also decide which prompt you would like to be your default for summarisation.
                     </p>
                     <p class="guide-text pad-btm-10"> Please make sure "<strong>{content}</strong>" is added within your prompt in order for it to be valid</p>
-                    <select name="" id="co-prompts-selector" class="box box-width-extended-med-long">
-                        <!-- <option value="x">x</option> -->
-                        <!-- <option value="y">y</option> -->
-                    </select>
+                    <select name="" id="co-prompts-selector" class="box box-width-extended-med-long"></select>
                     <button id="co-prompts-edit-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Edit</button>
                     <button id="co-prompts-delete-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Delete</button>
                     <button id="co-prompts-default-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Set default</button>
@@ -87,7 +93,6 @@
                         <input type="text" id="co-prompts-edit-input" class="box box-width-extended-long">
                         <button id="co-prompts-edit-update-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Update</button>
                     </div>
-                    <!-- Need to add to design?????? -->                    
                 </div>
                 
                 <div class="line-separator"></div>
@@ -99,20 +104,20 @@
                     <button id="co-prompts-add-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                 </div>
                 <p id="co-prompts-ctx-help" class="pad-btm-10"></p>
-            </div>
-        </div>
 
+            </div>
+
+        </div>
 
 
         <div id="bs-config">
             <h1>Backend service: Customisation</h1>
             <p class="guide-text pad-btm-10">This section houses the current customisation features for using the Backend Service</p>
             <p id="bs-config-contextual" class="red-error red"></p>
+
             <div id="per-site-config" class="per-site-config">
                 <h2>Per site customisation</h2>
                 <p class="guide-text pad-btm-20">Customise summarisation for particular sites that you may frequently visit</p>
-
-
 
                 <!-- Edit Configuration -->
                 <div id="bs-psc-editsite">
@@ -223,9 +228,11 @@
                 <div id="bs-psc-addconfig" class="bs-psc-addconfig">
                     <h3 class="pad-btm-20">Add new configuration for a site</h3>
                     <p class="guide-text pad-btm-10">Add a <strong>valid</strong> url that you want to configure for summarisation e.g. https://example.co.uk</p>
+
                     <div id="bs-psc-url-descriptor-box">
                         <p class="guide-text">Click the chevron on how to add urls</p>
                         <button id="bs-psc-url-descriptor-toggle" class="guide-descriptor-toggle pointer"></button>
+
                         <div id="bs-psc-url-descriptor" class="descriptor-text-box">
                             <p class="guide-text pad-btm-10">
                                 For more specificity in the type of pages on a site you want to summarise, add path / page of the url e.g. https://example.co.uk/news .
@@ -247,6 +254,7 @@
                                 <strong>Note that urls must match the pattern for the sites you have configured</strong>
                             </p>
                         </div>
+                        
                     </div>
 
                     <!-- <p class="guide-text pad-btm-20"></p> -->

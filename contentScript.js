@@ -34,6 +34,7 @@
                 scrapeTextFromWebpage(obj, scrapeContent);
 
                 let texts = scrapeContent["texts"];
+                console.log("Texts: ", texts);
                 let extractedType = scrapeContent["extractedType"];
                 
                 // if (obj.userSelectedText === "") {
@@ -67,7 +68,9 @@
                 else {
                     // console.log("obj.data: ", obj.extractedText);
                     // if (obj.data !== "") { texts = obj.extractedText; console.log("Texts: ", texts); }
-                    if (obj.data !== "") { texts = obj.extractedText; }
+                    console.log("Texts: ", texts);
+                    // if (obj.data !== "") { texts = obj.extractedText; }
+                    // console.log("Texts: ", texts);
                     var [state, textChunks] = splitTextIntoChunks(texts);
                     // console.log("Text Chunks: ", textChunks);
                     // Text too long

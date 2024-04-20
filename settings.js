@@ -723,9 +723,15 @@ bsEditConfigDelButton.addEventListener('click', function() {
 // Save new ADDED configuration 
 var bsEditConfigSave = document.getElementById("edit-bs-add-config-save");
 var bsEditConfigSaveContextual = document.getElementById("edit-bs-add-config-save-contextual");
-bsEditConfigSave.addEventListener("click", function () { 
+bsEditConfigSave.addEventListener("click", async function () { 
     console.log("Updating customisation ")
 
+    // Cannot have existing url
+    var exisitingURL = await urlExists(bsEditConfigURL.value, editOldURL);
+    if (exisitingURL) {
+        bsEditConfigSaveContextual.innerText = "URL already exists!";
+        return;
+    }
     // Cannot have empty url
     console.log(bsEditConfigURL.value);
     if (urlErrorMessage(bsEditConfigURL.value, bsEditConfigSaveContextual)) {return;}
@@ -755,6 +761,35 @@ bsEditConfigSave.addEventListener("click", function () {
     // removeFromStorage("bsc");
 })
 
+
+async function urlExists(url, oldUrl=null) {
+    var urlList = await loadUserConfigs('urllist');
+
+    var urlObj = new URL(url);
+    var dName = urlObj.hostname.toString();
+    var pName = urlObj.pathname.toString();
+    console.log("NEWURL: ", dName, pName);
+
+    if (oldUrl !== null) {
+        console.log("OLDURL: ", oldUrl);    
+        var oldUrlObj = new URL(oldUrl);
+        var oldDName = oldUrlObj.hostname.toString();
+        var oldPName = oldUrlObj.pathname.toString();
+        console.log("OLDURL: ", oldDName, oldPName);
+        if (oldDName === dName && oldPName === pName) {
+            console.log("SAME URL");
+            return false;
+        }
+    }
+
+    if (urlList.hasOwnProperty(dName)) {
+        if (urlList[dName].hasOwnProperty(pName)) {
+            return true;
+        }
+    }
+
+    return false; 
+}
 
 // inputlist : 
 // [
@@ -972,9 +1007,16 @@ function isValidURL(url) {
 // Save new ADDED configuration 
 var bsAddConfigSave = document.getElementById("bs-add-config-save");
 var bsAddConfigSaveContextual = document.getElementById("bs-add-config-save-contextual");
-bsAddConfigSave.addEventListener("click", function () { 
+bsAddConfigSave.addEventListener("click", async function () { 
     console.log("Saving... ");
     
+    // Cannot have existing url
+    var exisitingURL = await urlExists(bsAddConfigURL.value);
+    if (exisitingURL) {
+        bsAddConfigSaveContextual.innerText = "URL already exists!";
+        return;
+    }
+
     // Cannot have empty url
     if (urlErrorMessage(bsAddConfigURL.value, bsAddConfigSaveContextual)) {return;}
 
