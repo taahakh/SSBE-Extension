@@ -7,13 +7,26 @@
 
 
 // ---------------------------------------------------------------------
+// Utility functions
+// SOME THESE CODE BLOCKS ARE REPEATED IN SETTINGS.JS AND BACKGROUND.JS DUE TO ASYNC ISSUES
+
+/**
+ * Saves the given object to the local storage using the Chrome storage API.
+ *
+ * @param {Object} ctx_obj - The object to be saved to the storage.
+ */
 function saveToStorage(ctx_obj) {
   chrome.storage.local.set(ctx_obj, function() {
     // console.log("Storage Item Saved");
   });
 }
 
-// REPEATED CODE - SETTINGS
+/**
+ * Checks if an object is empty.
+ *
+ * @param {Object} obj - The object to check.
+ * @returns {boolean} Returns true if the object is empty, otherwise returns false.
+ */
 function isObjectEmpty(obj) {
   for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
@@ -23,8 +36,12 @@ function isObjectEmpty(obj) {
   return true;
 }
 
-// REPEATED CODE - SETTINGS
-// Saved user configs
+
+/**
+ * Loads user configurations from local storage.
+ * @param {string} data - The key to retrieve the user configurations.
+ * @returns {Promise<object>} - A promise that resolves with the user configurations.
+ */
 function loadUserConfigs(data) {
   return new Promise((resolve, reject) => {
       chrome.storage.local.get([data], function(result) {
