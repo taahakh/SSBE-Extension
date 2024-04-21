@@ -1,3 +1,46 @@
+<!-- 
+    settings.html is the settings page for the extension.
+    It allows users to connect to the summarisation providers, customise summarisation options and view shortcuts.
+    The page is divided into four main sections:
+    1. Provider Selection and enter the required details to use providers
+    2. View and update shortcuts
+    3. Add, view, edit and delete prompts for ChatGPT / OpenAI summarisation
+    4. Customise summarisation options for the backend service
+
+
+    The overall page is structured as follows:
+        - provider
+            - select provider
+            - Choose login or signup for backend service
+            - Enter details for backend service
+            - Enter details for ChatGPT / OpenAI (hidden until selected)
+            - Contextual information
+        - shortcuts
+            -  shortcuts description
+            -  open shortcuts button
+        - co-customisation
+            -  prompts
+                -  view, edit, delete, set default prompts
+                -  add new prompt
+                -  contextual information
+        - bs-config
+            - edit per site configuration
+                - URL
+                - summarisation options
+                    - text type
+                    - summary type
+                    - model choice
+                    - summary length
+                - Information for each summarisation option
+                - scraping options
+                    - automatic scrape
+                    - custom scrape
+                        - add XPATHs
+                - contextual information
+                - save
+            - add per site configuration (same as edit but for adding new configurations)
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,10 +54,13 @@
     <div id="container">
         <h1 style="font-size: 40px;">Settings</h1>
 
+        <!-- Provider Selection and enter the required details to use providers -->
         <div id="provider">
 
             <h1>Service Connections</h1>
             <p class="guide-text pad-btm-20">Connect / Fill in the details for the serivce providers you want to use for summarisation</p>
+            
+            <!-- Select providers -->
             <div id="provider-select">
                 <h2>Select Provider</h2>
                 <select id="provider-selector" class="box box-width-extended">
@@ -23,10 +69,13 @@
                 </select>
             </div>
 
+            <!-- BS Input boxes  -->
             <div id="bs-provider-connection-box" class="pad-top-20">
                 <h3>Service Connect</h3>
+                <!-- Switch between login/connect and signup -->
                 <div id="bs-provider-connection-login-button" class="box box-div box-width-extended selectable-button-side pointer">Login</div>
                 <div id="bs-provider-connection-signup-button" class="box box-div box-width-extended selectable-button-side pointer">Signup</div>
+                <!-- Inputs -->
                 <h4>Host</h4>
                 <p class="guide-text pad-btm-15">If you are running the backend service locally on your machine, you can leave this field empty and it will try and connect with it. If unsuccessful, please find the address of the service when it is running</p>
                 <input id="bs-provider-connection-host-input" class="box box-width-extended-medium" type="text">
@@ -37,20 +86,24 @@
                 <button id="bs-provider-connection-connect-button" class="box box-div-button pad pointer block marg-top-20">Connect</button>
             </div>
 
+            <!-- CO input boxes -->
             <div id="co-provider-connection-box">
                 <p class="guide-text pad-top-10">Click <a href="https://www.merge.dev/blog/chatgpt-api-key">here</a> to learn how to get your API key</p>
+                <!-- Inputs -->
                 <h4>API Key</h4>
                 <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-key-input">
                 <h4>API Host</h4>
                 <p class="guide-text pad-btm-10">Leave the host field empty if you want to use ChatGPT</p>
-                <input type="text" name="" class="box box-width-extended-medium"  id="co-provider-host-input">
+                <input type="text" name="" class="box box-width-extended-medium" id="co-provider-host-input">
                 <button id="co-provider-connection-save-button" class="box box-div-button pointer block marg-top-20">Save</button>
             </div>
 
+            <!-- Contextual information -->
             <p id="bs-provider-connection-contextual" class="red-error pad-top-10 pad-btm-10"></p>
 
         </div>
 
+        <!-- Shorcuts view  -->
         <div id="shortcuts">
             <h1>Shortcuts</h1>
             <h2>Shortcut options</h2>
@@ -62,12 +115,15 @@
             <button id="edit-view-shortcuts-button" class="box box-div-button pointer">Open shortcuts</button>
         </div>
 
+        <!-- CO customisation section  -->
         <div id="co-customisation">
             <h1>ChatGPT / OpenAI: Customisation</h1>
             <p class="guide-text pad-btm-10">This section houses the current customisation features for using ChatGPT / OpenAI</p>
 
+            <!-- View, Add, Edit, Delete prompts -->
             <div id="prompts">
 
+                <!-- Guide information -->
                 <h2>Prompts</h2>
                 <p class="guide-text pad-btm-10">Prompts are statements that are used to help ChatGPT / OpenAI summarise in a particular way.</p>
                 <p class="guide-text pad-btm-10">For example:</p>
@@ -77,6 +133,7 @@
                 </ul>
                 <p class="guide-text pad-btm-10"> "<strong>{content}</strong>" must be added in the statement so that the extension will know where to add the text for summarisation</p>
                 
+                <!-- View, edit and delete -->
                 <div id="saved-prompts">
                     <h3 class="pad-btm-10">View, Edit, Delete, Set Default Prompts </h3>
                     <p class="guide-text pad-btm-10">
@@ -84,10 +141,13 @@
                         You can also decide which prompt you would like to be your default for summarisation.
                     </p>
                     <p class="guide-text pad-btm-10"> Please make sure "<strong>{content}</strong>" is added within your prompt in order for it to be valid</p>
+                    <!-- Prompts list -->
                     <select name="" id="co-prompts-selector" class="box box-width-extended-med-long"></select>
+                    <!-- Buttons -->
                     <button id="co-prompts-edit-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Edit</button>
                     <button id="co-prompts-delete-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Delete</button>
                     <button id="co-prompts-default-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Set default</button>
+                    <!-- Edit prompt section, initally hidden until edit button is clicked -->
                     <div id="co-prompts-edit-editor">
                         <h4>Update prompt</h4>
                         <input type="text" id="co-prompts-edit-input" class="box box-width-extended-long">
@@ -97,56 +157,71 @@
                 
                 <div class="line-separator"></div>
 
+                <!-- Add -->
                 <div id="add-new-prompts">
                     <h3>Add new prompt</h3>
                     <p class="guide-text pad-btm-10"> Please make sure "<strong>{content}</strong>" is added within your prompt in order for it to be valid</p>
                     <input type="text" id="co-prompts-add-input" class="box box-width-extended-long">
                     <button id="co-prompts-add-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                 </div>
+                <!-- Contextual Information -->
                 <p id="co-prompts-ctx-help" class="pad-btm-10"></p>
 
             </div>
 
         </div>
 
-
+        <!-- Backend service customisation configuration -->
         <div id="bs-config">
             <h1>Backend service: Customisation</h1>
             <p class="guide-text pad-btm-10">This section houses the current customisation features for using the Backend Service</p>
+            
+            <!-- Contextual information -->
             <p id="bs-config-contextual" class="red-error red"></p>
 
+            <!-- Edit/Add per site configuration -->
             <div id="per-site-config" class="per-site-config">
                 <h2>Per site customisation</h2>
                 <p class="guide-text pad-btm-20">Customise summarisation for particular sites that you may frequently visit</p>
 
-                <!-- Edit Configuration -->
+                <!-- 
+                    Edit Configuration - A copy of the add per site configuration HTML structure block, with edit based IDs.
+                    All saved configurations are loaded and shown to user. 
+                -->
                 <div id="bs-psc-editsite">
                     <h3 class="pad-btm-15">Edit configuration for a site</h3>
+                    <!-- List of per site configurations -->
                     <select id="bs-edit-config-selector" class="box box-width-extended-med-long" name=""></select>
+                    
+                    <!-- Edit / Remove -->
                     <button id="edit-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Edit</button>
                     <button id="edit-del-site-button" class="box box-div-button box-width-reduced pointer box-reduced-pad-uniform">Remove</button>
                     <p id="edit-bs-add-config-contextual" class="red-error pad-top-10 pad-btm-10"></p>     
+                    
                     <!-- Summarisation Customisation CONFIG -->
                     <div id="bs-psc-editsite-update" class="bs-psc-addconfig">
                         
+                        <!-- Edit URL -->
                         <div class="url-section pad-top-20">
                             <h4>URL</h4>
                             <input id="edit-bs-add-config-URL" class="box box-width-extended-med-long" type="text">
                         </div>
                         
-                        <!-- Customisation options -->
+                        <!-- Edit customisation options -->
                         <div id="summarisation-customisation" class="summarisation-customisation pad-btm-10">
                             <h4>Summarisation Options</h4>
 
+                            <!-- Customisation container  -->
                             <div id="bs-customisation" class="bs-customisation">
                                 
+                                <!-- Text Domain -->
                                 <div id="edit-textdomain" class="bs-text-align">
                                     <h3 id="edit-tt-header" class="pointer">Text Type</h3>
                                     <select id="edit-td-dropdown-textdomain" class="box box-lr-pad-long dropdown-overflow" name="edit-td-dropdown-textdomain"></select>
                                 </div>
 
+                                <!-- Summary Type -->
                                 <div id="edit-summarytype" class="bs-text-align">
-                                <!-- Extractive and Abstractive Summarisation Buttons -->
                                     <h3 id="edit-st-header" class="pointer">Summary Type</h3>
                                     <div id="edit-summarisation-buttons" class="summarisation-buttons">
                                         <div id="edit-sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
@@ -154,27 +229,30 @@
                                     </div>
                                 </div>
 
+                                <!-- Model selection -->
                                 <div id="edit-modelchoice" class="bs-text-align">
                                     <h3 id="edit-model-header" class="pointer">Model select</h3>
                                     <select id="edit-td-dropdown-modelchoice" class="box dropdown-overflow" name="edit-td-dropdown-modelchoice"></select>
                                 </div>
 
+                                <!-- Summary Length -->
                                 <div id="edit-summarylength" class="bs-text-align">
                                     <h3 id="edit-sl-header" class="pointer">Summary Length</h3>
                                     <input type="text" id="edit-summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="edit-summary-length" placeholder="100">
-                                    <!-- <h5 id="edit-minlength"></h5>
-                                    <h5 id="edit-maxlength"></h5> -->
                                     <h4 class="pad-top-3">Range: 0 - 100%</h4>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Text type - Hidden information until header is clicked -->
                         <div id="edit-tt-pp" class="popup-settings hidden">
                             <p>
                                 Text type dictates the kind of text or webpage content you want to summarise. e.g. news articles, blog posts, etc.
                                 This option helps determine and select particular models that could possibly produce better results.
                             </p>
                         </div>
+
+                        <!-- Summary type - Hidden information until header is clicked -->
                         <div id="edit-st-pp" class="popup-settings hidden">
                             <p><strong>Extractive:</strong> Determines and selects parts of the existing text to produce a new summary</p>
                             <p>This option is good if you would like the summary to be faifthful and accurate with respect to the text. However, summaries can be
@@ -186,21 +264,30 @@
                                 the summary may not be as faithful to the original text and could alter the original meaning.
                             </p>
                             <br>
-
                         </div>
+
+                        <!-- Model choice - Hidden information until header is clicked and filled in with JS from model descriptors of backend service -->
                         <div id="edit-mc-pp" class="popup-settings hidden"></div>
+
+                        <!-- Summary length - Hidden information until header is clicked -->
                         <div id="edit-sl-pp" class="popup-settings hidden">
                             <p>
                                 The length of the summary you want to generate. The value is a percentage of how large the summary shall be.
-                                <b>The range is from 0 (smallest possible summary) - 100% (biggest possible summary). </b>                            </p>
+                                <b>The range is from 0 (smallest possible summary) - 100% (biggest possible summary). </b>                            
+                            </p>
                         </div>
 
+                        <!-- Select scraping option -->
                         <div id="edit-scraping-options" class="scraping-options pad-top-20">
                             <h4>Scraping Options</h4>
                             <div id="edit-auto-scrape" class="box box-div box-width-extended selectable-button-side pointer">Automatic Scrape</div>
                             <div id="edit-custom-scrape" class="box box-div box-width-extended selectable-button-side pointer">Custom Scrape</div>
                         </div>
                         
+                        <!-- 
+                            XPATHS to be used to scrape text from page.
+                            Hidden until custom scrape is selected
+                        -->
                         <div id="edit-add-xpath" class="hidden">
                             <h4>Add XPATH(s)</h4>
                             <p class="guide-text"><strong>Empty XPATHs will not be accepted</strong></p>
@@ -210,7 +297,10 @@
                             <button id="edit-add-xpath-button" class="box box-div-button box-width-reduced box-reduced-pad-uniform pointer">Add</button>
                         </div>
 
+                        <!-- Contextual information -->
                         <p id="edit-bs-add-config-save-contextual" class="red-error pad-btm-20"></p>
+
+                        <!-- Save -->
                         <button id="edit-bs-add-config-save" class="box box-div-button pointer">Save</button>
                      
                     </div>
@@ -222,7 +312,10 @@
                 <div class="line-separator"></div>
 
 
-                <!-- Add Configuration -->
+                <!-- 
+                    Add Configuration. See the edit section above to understand the strucutre of the add configuration block.
+                    This block is used to add a new configuration for a site, so no user configurations are loaded to be edited. 
+                -->
 
 
                 <div id="bs-psc-addconfig" class="bs-psc-addconfig">
@@ -254,16 +347,14 @@
                                 <strong>Note that urls must match the pattern for the sites you have configured</strong>
                             </p>
                         </div>
-                        
+
                     </div>
 
-                    <!-- <p class="guide-text pad-btm-20"></p> -->
                     <div class="url-section">
                         <h4>URL</h4>
                         <input id="bs-add-config-URL" class="box box-width-extended-med-long" type="text">
                     </div>
 
-                    <!-- Customisation options  -->
                     <div id="summarisation-customisation" class="summarisation-customisation pad-btm-10">
                         <h4>Summarisation Options</h4>
                         <p class="guide-text pad-btm-20">
@@ -280,7 +371,6 @@
                             </div>
 
                             <div id="summarytype" class="bs-text-align">
-                              <!-- Extractive and Abstractive Summarisation Buttons -->
                               <h3 id="st-header" class="pointer">Summary Type</h3>
                               <div id="summarisation-buttons" class="summarisation-buttons">
                                 <div id="sb-1" class="sb-1 box box-reduced-pad-uniform selectable-button">Extractive</div>
@@ -296,12 +386,9 @@
                             <div id="summarylength" class="bs-text-align">
                                 <h3 id="sl-header" class="pointer">Summary Length</h3>
                                 <input type="text" id="summary-length" class="summary-length box box-reduced-pad-uniform box-width-reduced" name="summary-length" placeholder="100">
-                                <!-- <h5 id="minlength"></h5>
-                                <h5 id="maxlength"></h5> -->
                                 <h4 class="pad-top-3">Range: 0 - 100%</h4>
                             </div>
 
-                          <!-- </div> -->
                         </div>
                     </div>
 
@@ -311,6 +398,7 @@
                             This option helps determine and select particular models that could possibly produce better results.
                         </p>
                     </div>
+
                     <div id="st-pp" class="popup-settings hidden">
                         <p><strong>Extractive:</strong> Determines and selects parts of the existing text to produce a new summary</p>
                         <p>This option is good if you would like the summary to be faifthful and accurate with respect to the text. However, summaries can be
@@ -323,7 +411,9 @@
                         </p>
                         <br>
                     </div>
+
                     <div id="mc-pp" class="popup-settings hidden"></div>
+
                     <div id="sl-pp" class="popup-settings hidden">
                         <p>
                             The length of the summary you want to generate. The value is a percentage of how large the summary shall be.
@@ -366,6 +456,7 @@
                     </div>
 
                     <p id="bs-add-config-save-contextual" class="red-error pad-btm-20"></p>
+
                     <button id="bs-add-config-save" class="box box-div-button pointer">Save</button>
 
                 </div>

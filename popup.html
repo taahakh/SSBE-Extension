@@ -1,9 +1,32 @@
 <!-- 
   
   Popup.html
-  - HTML structure for the popup
   - Holds all summarisation functionality, access to summarisation providers, customisation options
   - Main homepage for the extension
+
+
+  HTML structure for the popup
+
+  summarisation -- Holds all summarisation functionality, access to summarisation providers, customisation options
+    - row-1
+      - control
+        - provider -- Dropdown to select summarisation provider
+        - summarise-settings-box -- Holds the summarise button and settings button
+          - summarise-box
+          - settings-button
+      - contextual-box -- Contextual information about the state of the extension
+    - summarisation-customisation -- Holds customisation options for the summarisation
+      - bs-customisation -- Backend service customisation options with contextual boxes
+        - textdomain -- Text domain dropdown
+        - summarytype -- Summary type selection
+        - modelchoice -- Model choice dropdown
+        - summarylength -- Summary length input
+      - co-customisation -- ChatGPT/OpenAI customisation options
+
+  summary-box -- Holds the summarised text
+  
+  post-summarisation -- Post summarisation functionality
+    - save-summary -- Button to save the summarised text
 
 -->
 <!DOCTYPE html>
@@ -18,38 +41,9 @@
 
   <div id="container">
 
-    <!--
-
-    HTML structure for the popup
-
-      summarisation -- Holds all summarisation functionality, access to summarisation providers, customisation options
-        - row-1
-          - control
-            - provider -- Dropdown to select summarisation provider
-            - summarise-settings-box -- Holds the summarise button and settings button
-              - summarise-box
-              - settings-button
-          - contextual-box -- Contextual information about the state of the extension
-        - summarisation-customisation -- Holds customisation options for the summarisation
-          - bs-customisation -- Backend service customisation options with contextual boxes
-            - textdomain -- Text domain dropdown
-            - summarytype -- Summary type selection
-            - modelchoice -- Model choice dropdown
-            - summarylength -- Summary length input
-          - co-customisation -- ChatGPT/OpenAI customisation options
-
-      summary-box -- Holds the summarised text
-      
-      post-summarisation -- Post summarisation functionality
-        - save-summary -- Button to save the summarised text
-
-    -->
-
-
     <!-- Summarisation functionality -->
     <div id="summarisation" class="rows">
       
-
       <!-- Non-customisation settings - Main / critical section -->
       <div id="row-1" class="rows-inline">
 
