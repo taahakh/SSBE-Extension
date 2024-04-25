@@ -233,6 +233,13 @@ var coProviderConnectionSaveButton = document.getElementById('co-provider-connec
 coProviderConnectionSaveButton.addEventListener('click', function(){
     var key = coProviderKeyInput.value;
     var host = coProviderHostInput.value;
+
+    // Empty field
+    if (key === "") {
+        setBsAuthContext("Key cannot be empty!");
+        return;
+    }
+
     // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'auth' });
     loadUserConfigs('auth').then(data => {
         data['co_api_key'] = key;
@@ -490,9 +497,15 @@ function populatePromptsList() {
     // Load the user's CO prompts
     loadUserConfigs('coprompts').then((data) => {
         // console.log("CO PROMPTS: ", data)
-
+        console.log("CO PROMPTS: ", data)
         // Default prompt, if no prompts are saved
         const DEFAULT_PROMPT = "Summarise this text: {content} ";
+
+        // If no prompts are saved, set the default prompt as the only prompt and the default prompt
+        if (!data.hasOwnProperty('prompts')) {
+            data['prompts'] = [DEFAULT_PROMPT];
+            data['default'] = DEFAULT_PROMPT;
+        }
         
         if (data['prompts'].length === 0 || data['default'] === "") {
             data['prompts'] = [DEFAULT_PROMPT];

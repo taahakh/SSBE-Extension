@@ -352,7 +352,7 @@ class SummaryCustomisationView {
    * Creates event listeners for elements (text type, summary type, model choice and summary length) in the UI.
    */
   createListeners() {
-      console.log("Creating Listeners");
+      // console.log("Creating Listeners");
 
       // Information popups
       var popups_static = [document.getElementById(this.ttpp),

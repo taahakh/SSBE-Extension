@@ -497,6 +497,12 @@ async function chatgptRequest(data, prompt) {
     var completePrompt = prompt.replace(/{content}/g, chunk[i]);
     // console.log('Background.js - ChatGPT Request, Chunk ${i}: ', completePrompt);
     var coRes = await _chatgptRequest(completePrompt, host, key)
+
+    if (coRes.hasOwnProperty('error')) {
+      sendMessage({ action: 'summaryResponse', message: 'Check API Key / Host values in the settings and your API usage limits.', data: "failed" });
+      return;
+    }
+
     responses.push(coRes);
   }
 
@@ -529,6 +535,7 @@ async function _chatgptRequest(data, host, key) {
     })
 
     var response = await res.json();
+    // console.log(response);
     return response;
 }
 

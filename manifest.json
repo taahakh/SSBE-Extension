@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "HTTP Request Extension",
+  "name": "Site Summariser",
   "version": "1.0",
-  "description": "Chrome extension for making HTTP requests",
+  "description": "Extension that summarises the text on a webpage.",
   "background": {
     "service_worker": "background.js"
   },

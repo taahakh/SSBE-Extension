@@ -360,7 +360,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       // console.log()
       // Request failed
       if (request.data === null || request.data === 'error' || request.data === 'failed'){
-        setContextualMessage(request.message + ' Please open and close the extension to refresh the summariser', 0);
+        setContextualMessage(request.message + ' Reopen the extension to refresh the summariser.', 0);
+        setContextualMessage("Summarisation failed!", 1);
         lockSummariseButton();
       } 
       // Request successfull
