@@ -5,27 +5,15 @@
  */
 
 (() => {
-    // console.log("content script loaded");
-    // var currentURL = window.location.href;
-    // var urlObject = new URL(currentURL);
 
-    // var domainName = urlObject.hostname;
-    // var path = urlObject.pathname;
-
-    // console.log("Domain Name:", domainName);
-    // console.log("Path:", path);
-    
     // Message API Listener, communicates with background.js and popup.js
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
-        // console.log("CS --> Message received:", obj, sender, response);
-        // console.log(obj);
+
         switch (obj.action) {  
 
             // Scraping the text from the webpage in part of the summarisation pipeline
             case 'gatherData':
-                // console.log("obj.userSelectedText: ", obj.userSelectedText);   
-                // texts: obj.userSelectedText,
-                // extractedType = null
+ 
                 var scrapeContent = {
                     texts: obj.userSelectedText,
                     extractedType: null
@@ -34,31 +22,7 @@
                 scrapeTextFromWebpage(obj, scrapeContent);
 
                 let texts = scrapeContent["texts"];
-                console.log("Texts: ", texts);
                 let extractedType = scrapeContent["extractedType"];
-                
-                // if (obj.userSelectedText === "") {
-                //     if (obj.usingXpath !== null && obj.usingXpath.length > 0) {
-                //         console.log("USING XPATHS")
-                //         extractedType = "extracted";
-                //         texts = scrapeWithXPATHs(obj.usingXpath)[0];
-                //         console.log(texts);
-                //     } 
-                //     // NEED TO ADD CHATGPT IMPLEMENTATION
-                //     // BS implementation
-                //     else {
-                //         extractedType = "html";
-                //         // Naive implementation
-                //         if (obj.for === "co") {
-                //             texts = getAllTextFromNode(document.body);
-                //         }
-    
-                //         else {
-                //             // Better implementation - NOT REALLY BUT SCRAPING DONE AT BS
-                //             texts = JSON.stringify({text: document.documentElement.outerHTML});
-                //         }
-                //     }
-                // }
                 
                 // For BS summarisation
                 if (obj.for === "bs") {
@@ -66,16 +30,10 @@
                 }
                 // For CO summarisation
                 else {
-                    // console.log("obj.data: ", obj.extractedText);
-                    // if (obj.data !== "") { texts = obj.extractedText; console.log("Texts: ", texts); }
-                    console.log("Texts: ", texts);
-                    // if (obj.data !== "") { texts = obj.extractedText; }
-                    // console.log("Texts: ", texts);
                     var [state, textChunks] = splitTextIntoChunks(texts);
-                    // console.log("Text Chunks: ", textChunks);
+
                     // Text too long
                     if (!state) {
-                        // console.log("Text too long");
                         chrome.runtime.sendMessage({ action: 'contextualMessage', message: 'Unable to summarise this page with this provider :(', order: 1 });
                         return;
                     }
@@ -88,15 +46,12 @@
                 break;
             // Determining the closest matching path for the current URL, to load the saved configuration set by the user - triggered by the popup.js
             case 'urlMatcher':
-                // console.log(obj.data);
                 var [path, domain] = determineUrl(obj.data);
-                // console.log("urlMatcher: ", path, domain);
                 chrome.runtime.sendMessage({ action: 'determinedUrl', path: path, domain: domain  });
                 break;
             // Get the selected text from the webpage - triggered by the background.js and to be sent to the popup.js
             case 'getSelectedText':
                 var st = window.getSelection().toString();
-                // console.log("Selected txt: ", st);
                 chrome.runtime.sendMessage({ action: 'retrieveSelectedText', data : st });
                 break
         }
@@ -113,10 +68,8 @@ function scrapeTextFromWebpage(message, scrapeContent) {
     if (message.userSelectedText === "") {
         // User has provided XPaths in customisation
         if (message.usingXpath !== null && message.usingXpath.length > 0) {
-            // console.log("USING XPATHS")
             scrapeContent["extractedType"] = "extracted";
             scrapeContent["texts"] = scrapeWithXPATHs(message.usingXpath)[0];
-            // console.log(texts);
         } 
         // Scraping implementation
         else {
@@ -148,7 +101,6 @@ function scrapeTextFromWebpage(message, scrapeContent) {
 function splitTextIntoChunks(text) {
 
     let sentences = splitTextIntoSentences(text);;
-    // console.log("Sentences: ", sentences);
 
     // If no sentences are found, return false
     if (!sentences) {return [false, null];}
@@ -229,15 +181,12 @@ function determineUrl(obj) {
 
     // Check if we are in a saved domain (host)
     if (!keys.includes(currentHost)) {
-        // console.log("We are NOT in a saved config domain");
-        // null, null
         return [null, null];
     } 
 
     // Get all the paths for that domain
     var paths = Object.keys(obj[currentHost]); 
     var closestMatch = findClosestMatch(currentPath, paths);
-    // console.log("Closest Path: ", closestMatch);
 
     return [closestMatch, currentHost];
 }
@@ -287,7 +236,6 @@ function scrapeWithXPATHs(xpaths) {
  * @returns {string} - A JSON string containing an array of text content from the matched elements.
  */
 function getTextWithXpath(xpath) {
-    // console.log(xpath);
     // var texts = "";
     var texts = [];
 
@@ -297,11 +245,8 @@ function getTextWithXpath(xpath) {
     // Get all text content from the matched nodes
     for (var i=0; i< result.snapshotLength; i++) {
         var tNode = result.snapshotItem(i);
-        // var tContent = tNode.textContent || tNode.innerText;
         var tContent = tNode.textContent;
         texts.push(tContent);
-        // texts += tContent + "\n\n";
-        // texts.push(getAllTextFromNode(tNode));
     }
 
     

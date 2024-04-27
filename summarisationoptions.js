@@ -31,6 +31,7 @@ class SummaryOptionsController {
         this.model_list = null;                           // List of models for the selected text type and summary type
         this.model_selected = null;                       // Selected model
         this.summary_length_selected = null;              // Selected summary length
+        
         // Default model for each text type
         this.default_text_type_model = {
           "General": {'summary_type' : 'ab', 'model_name': "BartLargeCNN"},
@@ -38,8 +39,7 @@ class SummaryOptionsController {
           "Medical": {'summary_type' : 'ab', 'model_name': "T5MedicalSummarisation"},
           "News": {'summary_type' : 'ab', 'model_name': "BartLargeCNN"},
         };
-        // console.log("SummaryOptionsController - config list: ", this.configlist);
-        // console.log("SummaryOptionsController - TreeList: ", this.textTypeList);
+
         this.setPlaceholder();                            // Auto select the first available model / default model selection
     }
 
@@ -101,20 +101,11 @@ class SummaryOptionsController {
                 this.model_list = this.textTypeList[tt][st];
                 this.model_selected = this.textTypeList[tt][st][0]; // Select the first model
                 this.summary_length_selected = this.textTypeList[tt][st][0]['summary-length'];
-                // console.log(ttlist, this.tt_selected, this.st_selected, this.model_list, this.model_selected);
                 return;
                 }
             }
           }
       }
-
-      // View the current SC details
-      // viewConfigSummaryOptionView() {
-      //   console.log("Summary Options: ", this.textTypeList);
-      //   console.log("SELECTED [Text Type]: ", this.tt_selected);
-      //   console.log("SELECTED [Summary Type]: ", this.st_selected);
-      //   console.log("SELECTED [Model List]: ", this.model_list);
-      // }
       
       /**
        * Retrieves the default model for a given text type.
@@ -173,7 +164,6 @@ class SummaryOptionsController {
             this.model_list = this.textTypeList[selected_tt][iter];
             this.model_selected = this.textTypeList[selected_tt][iter][0];
             this.summary_length_selected = this.textTypeList[selected_tt][iter][0]['summary-length'];
-            // console.log(this.tt_selected, this.st_selected, this.model_list, this.model_selected);
             return;
           }
         }
@@ -187,11 +177,8 @@ class SummaryOptionsController {
       updateFromTextTypeChange(selectedTextType) {
         // Set the default model for the text type if it exists, otherwise use the first available model of that text type
         if (!this.getDefaultModelForTextType(selectedTextType)) {
-          // return;
-          // console.log("no default model for text type: ", selectedTextType)
           this.configSummaryOptionView(selectedTextType);
         }
-        // this.configSummaryOptionView(selectedTextType);
 
         return {
           'summary-type': this.st_selected,
@@ -226,8 +213,6 @@ class SummaryOptionsController {
        * @returns {object} - The selected model object.
        */
       updateFromModelChange(selectedModel) {
-        // console.log(" updateFromModelChange - SELECTED MODEL : ", selectedModel)
-        // console.log(this.model_list.find((model) => model['model-name'] === selectedModel))
         this.model_selected = this.model_list.find((model) => model['model-name'] === selectedModel);
         return this.model_selected;
       }
@@ -253,7 +238,6 @@ class SummaryOptionsController {
        * @returns {string} The name of the selected model.
        */
       getModelChoice() {
-        // console.log("getModelChoice: ", this.model_selected)
         return this.model_selected['model-name'];
       }
 
@@ -352,8 +336,6 @@ class SummaryCustomisationView {
    * Creates event listeners for elements (text type, summary type, model choice and summary length) in the UI.
    */
   createListeners() {
-      // console.log("Creating Listeners");
-
       // Information popups
       var popups_static = [document.getElementById(this.ttpp),
                            document.getElementById(this.stpp),
@@ -365,8 +347,6 @@ class SummaryCustomisationView {
                             document.getElementById(this.stheader),
                             document.getElementById(this.modelheader),
                             document.getElementById(this.slheader)]
-
-      // console.log("Listeners: ", popups_static, headers_static);
 
       var tt_dropdown = document.getElementById(this.ttdropdown); // Text Type Dropdown
       var st_sb1 = document.getElementById(this.stb1); // Extractive Button
@@ -388,19 +368,13 @@ class SummaryCustomisationView {
 
       // Update the view when the text type is changed
       tt_dropdown.addEventListener("change", () => {
-          // console.log("Text Type Change");
-          // this.updateFromTextTypeView(
-          //   document.getElementById("td-dropdown-textdomain").value
-          // );
           this.updateView(ChangeFrom.TEXTTYPE, document.getElementById(this.ttdropdown).value);
       });
 
       // Update the view when the summary type is changed (extractive)
       st_sb1.addEventListener("click", () => {
-          // console.log("Summary Type Change - Extractive");
           if (this.selectedSummaryType !== this.stb1) {
             this.buttonSelect(this.stb1);
-            // this.updateFromSummaryTypeView("ex");
             this.updateView(ChangeFrom.SUMMARYTYPE, "ex");
           } else {
             this.buttonSelect(this.stb1);
@@ -412,7 +386,6 @@ class SummaryCustomisationView {
           // console.log("Summary Type Change - Abstractive");
           if (this.selectedSummaryType !== this.stb2) {
             this.buttonSelect(this.stb2);
-            // this.updateFromSummaryTypeView("ab");
             this.updateView(ChangeFrom.SUMMARYTYPE, "ab");
           } else {
             this.buttonSelect(this.stb2);
@@ -421,14 +394,8 @@ class SummaryCustomisationView {
 
       // Update the view when the model is changed
       model_dropdown.addEventListener("change", () => {
-          // console.log("Model dropdown - PICKED: ", document.getElementById(this.modeldropdown).value)
-          // this.updateFromModelSelectView(document.getElementById(this.modeldropdown).value);
           this.updateView(ChangeFrom.MODELSELECT, document.getElementById(this.modeldropdown).value);
       });
-
-      // model_dropdown.addEventListener("mouseover", () => {
-      //   console.log("On mouseover");
-      // })
 
   } 
 
@@ -437,7 +404,6 @@ class SummaryCustomisationView {
    * @param {Object} list - The list of models.
    */
   modelChoiceBuilder(list) {
-    // console.log("Model choice builder: ", list);
     var model_popup = document.getElementById(this.mcpp);             // Model Choice Popup
     var model_dropdown = document.getElementById(this.modeldropdown); // Model Dropdown
     var popup_text = "<h3>Description of models</h3> <br>";           // Popup text header
@@ -464,12 +430,10 @@ class SummaryCustomisationView {
     model_popup.innerHTML = popup_text;
   }
 
+  // Not used to display the summary length, done by model choice builder
+  // REDUNDANT
   summaryLengthBuilder(list) {
-    // console.log("Summary length builder: ", list, this.milength, this.malength);
-    // var minlength = document.getElementById(this.milength);
-    // var maxlength = document.getElementById(this.malength);
-    // minlength.innerHTML = "Min length: " + list['summary-length']['min'];
-    // maxlength.innerHTML = "Max length: " + list['summary-length']['max'];
+    console.log("SLB: ", list);
   }
 
   /**
@@ -484,20 +448,15 @@ class SummaryCustomisationView {
     // Update the controller based on the change
     switch(change) {
       case ChangeFrom.TEXTTYPE:
-        // console.log("ChangeFrom: t", ChangeFrom.TEXTTYPE);
         list = this.controller.updateFromTextTypeChange(selectedValue);
         break;
       case ChangeFrom.SUMMARYTYPE:
-        // console.log("ChangeFrom: s", ChangeFrom.SUMMARYTYPE);
         list = this.controller.updateFromSummaryTypeChange(selectedValue);
         break;
       case ChangeFrom.MODELSELECT:
-        // console.log("ChangeFrom: m", ChangeFrom.MODELSELECT);
         list = this.controller.updateFromModelChange(selectedValue);
         break;
     }
-
-    // console.log("List: ", list);
     
     // Update the view based on the change set by the controller
     switch(change) {
@@ -515,11 +474,9 @@ class SummaryCustomisationView {
    * Creates the view for the summary options.
    */
   createView() {
-      // console.log("Creating Summary Options View");
-      // create the view
+
       // Summary Options to be displayed
       var list = this.controller.getSummaryOptions();
-      // console.log("Summary Options: ", list); 
 
       // Text Types
       var tt_dropdown = document.getElementById(this.ttdropdown);
@@ -538,7 +495,6 @@ class SummaryCustomisationView {
       }
       
       // Set summary types
-      // console.log("Summary Type: ", list['summary-type']);
       this.buttonSelect(list['summary-type'] === "ab" ? this.stb2 : this.stb1);
       
       // Create model choice view

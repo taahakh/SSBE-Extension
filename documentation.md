@@ -12,6 +12,7 @@
     - [Background Service Worker](#background-service-worker)
     - [Content Script](#content-script)
     - [SummarisationOptions](#summarisationoptions)
+    - [Static folder](#static-folder)
 
 ## Introduction
 This is an extension that summarises the content of a webpage. It provides the use of multiple providers to have access to different implementations and usages, including an array of customisable features. This documentation provides a general high level overview of the extension implementation for use of editing, building off of and understanding the code. It is only serving as an introduction to this project, where code should be explored for further understanding. The code is heavily commented and documented for ease of understanding.
@@ -21,7 +22,7 @@ Follow the README.txt file for installation instructions
 
 ## Overall Design
 
-The popup (home page) is the main interface for the user to interact with the extension. The settings page is used to configure the extension and customisation of summarisation. The background service worker is used to manage the extension, primarily handling requests to different providers. The content script is used to interact with the webpage - purpose of extracting content. The APIClasses are used to interact with the custom backend service (SSBE-Backend) to populate the the model options for the user to see and use for summarisation.
+The popup (home page) is the main interface for the user to interact with the extension. The settings page is used to configure the extension and customisation of summarisation. The background service worker is used to manage the extension, primarily handling requests to different providers. contentScript.js is used to interact with the webpage - purpose of extracting content. Summarisationoptions.js are used to interact with the custom backend service (SSBE-Backend) to populate the the model options for the user to see and use for summarisation.
 
 ## Components
 
@@ -73,3 +74,5 @@ Please note that it is not an exhaustive list of all the components in the exten
 - View class handles the rendering of the options to the user
 - Used in the popup and settings page (per site customisation) to provide the user with the options for summarisation
 
+### Static folder
+- Contains the static files for the extension (e.g. images, css)

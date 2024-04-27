@@ -8,7 +8,7 @@
 
 // ---------------------------------------------------------------------
 // Utility functions
-// SOME THESE CODE BLOCKS ARE REPEATED IN SETTINGS.JS AND BACKGROUND.JS DUE TO ASYNC ISSUES
+// SOME THESE CODE BLOCKS ARE REPEATED IN POPUP.JS AND BACKGROUND.JS DUE TO ASYNC ISSUES OF CHROME MESSAGE DESIGN - https://developer.chrome.com/docs/extensions/develop/concepts/messaging
 
 /**
  * Saves the given object to the local storage using the Chrome storage API.
@@ -16,9 +16,7 @@
  * @param {Object} ctx_obj - The object to be saved to the storage.
  */
 function saveToStorage(ctx_obj) {
-  chrome.storage.local.set(ctx_obj, function() {
-    // console.log("Storage Item Saved");
-  });
+  chrome.storage.local.set(ctx_obj, function() {});
 }
 
 /**
@@ -46,11 +44,9 @@ function loadUserConfigs(data) {
   return new Promise((resolve, reject) => {
       chrome.storage.local.get([data], function(result) {
           if (isObjectEmpty(result)) {
-              // console.log("its empty");
               saveToStorage({[data] : {}});
               resolve(loadUserConfigs(data));
           } else {
-              // console.log(result);
               resolve(result[data]);
           }
       });
@@ -62,7 +58,6 @@ function loadUserConfigs(data) {
 // Create the view for the summarisation customisation options and available configurations set by the user configurations and backend service.
 
 var view = null;            // SummaryCustomisationView instance
-// var viewPromise = null;     // Promise for the SummaryCustomisationView instance
 var usrConfig = null;       // User configurations
 var usrXpaths = null;       // User XPaths
 
@@ -96,8 +91,6 @@ function buildSummaryConfigs(data) {
                  modeldropdown, slheader, milength, 
                  malength, sumlength, ttpp, stpp, mcpp, slpp];
 
-  // console.log(data, elements);
-
   return new Promise(resolve => {
     view = new SummaryCustomisationView(data, elements);
     resolve(view);
@@ -110,18 +103,10 @@ function buildSummaryConfigs(data) {
  * @param {string} domain - The domain for which the user configuration is being set.
  */
 function setUserConfigCustomisation(path, domain) { 
-  // console.log("SUCC");
-  // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
-  // msg.then(msg => {
-  //   console.log("Inside of message: ", msg);
-  //   usrConfig = msg['response'];
 
   // Load the user configurations
   loadUserConfigs('urllist').then(msg => {
-    // console.log("Inside of message: ", msg);
     usrConfig = msg;
-    // console.log("path: ", path);
-    // console.log("dom: ", domain);
     let config = usrConfig[domain][path];
     // Set available xpaths
     if (config['xpaths'].length !== 0 && config['scraping-option'] === "custom-scrape"){
@@ -129,11 +114,6 @@ function setUserConfigCustomisation(path, domain) {
     }
 
     var customisation = config['summary-customisation'];
-    // console.log("setUserConfigCustomisation: ", customisation);
-    // console.log('USER CONFIG: ', usrConfig);;
-    // console.log(view);
-    // viewPromise.then(() => {
-      // console.log("COMPLETEDD MAYBE: ", view);
       // Set the predefined options for the view, updating it with the user configurations
       view.setPredefinedOptions(
         customisation['text-type'],
@@ -150,7 +130,6 @@ function setUserConfigCustomisation(path, domain) {
 
 var providerSelect = document.getElementById("td-dropdown-provider");
 var currentProviderCTX = 'bs';
-// console.log("Provider value: ", providerSelect.value);
 
 /**
  * Handles the change event of the provider selection, switching between ChatGPT/OpenAI and backend service
@@ -158,7 +137,6 @@ var currentProviderCTX = 'bs';
  * @returns {void}
  */
 function switchProviderSelection() {
-  // console.log("Provider Selection Changed: ", providerSelect.value);
 
   if (providerSelect.value === "co") {
     updateVisualSPS("none", "flex", "0 0 20%", "0 0 65%", "0 0 10%");
@@ -204,12 +182,8 @@ function updateVisualSPS(bs, co, sum, sum_box, ps) {
  * Loads user defined ChatGPT / OpenAI prompts and creates the dropdown of available prompts.
  */
 function loadCO() { 
-  // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
-  // msg.then(msg => {
     // Loads locally stored CO prompts
     loadUserConfigs('coprompts').then((data) => {
-      // console.log("CO PROMPTS - : ", msg['response'])
-      // var data = msg['response'];
       var prompts = data['prompts'];
       // Dropdown element
       var promptsList = document.getElementById('td-dropdown-prompt');
@@ -257,12 +231,10 @@ var messageOrderPriorityCO = new Array(3);                    // for CO
  *  ]
  */
 function setContextualMessage(message, order) {
-  // console.log("currentProviderCTX: ", currentProviderCTX)
   
   // Selects the correct message array based on the current provider
   var messageOrderPriority = chooseContextualMessage(currentProviderCTX);
 
-  // console.log("ist this running - ctx msg")
   // Check if the order is valid, if not set to 2
   if (order > 2 || order < 0) {
     order = 2;
@@ -282,7 +254,6 @@ function setContextualMessage(message, order) {
  */
 function chooseContextualMessage(currentProvider) {
   var prov = currentProvider === "bs" ? messageOrderPriorityBS : messageOrderPriorityCO;
-  // console.log("Current Provider: ", currentProvider);
   return prov;
 }
 
@@ -329,7 +300,6 @@ function clearMessageBothProviders(order) {
  * @param {string} provider - The provider to switch to.
  */
 function switchContextualMessage(provider) {
-  // console.log("Switching Contextual Message: ", provider);
   currentProviderCTX = provider;
   var messageOrderPriority = chooseContextualMessage(provider);
   contextual.innerHTML = createContextualMessage(messageOrderPriority);
@@ -350,14 +320,11 @@ var userSelectedText = "";      // User selected text if user has used the short
 
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  // console.log('Popup.js: Message received:', request.action, request);
 
   switch (request.action) { 
 
     // Receiving the summarised data from the backend service / ChatGPT/OpenAI
     case 'summaryResponse':
-      // console.log("CS --> Summarised Data: ", request.data);
-      // console.log()
       // Request failed
       if (request.data === null || request.data === 'error' || request.data === 'failed'){
         setContextualMessage(request.message + ' Reopen the extension to refresh the summariser.', 0);
@@ -371,7 +338,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         summarybox.innerHTML = "";
         var p = document.createElement('p');  
         p.innerHTML = request.data.data;
-        // console.log("Summary: ", request.data.data);
         summarybox.appendChild(p);
         // Update any contextual message
         setContextualMessage(request.message, 1);
@@ -380,7 +346,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // Receiving the backend service model descriptors configurations
     case 'customisationConfigResponse':
       if (request.to === "home") {
-        // console.log("CTX MESSAGE: ", request.message);
         // This message is sent to background.js to get the selected text.
         // This is because the shortcut triggers in background.js, in which background.js sends a message to contentScript.js to get the selected text.
         // It goes back to background.js and then to popup.js.
@@ -395,7 +360,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           // Update the summarisation customisation view with predefined user configurations
           loadUserConfigs('urllist').then((data) => {
             usrConfig = data;
-            // console.log('USER CONFIG: ', usrConfig);
             // popup.js --> contentScript.js (content script finds if the URL matches the user configuration and sends it back to popup.js)
             chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
               chrome.tabs.sendMessage(tabs[0].id, { action: "urlMatcher", data : usrConfig });
@@ -411,7 +375,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     // Receiving the determined URL from the content script to set the user configuration customisation
     case 'determinedUrl':
-      // console.log("Determined URL: ", request.path, request.domain);
       if (request.path !== null) { setUserConfigCustomisation(request.path, request.domain); }
       break;
     // Receiving contextual messages from the content script and background.js to display to the user.
@@ -420,12 +383,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     // Saves the user selected text for summarisation, retrieved from the content script, to be used when the summarise button is clicked.
     case 'userSelectedText':
-      // console.log('User selected text : ', request.data);
       if (request.data !== "") {
-        // setContextualMessage("Grabbed your selected text!", 2);
         setMessageBothProviders("Grabbed your selected text!", 2);
         userSelectedText = request.data;
-        // console.log("saved user selected text [will disappear when clicked away]: ", userSelectedText);
       }
       break;
   }
@@ -448,15 +408,11 @@ var summarise_button = document.getElementById("summarise-button");
  * @returns {void}
  */
 async function summariseButtonHandler() {
-  // console.log("Summarise Button Clicked");
-  // console.log("p1");
 
   // Clear contextual message
   setContextualMessage("", 1);
-  // setContextualMessage("", 2);
   // Clear contextual message for both providers
   clearMessageBothProviders(2);
-  // console.log("p2");
   var tempUserSelectedText = userSelectedText;
 
   // For BS
@@ -469,17 +425,13 @@ async function summariseButtonHandler() {
       setContextualMessage("Sumamry length value is incorrect!", 2);
       return;
     }
-    // console.log("PACKAGE: ", packageCustomisation);
-    // console.log("Sending these xpaths: ", usrXpaths);
     
     // If user selected text, we can summarise straight away as we have the text
     if (userSelectedText !== "") {
-      // console.log('Summarising user selected text');
       chrome.runtime.sendMessage({ action: 'summarise', data : tempUserSelectedText, customisation : packageCustomisation, extractedType : 'extracted', for : 'bs'});
     } 
     // Want to scrape the page automatically / XPaths found in user customisation configuration
     else {
-      // console.log('Scraping');
       // Send message to content script to scrape the page
       chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, 
@@ -490,14 +442,10 @@ async function summariseButtonHandler() {
             for : 'bs' });
       });
     }
-    // userSelectedText = "";
   } 
   // For CO
   else {
-    // console.log("CO Summarise not implemented yet");
-    // console.log("Selected text?: ", userSelectedText);
-    // console.log("prompt value: ", document.getElementById('td-dropdown-prompt').value);
-    // console.log("userSelectedText: ", userSelectedText);
+
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { 
         action: "gatherData", 

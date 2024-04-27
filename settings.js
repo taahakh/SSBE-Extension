@@ -7,7 +7,7 @@
 
 // -----------------------------------------------------------------------------------------
 // Utility functions
-// SOME THESE CODE BLOCKS ARE REPEATED IN POPUP.JS AND BACKGROUND.JS DUE TO ASYNC ISSUES
+// SOME THESE CODE BLOCKS ARE REPEATED IN POPUP.JS AND BACKGROUND.JS DUE TO ASYNC ISSUES OF CHROME MESSAGE DESIGN - https://developer.chrome.com/docs/extensions/develop/concepts/messaging
 
 /**
  * Saves the given object to the local storage using the Chrome storage API.
@@ -15,9 +15,7 @@
  * @param {Object} ctx_obj - The object to be saved to the storage.
  */
 function saveToStorage(ctx_obj) {
-    chrome.storage.local.set(ctx_obj, function() {
-    //   console.log("Storage Item Saved");
-    });
+    chrome.storage.local.set(ctx_obj, function() {});
 }
 
 /**
@@ -28,13 +26,11 @@ function loadScrapingCustomisation() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(['bsc'], function(result) {
             if (isObjectEmpty(result)) {
-                // console.log("its empty");
                 saveToStorage({'bsc' : {}});
                 loadScrapingCustomisation();
                 resolve();
             } else {
                 currentPSCConfigs = result['bsc'];
-                // console.log(result);
                 resolve();
             }
         });
@@ -50,11 +46,9 @@ function loadUserConfigs(data) {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get([data], function(result) {
             if (isObjectEmpty(result)) {
-                // console.log("its empty");
                 saveToStorage({[data] : {}});
                 resolve(loadUserConfigs(data));
             } else {
-                // console.log(result);
                 resolve(result[data]);
             }
         });
@@ -83,9 +77,7 @@ function isObjectEmpty(obj) {
  * @param {function} callback - The callback function to be executed after the item(s) are removed.
  */
 function removeFromStorage(ctx) {
-    chrome.storage.local.remove(ctx, function() {
-        // console.log(ctx, ' Removed from storage');
-      });
+    chrome.storage.local.remove(ctx, function() {});
 }
 
 
@@ -109,7 +101,6 @@ var bsPSelectedConnect = null;
  * @param {string} type - The authentication type to set.
  */
 function setAuthenticationType(type) {
-    // console.log(type);
     // Login
     if (type === undefined || type === bsPConnectionLoginButton) {
         bsPSelectedConnect = "log";
@@ -125,7 +116,6 @@ function setAuthenticationType(type) {
         bsPConnectionConnectButton.innerText = "Signup";
     } 
     removeBsAuthContext();
-    // console.log(bsPSelectedConnect);
 }
 
 setAuthenticationType();
@@ -255,7 +245,6 @@ coProviderConnectionSaveButton.addEventListener('click', function(){
  * Populates the CO service connection key and host input fields with the user's saved configurations.
  */
 function populateCOServiceConnection() {
-    // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'auth' });
     loadUserConfigs('auth').then(data => {
         
         if (data.hasOwnProperty('co_api_key')) {
@@ -307,12 +296,10 @@ function isPromptEmpty(value) {
 var oldPrompt = null;
 coPromptsEditButton.addEventListener('click', function(){
 
-    // console.log(coPromptsSelector.value.trim());
     // Don't edit empty prompts
     if (isPromptEmpty(coPromptsSelector.value)) { return; }
     
     oldPrompt = coPromptsSelector.value;
-    // console.log(oldPrompt);
     coPromptsEditInput.value = oldPrompt;
     displayPromptUpdate();
 })
@@ -339,7 +326,6 @@ coPromptsEditUpdateButton.addEventListener('click', function(){
 
     // Finished editing, hide the editor
     hidePromptUpdate();
-    // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
     
     // Load the user's CO prompts to update it with the new prompt
     loadUserConfigs('coprompts').then((data) => {
@@ -456,7 +442,7 @@ coPromptsDefaultButton.addEventListener('click', function(){
     // Get the selected prompt and update it as the default prompt
     var def = coPromptsSelector.querySelector('option[value="' + prompt + '"]');
     def.text = "Default: " + def.text;
-    // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'coprompts' });
+
     // Load the user's CO prompts to update the default prompt, save it and repopulate the prompts list
     loadUserConfigs('coprompts').then((data) => {
         data['default'] = prompt;
@@ -496,8 +482,6 @@ function hasContentTag(prompt) {
 function populatePromptsList() { 
     // Load the user's CO prompts
     loadUserConfigs('coprompts').then((data) => {
-        // console.log("CO PROMPTS: ", data)
-        console.log("CO PROMPTS: ", data)
         // Default prompt, if no prompts are saved
         const DEFAULT_PROMPT = "Summarise this text: {content} ";
 
@@ -580,8 +564,6 @@ function buildSummaryConfigs(data) {
                    modeldropdown, slheader, milength, 
                    malength, sumlength, ttpp, stpp, mcpp, slpp];
 
-    // console.log(data, elements);
-
     // Deep copy the data for the editing configurations
     let copiedJson = JSON.parse(JSON.stringify(data));
 
@@ -610,11 +592,8 @@ function buildSummaryConfigs(data) {
                         editmilength, editmalength, editsumlength,
                         editttpp, editstpp, editmcpp, editslpp];
 
-    // console.log(data, elements);
 
     editview = new SummaryCustomisationView(copiedJson, editelements);
-    // console.log(data);
-    // view = new SummaryCustomisationView(data);
     let config = view.controller;
     return config;
 }
@@ -664,7 +643,6 @@ var bsEditConfigSaveContextual = document.getElementById("edit-bs-add-config-sav
  * @returns {boolean} Returns true if the value is empty after trimming, otherwise returns false.
  */
 function isEditUrlEmpty(value) {
-    // console.log(value);
     if (value.trim() === "") {
         bsEditConfigContextual.innerHTML = "URL cannot be empty!";
         return true;
@@ -684,10 +662,8 @@ function clearBsEditContextual() {
 function populateBSEditConfig() {
     loadScrapingCustomisation().then(() => {
 
-        // console.log("Working on ====: ", currentPSCConfigs)
         // Populate the dropdown with the URLs to edit
         for (const url in currentPSCConfigs) {
-            // console.log(url);
             let urlItem = document.createElement('option');
             urlItem.value = url;
             urlItem.innerText = url;
@@ -695,7 +671,7 @@ function populateBSEditConfig() {
         }
 
     }).catch((error) => { 
-        // console.log(error)
+        console.log(error);
     })
 }
 
@@ -781,13 +757,11 @@ bsEditConfigEditButton.addEventListener('click', function(){
     // Clear xpath boxes if the edit option has been changed
     clearEditXPATHs(editXpathTracker);
 
-    // console.log('Ivb been clicked');
     // Get the selected URL for editing
     var selected = bsEditConfigSelector.value;
 
     // Track the old URL
     editOldURL = selected;
-    // console.log(currentPSCConfigs[selected]);
     // Load the user configuration for the selected URL
     editChosen = currentPSCConfigs[selected];
 
@@ -846,17 +820,14 @@ bsEditConfigDelButton.addEventListener('click', function() {
     // Clear the contextual help
     clearBsEditContextual();
 
-    // console.log(selected);
     // Delete from list
     let toRemove = bsEditConfigSelector.querySelector('option[value="' + selected + '"]');
     // Remove the selected URL from the dropdown
     bsEditConfigSelector.removeChild(toRemove);
-    // console.log("Removed URL from list:  ", selected);
     // Delete from urllist
     delEntryURLLIST(selected);
     // Delete from userconfigs
     delete currentPSCConfigs[selected]
-    // console.log("Deleting for user config: ", currentPSCConfigs);
     // Save changes
     saveToStorage({"bsc" : currentPSCConfigs});
 
@@ -871,7 +842,6 @@ bsEditConfigDelButton.addEventListener('click', function() {
  * The summary length must be within the correct range.
  */
 bsEditConfigSave.addEventListener("click", async function () { 
-    // console.log("Updating customisation ")
 
     // Cannot have existing url
     var exisitingURL = await urlExists(bsEditConfigURL.value, editOldURL);
@@ -880,7 +850,6 @@ bsEditConfigSave.addEventListener("click", async function () {
         return;
     }
     // Cannot have empty url
-    // console.log(bsEditConfigURL.value);
     if (urlErrorMessage(bsEditConfigURL.value, bsEditConfigSaveContextual)) {return;}
 
     // Incorrect summary length
@@ -888,21 +857,16 @@ bsEditConfigSave.addEventListener("click", async function () {
 
     // Updates the configuration with what the user has inputted and saves it locally
     var [url, builder] = bsAddConfig(bsEditConfigURL, editview, editXpathTracker, editSelectedScrapeOption);
-    // let url = Object.keys(builder)[0];
-    // console.log("url: ", url);
-    // console.log(Object.values(builder));
-    // currentPSCConfigs[url] = builder;
     
     // Delete the old configuration
     delete currentPSCConfigs[editOldURL];
-    // console.log("Deleted state: ", currentPSCConfigs);
 
     // Save the new url configuration
     updateURLLIST(url, builder, editOldURL);
     
     // Update the user's configurations
     currentPSCConfigs[url] = builder;
-    // console.log("yes sir (update): ", currentPSCConfigs);
+
     // Save the updated configurations
     saveToStorage({"bsc" : currentPSCConfigs});
 
@@ -926,18 +890,14 @@ async function urlExists(url, oldUrl=null) {
     var urlObj = new URL(url);
     var dName = urlObj.hostname.toString();
     var pName = urlObj.pathname.toString();
-    // console.log("NEWURL: ", dName, pName);
 
     // For edit configurations, check if the URL is the same as the old URL
     // When the URL is the same, return false. As it is the same URL, it is not an existing URL as we are editing it.
     if (oldUrl !== null) {
-        // console.log("OLDURL: ", oldUrl);    
         var oldUrlObj = new URL(oldUrl);
         var oldDName = oldUrlObj.hostname.toString();
         var oldPName = oldUrlObj.pathname.toString();
-        // console.log("OLDURL: ", oldDName, oldPName);
         if (oldDName === dName && oldPName === pName) {
-            // console.log("SAME URL");
             return false;
         }
     }
@@ -1082,7 +1042,7 @@ function bsAddConfig(addConfigUrl, view, xpathTracker, selectedScrapeOption) {
     
     // The URL value
     let urlValue = addConfigUrl.value;
-    // let package = view.packageSummaryCustomisations();
+
     // BS Summarisation Customisation options
     let package = view.packageFullCustomisation();
     
@@ -1101,15 +1061,8 @@ function bsAddConfig(addConfigUrl, view, xpathTracker, selectedScrapeOption) {
         "xpaths" : xpathlists
     }
 
-    // console.log('bsaddconfig: ', urlValue, builder);
-
     return [urlValue, builder];
 }
-// const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
-
-// loadUserConfigs('urllist').then((result) => {
-//     console.log('urllist: ', result);
-// })
 
 /**
  * Updates the URL list with the provided URL, builder, and optional old URL.
@@ -1118,10 +1071,7 @@ function bsAddConfig(addConfigUrl, view, xpathTracker, selectedScrapeOption) {
  * @param {string|null} [oldUrl=null] - The old URL to be removed from the URL list (optional).
  */
 function updateURLLIST(url, builder, oldUrl=null) {
-    // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
     loadUserConfigs('urllist').then((result) => {
-        // console.log(result);
-        // console.log("New URL: ", url)
 
         // Get the domain and path name from the URL
         var urlObj = new URL(url);
@@ -1146,8 +1096,6 @@ function updateURLLIST(url, builder, oldUrl=null) {
     }).then(() => {
         // If there is an old URL, delete the old URL from the URL list
         if (oldUrl && url !== oldUrl) {
-            // console.log(oldUrl);
-            // console.log("OLDURLLLLLL");
             delEntryURLLIST(oldUrl);
         }
     })
@@ -1158,34 +1106,24 @@ function updateURLLIST(url, builder, oldUrl=null) {
  * @param {string} url - The URL to be deleted.
  */
 function delEntryURLLIST(url) { 
-    // const msg = chrome.runtime.sendMessage({ action : 'loadUserConfigs', config : 'urllist' });
     // Load the user's URL list
     loadUserConfigs('urllist').then((result) => {
-        // console.log(result);
-        // console.log("DELETING FROM URLLIST: ", url);
         var urlObj = new URL(url);
         var dName = urlObj.hostname.toString();
         var pName = urlObj.pathname.toString();
 
         // Locate the domain and path name in the URL list and delete it
         var domain = result[dName];
-        // console.log("DOOOOOOOOOOOOMNAIUBNNN: ", domain)
         delete domain[[pName]];
-
-        // if (isObjectEmpty(domain)) {
-        //     delete domain;
-        // }
 
         // Delete the domain if it is empty
         if (Object.keys(domain).length === 0) {
             delete result[dName];
         }
 
-        // console.log("DELLLLL URLLIST: ", result)
         // Save the updated URL list
         saveToStorage({'urllist' : result});
 
-        // console.log(result);
     })
 }
 
@@ -1228,7 +1166,6 @@ function isValidURL(url) {
  * The user is notified that the configuration has been saved.
  */
 bsAddConfigSave.addEventListener("click", async function () { 
-    // console.log("Saving... ");
     
     // Cannot have existing url
     var exisitingURL = await urlExists(bsAddConfigURL.value);
@@ -1246,18 +1183,12 @@ bsAddConfigSave.addEventListener("click", async function () {
     // Updates the configuration with what the user has inputted and saves it locally
     var [url, builder] = bsAddConfig(bsAddConfigURL, view, xpathTracker, selectedScrapeOption);
 
-    // console.log("url: ", url);
-
-    // console.log(currentPSCConfigs);
-
     // Save the new url configuration
     updateURLLIST(url, builder);
 
     // Update the user's configurations
     currentPSCConfigs[url] = builder;
 
-
-    // console.log("yes sir: ", currentPSCConfigs)
     // Save the updated configurations;
     saveToStorage({"bsc" : currentPSCConfigs});
 
@@ -1335,12 +1266,10 @@ document.getElementById("edit-view-shortcuts-button").addEventListener("click", 
 });
 
 
-
 // ---------------------------------------------------------------------------------
 // Message handling
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    // console.log('Popup.js: Message received:', request.action, request);
   
     switch (request.action) {
       // Backend service model descriptor response to populate the BS customisation settings

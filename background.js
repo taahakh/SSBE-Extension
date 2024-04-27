@@ -72,11 +72,9 @@ function loadUserConfigs(data) {
   return new Promise((resolve, reject) => {
       chrome.storage.local.get([data], function(result) {
           if (isObjectEmpty(result)) {
-              // console.log("its empty");
               saveToStorage({[data] : {}});
               resolve(loadUserConfigs(data));
           } else {
-              // console.log(result);
               resolve(result[data]);
           }
       });
@@ -105,9 +103,7 @@ function isObjectEmpty(obj) {
  * @param {function} callback - The callback function to be executed after the item(s) are removed.
  */
 function removeFromStorage(ctx) {
-  chrome.storage.local.remove(ctx, function() {
-      // console.log(ctx, ' Removed from storage');
-    });
+  chrome.storage.local.remove(ctx, function() {});
 }
 
 //  ---------------------------------------------------------------------
@@ -115,12 +111,10 @@ function removeFromStorage(ctx) {
 chrome.commands.onCommand.addListener(function (command) {
   switch(command) {
     case 'summarise-page':
-      // console.log("Shortcut - Summarise Page");
       chrome.browserAction.openPopup();
       chrome.tabs.create({url: 'popup.html'})
       break;
     case 'summarise-selected':
-      // console.log("Shortcut - Get Selected text to summarise");
       chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { action: "getSelectedText" });
       });
@@ -128,49 +122,27 @@ chrome.commands.onCommand.addListener(function (command) {
   }
 })
 
-// chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-//   console.log(tabs[0].url);
-//   console.log(tabs[0].id);
-//   my_tabid=tabs[0].id;
-// }); 
-
-// chrome.runtime.onInstalled.addListener(function() {
-//   console.log('Extension Installed');
-// });
-
 var usrSelectedText = "";
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  // console.log('B: Message received:', request);
-  // console.log('B: Sender:', sender.tab);
-
   switch (request.action) { 
-
-    // case 'makeGetRequest':
-    //   // console.log('Background.js - Making GET Request');
-    //   makeGetRequest();
-    //   chrome.runtime.sendMessage({ action: 'gatherData' });
-    //   break;
     // This message is used to make a GET request to retrieve the customisation config of backend service
     case 'customisationConfigRequest':
-      // console.log('Background.js - Config Request');
       // Endpoint, messageAction, toWhichComponent
       makeGetRequest('/jsonfile/sum_customisation', 'customisationConfigResponse', request.to);
       break;
     // Message manages the summarisation request to the different providers
     case 'summarise':
-      // console.log("Background.js - Data to summarise: ", request.data);
       sendMessage({ action: "contextualMessage",  message : "Summarising..." , order : 1});
+
       if (request.for === "bs") {
         summariseRequest({'text': request.data, 'customisation': request.customisation, 'extractedType': request.extractedType});
       }
       else {
         chatgptRequest(request.data, request.prompt);
       }
-      // sendMessage({ action: 'summaryResponse', data: "SUMMARY" });
-      // chatgptRequest("What are the tallest buildings in the world?");
+
       return;
-      // break;
     // Backend service signup request message
     case 'signup':
       authRequest(request.host, '/auth/signup', request.auth);
@@ -181,35 +153,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     // Response message from content script with the selected text, saved here until popup requests it
     case 'retrieveSelectedText':
-      // if ('data' in request) {
       usrSelectedText = request.data;
-      // }
-      // Try and send to POPUP if it is opened
-      // chrome.runtime.sendMessage({ action: 'userSelectedText', data : usrSelectedText });
       break;
     // Message from popup to get the selected text stored in background.js, which was initially sent by content script
     case 'homeGetSelectedText':
       chrome.runtime.sendMessage({ action: 'userSelectedText', data : usrSelectedText });
       usrSelectedText = "";
       break;
-    // NOT USED ANYMORE
-    // case 'loadUserConfigs':
-    //   console.log('Background.js: Loading user configs');
-    //   loadUserConfigs(request.config).then(data => {
-    //     console.log("WHAT DO I WANT :", request.config , ' Data : ', data);
-    //     // setTimeout(() =>{
-    //       sendResponse({ response : data });
-    //     // }, 600);
-    //   })
-    //   return true;
-      // break;
-    // case 'savePopupCtx':
-    //   console.log("Background.js - Saving Popup Context");
-    //   saveToStorage(request.data);
-    //   break;
   }
 
-  // sendResponse();
+  sendResponse();
 });
 
 // ---------------------------------------------------------------------
@@ -232,14 +185,11 @@ async function summariseRequest(data) {
     if (creds.hasOwnProperty('bs_api_key')) {
       var api_key = creds['bs_api_key'];
       var host = creds['bs_host'];
-      // console.log(api_key, host);
     }
     else {
       sendMessage({ action: 'summaryResponse', message: 'Missing API key or Host', data: "error" });
       return;
     }
-
-    // return;
 
     // Start the heartbeat to keep the service worker alive
     startHeartbeat();
@@ -253,19 +203,15 @@ async function summariseRequest(data) {
     // POST request successful
     if (response.ok) {
       const result = await response.json();
-      // pollSummaryRequest(abortController);
-      // console.log('POST request successful:', result);
       sendMessage({ action: 'summaryResponse', message: 'Summarisation success!', data: result });
     } 
     // POST request failed
     else {
-      // console.error('POST request failed:', response.status, response.statusText);
       sendMessage({ action: 'summaryResponse', message: 'Summarisation failed!', data: "failed" });
     }
 
   } 
   catch (error) {
-    // console.error('An error occurred during the POST request:', error);
     sendMessage({ action: 'summaryResponse', message: 'There was an error with the summarisation request.', data: "error" });
   }
 
@@ -283,7 +229,6 @@ async function summariseRequest(data) {
  * @returns {void}
  */
 function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
-  // console.log('GET Request');
 
   // Load the user's API key and host from storage
   loadUserConfigs('auth').then(data => {
@@ -291,8 +236,6 @@ function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
       BS_API_KEY = data['bs_api_key'];
       BS_HOST = data['bs_host'];
     }
-
-    // console.log(data['bs_api_key'], data['bs_host'])
 
     // Build the headers for the GET request
     var headers = {
@@ -316,7 +259,6 @@ function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
       return;
     }
 
-    // console.log('host: '+ BS_HOST + ' endpoint: ' + endpoint + " api-key: " +  BS_API_KEY);
     // Make the GET request
     fetch(BS_HOST+endpoint, { 
       method: 'GET',
@@ -329,10 +271,8 @@ function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
                         data: data, to : to 
                       });
         }
-        // console.log('GET Response:', data);
       })
       .catch(error => {                  // Notify the recipient of the error
-        // console.error('GET Error:', error)
         sendMessage({ action: messageAction, 
                       message: "Error connecting to service. Please check connection!", 
                       data: null, to : to 
@@ -353,12 +293,10 @@ function makeGetRequest(endpoint='/jsonfile', messageAction=null, to=null) {
  * @param {object} data - The data to include in the request, passed to the sendRequest function.
  */
 function authRequest(host, endpoint, data) {
-  // console.log(host, endpoint, data, BS_API_KEY);
   // POST request to the backend service using available BS_API_KEY
   sendRequest(host, endpoint, 'POST', data, BS_API_KEY).then(
     
     (response) => {
-      // console.log('AUTHINGGGGG222222222ggggggg: ', response);
       
       // If the response an error instance, notify the user
       if (response instanceof Error) {
@@ -368,15 +306,12 @@ function authRequest(host, endpoint, data) {
 
       // Load the user's auth data from storage
       loadUserConfigs('auth').then(data => {
-        // console.log('AUTHINGGGGG');
         if (response.hasOwnProperty('api_key')) {
-          // console.log('AUTHINGGGGG222222222');
           // Update the API key and host in the auth object
           BS_API_KEY = response['api_key'];
           BS_HOST = host;
           data['bs_api_key'] = BS_API_KEY;
           data['bs_host'] = BS_HOST;
-          // console.log(BS_API_KEY, BS_HOST);
         }
 
         chrome.runtime.sendMessage({ action: "bsAuthMessageStatus", message : response['message'] });
@@ -386,11 +321,9 @@ function authRequest(host, endpoint, data) {
       
       })
 
-      // console.log(response);
     }
 
   ).catch((error) => {
-    // console.log(error);
     // Notify the user of the error - settings.js
     chrome.runtime.sendMessage({ action: "bsAuthMessageStatus", message : error });
   })
@@ -407,18 +340,14 @@ function authRequest(host, endpoint, data) {
  * @returns {Promise<any>} - A promise that resolves to the response data or rejects with an error.
  */
 async function sendRequest(host, endpoint, method, data=null, auth=null) {
-  // console.log(host, endpoint, method, data, auth)
   var headers = {
     'Content-Type': 'application/json'
   }
-  // console.log(auth);
   // If there is an auth token, add it to the headers
   if (auth !== null || auth !== "") {
-    // console.log("YESSSS SIRRRRR");
     headers["Authorization"] = "Bearer " + auth;
   }
 
-  // console.log("Headers: ", headers)
   // Make the requests
   try {
     const response  = await fetch(host+endpoint, { 
@@ -448,11 +377,9 @@ async function chatgptRequest(data, prompt) {
   
   // Parsing data object that contains the text to be summarised
   chunk = JSON.parse(data)['text']
-  // console.log('Background.js - ChatGPT Request, Chunk length: ', chunk.length);
 
   // Load the user's API key and host from storage - chatgpt/openai details
   var res = await loadUserConfigs('auth');
-  // console.log('Background.js - ChatGPT Request, Auth: ', res);
 
   var host = null;
   var key = null;
@@ -495,7 +422,6 @@ async function chatgptRequest(data, prompt) {
   for (var i=0; i<chunk.length; i++) {
     // {content} is replaced with the chunk content
     var completePrompt = prompt.replace(/{content}/g, chunk[i]);
-    // console.log('Background.js - ChatGPT Request, Chunk ${i}: ', completePrompt);
     var coRes = await _chatgptRequest(completePrompt, host, key)
 
     if (coRes.hasOwnProperty('error')) {
@@ -535,15 +461,8 @@ async function _chatgptRequest(data, host, key) {
     })
 
     var response = await res.json();
-    // console.log(response);
     return response;
 }
-
-// function sendMessageToCS(message) {
-//   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-//     chrome.tabs.sendMessage(tabs[0].id, message);
-//   });
-// }
 
 // ---------------------------------------------------------------------
 // Message Functions
