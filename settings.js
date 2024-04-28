@@ -855,7 +855,7 @@ bsEditConfigSave.addEventListener("click", async function () {
     }
 
     // Incorrect summary length
-    if (badSummaryLength(view.getSummaryLength(), bsEditConfigSaveContextual)) { return; }
+    if (badSummaryLength(editview.getSummaryLength(), bsEditConfigSaveContextual)) { return; }
 
     // Updates the configuration with what the user has inputted and saves it locally
     var [url, builder] = bsAddConfig(bsEditConfigURL, editview, editXpathTracker, editSelectedScrapeOption);
