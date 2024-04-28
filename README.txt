@@ -48,4 +48,4 @@ IMPORTANT: Using the extension
 -------------------------------
 
 If you click on summarise and the extention does not indicate that it is not summmarising, you must refresh the page. 
-This is because Chrome has not loaded in the required ccripts for the page.
+This is because Chrome has not loaded in the required scripts for the page.
