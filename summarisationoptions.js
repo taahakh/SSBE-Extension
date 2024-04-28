@@ -527,7 +527,7 @@ class SummaryCustomisationView {
     model_dropdown.value = model;
 
     // Update summary length
-    if (slvalue) {
+    if (slvalue || slvalue === 0 || slvalue === "") {
       document.getElementById(this.sumlength).value = slvalue;
     }
   }

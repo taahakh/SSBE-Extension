@@ -42,3 +42,10 @@ You only need to enter the API key.
 The key is: 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
 
 Press Save
+
+
+IMPORTANT: Using the extension
+-------------------------------
+
+If you click on summarise and the extention does not indicate that it is not summmarising, you must refresh the page. 
+This is because Chrome has not loaded in the required ccripts for the page.

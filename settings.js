@@ -660,6 +660,7 @@ function clearBsEditContextual() {
  * @returns {Promise<void>} A promise that resolves when the scraping customisation is loaded and options are added.
  */
 function populateBSEditConfig() {
+    bsEditConfigSelector.innerHTML = "";
     loadScrapingCustomisation().then(() => {
 
         // Populate the dropdown with the URLs to edit
@@ -843,14 +844,15 @@ bsEditConfigDelButton.addEventListener('click', function() {
  */
 bsEditConfigSave.addEventListener("click", async function () { 
 
+    // Cannot have empty url
+    if (urlErrorMessage(bsEditConfigURL.value, bsEditConfigSaveContextual)) {return;}
+
     // Cannot have existing url
     var exisitingURL = await urlExists(bsEditConfigURL.value, editOldURL);
     if (exisitingURL) {
         bsEditConfigSaveContextual.innerText = "URL already exists!";
         return;
     }
-    // Cannot have empty url
-    if (urlErrorMessage(bsEditConfigURL.value, bsEditConfigSaveContextual)) {return;}
 
     // Incorrect summary length
     if (badSummaryLength(view.getSummaryLength(), bsEditConfigSaveContextual)) { return; }
@@ -870,8 +872,8 @@ bsEditConfigSave.addEventListener("click", async function () {
     // Save the updated configurations
     saveToStorage({"bsc" : currentPSCConfigs});
 
-    // Notify the user that the configuration has been saved
-    bsEditConfigSaveContextual.innerText = "Saved!";
+    // Hide the edit configuration container
+    bsEditConfigContainer.style.display = 'none'; 
 })
 
 
@@ -1167,15 +1169,15 @@ function isValidURL(url) {
  */
 bsAddConfigSave.addEventListener("click", async function () { 
     
+    // Cannot have empty url
+    if (urlErrorMessage(bsAddConfigURL.value, bsAddConfigSaveContextual)) {return;}
+
     // Cannot have existing url
     var exisitingURL = await urlExists(bsAddConfigURL.value);
     if (exisitingURL) {
         bsAddConfigSaveContextual.innerText = "URL already exists!";
         return;
     }
-
-    // Cannot have empty url
-    if (urlErrorMessage(bsAddConfigURL.value, bsAddConfigSaveContextual)) {return;}
 
     // Incorrect summary length
     if (badSummaryLength(view.getSummaryLength(), bsAddConfigSaveContextual)) { return; }
@@ -1194,6 +1196,8 @@ bsAddConfigSave.addEventListener("click", async function () {
 
     // Notify the user that the configuration has been saved
     bsAddConfigSaveContextual.innerText = "Saved!";
+
+    populateBSEditConfig()
 })
 
 /**
@@ -1203,10 +1207,19 @@ bsAddConfigSave.addEventListener("click", async function () {
  * @returns {boolean} - Returns true if there was an error with the URL, otherwise false.
  */
 function urlErrorMessage(configURLValue, ctx) {
-    if (configURLValue.trim() === ""  || !isValidURL(configURLValue.trim())) {
-        ctx.innerText = "There was an error with your url! Please check if it's valid.";
-        return true; 
+    var msg = "There was an error with your url! Please check if it's valid.";
+    try {
+        new URL(configURLValue);
+        if (configURLValue.trim() === ""  || !isValidURL(configURLValue.trim())) {
+            ctx.innerText = msg;
+            return true; 
+        }
     }
+    catch (error) {
+        ctx.innerText = msg;
+        return true;
+    }
+
     return false;
 }
 
@@ -1295,5 +1308,3 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   
     sendResponse();
 });
-
-
